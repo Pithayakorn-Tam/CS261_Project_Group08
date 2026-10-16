@@ -1,0 +1,106 @@
+/* ==========================================
+   การตั้งค่าพื้นฐานและฟอนต์
+   ========================================== */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Mitr', sans-serif;
+}
+
+body {
+    background-color: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+/* กล่องจัดกึ่งกลางฟอร์ม */
+.login-container {
+    width: 100%;
+    max-width: 380px;
+    padding: 20px;
+    text-align: center;
+}
+
+/* พื้นจัดวางและควบคุมขนาดรูปโลโก้ */
+.logo-wrapper {
+    margin-bottom: 50px;
+}
+
+.logo-img {
+    max-width: 1500px; /* ปรับขนาดความกว้างโลโก้ตามต้องการ */
+    width: 100%;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+}
+
+/* ช่องกรอกข้อมูล (Input) ขอบดำมนตามภาพต้นฉบับ */
+.input-group {
+    margin-bottom: 20px;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 14px 18px;
+    font-size: 15px;
+    border: 2px solid #222222;
+    border-radius: 8px;
+    outline: none;
+    transition: all 0.2s ease;
+    color: #333333;
+}
+
+.input-group input::placeholder {
+    color: #888888;
+    font-weight: 300;
+}
+
+.input-group input:focus {
+    border-color: #1a36d5;
+    box-shadow: 0 0 5px rgba(26, 54, 213, 0.2);
+}
+
+/* ปุ่ม LOGIN สีน้ำเงิน */
+.login-btn {
+    width: 25%;
+    padding: 8px;
+    display: block;
+    margin: 0 auto;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 700;
+    font-family: 'Mitr', cursive;
+    color: #ffffff;
+    background-color: #1a36d5;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    letter-spacing: 1px;
+}
+
+.login-btn:hover {
+    background-color: #1428b2;
+}
+
+.login-btn:disabled {
+    background-color: #93a0f0;
+    cursor: not-allowed;
+}
+
+/* กล่องแจ้งเตือน Error */
+.error-box {
+    margin-bottom: 15px;
+    padding: 10px;
+    color: #A01010;
+    font-size: 20px;
+    font-family: 'Mitr';
+    
+}
+
+.hidden {
+    display: none;
+}
