@@ -1,6 +1,4 @@
-/* ==========================================
-   การตั้งค่าพื้นฐานและฟอนต์
-   ========================================== */
+
 * {
     box-sizing: border-box;
     margin: 0;
@@ -16,7 +14,6 @@ body {
     min-height: 100vh;
 }
 
-/* กล่องจัดกึ่งกลางฟอร์ม */
 .login-container {
     width: 100%;
     max-width: 380px;
@@ -24,20 +21,20 @@ body {
     text-align: center;
 }
 
-/* พื้นจัดวางและควบคุมขนาดรูปโลโก้ */
+/* โลโก้ */
 .logo-wrapper {
     margin-bottom: 50px;
 }
 
 .logo-img {
-    max-width: 1500px; /* ปรับขนาดความกว้างโลโก้ตามต้องการ */
+    max-width: 1500px; 
     width: 100%;
     height: auto;
     display: block;
     margin: 0 auto;
 }
 
-/* ช่องกรอกข้อมูล (Input) ขอบดำมนตามภาพต้นฉบับ */
+/* ช่องกรอกข้อมูล */
 .input-group {
     margin-bottom: 20px;
 }
