@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TU Meet</title>
+    <link rel="stylesheet" href="../css/Homepage.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Mitr:wght@300;400;500;600;700&display=swap" rel="stylesheet">    <script src="../js/Homepage.js" defer></script>
+</head>
+
+<body>
+    <!-- กรอบจำลองหน้าจอมือถือ -->
+    <div class="mobile-container">
+        
+        <!-- ส่วน Header -->
+        <header class="app-header">
+            <div class="logo">
+                <img src="../Picture/LogoTUmeet.svg" alt="TU Meet Logo">
+            </div>
+            <div class="header-actions">
+                <button class="icon-btn">
+                    <img src="../Picture/NotificationIcon.svg" alt="Notifications">
+                </button>
+                <button class="icon-btn">
+                    <img src="../Picture/ProfileIcon.svg" alt="Profile">
+                </button>
+            </div>
+        </header>
+
+        <!-- พื้นที่เนื้อหาหลัก -->
+        <main class="content">
+        <!-- แบนเนอร์กิจกรรมแนะนำ -->
+        <section class="recommend-section">
+            <h2 class="recommend-title"><span class="highlight">R</span>ECOMMEND <span class="highlight">A</span>CTIVITIES</h2>
+    
+            <!-- กรอบรูปภาพ -->
+            <div class="carousel-container">
+                <div class="carousel-slide" id="carouselSlide">
+            <!-- ใส่รูปภาพหรือแบนเนอร์ด้านใน -->
+                <!-- สไลด์รูปที่ 1 -->
+                <div class="carousel-item">
+                    <img src="../Picture/banner-image-1.jpg" alt="Banner 1" class="banner-img">
+                </div>
+                <!-- สไลด์รูปที่ 2 -->
+                <div class="carousel-item">
+                    <img src="../Picture/banner-image-2.jpg" alt="Banner 2" class="banner-img">
+                </div>
+                <!-- สไลด์รูปที่ 3 -->
+                <div class="carousel-item">
+                    <img src="../Picture/banner-image-3.jpg" alt="Banner 3" class="banner-img">
+                </div>
+                </div>
+            </div>
+
+            <!-- จุดเลื่อนด้านล่าง -->
+            <div class="carousel-dots">
+                <span class="dot active"></span>
+                <span class="dot"></span>
+                <span class="dot"></span>
+            </div>
+        </section>
+
+        <!-- ปุ่มสร้างกิจกรรม -->
+        <section class="create-event-section">
+            <button class="create-btn">
+                <div class="create-text">
+                    <span class="eng">CREATE YOUR EVENT</span>
+                    <span class="th">สร้างกิจกรรมของคุณ</span>
+                </div>
+                    <div class="create-icon">+</div>
+            </button>
+        </section>
+
+        <!-- หัวข้อ Feed และตัวกรอง -->
+        <section class="feed-header-section">
+            <div class="feed-title-container">
+                <h3 class="feed-title-th">กิจกรรมที่กำลังหาเพื่อน <span class="exclaim-red">!</span></h3>
+                <h3 class="feed-title-en">Join your friends here <span class="exclaim-blue">!</span></h3>
+            </div>
+                
+            <div class="filter-container">
+                <div class="filter-label">กำลังแสดง<br>now showing</div>
+                <select class="filter-dropdown">
+                    <option value="all">ทั้งหมด</option>
+                    <option value="academic">วิชาการ</option>
+                    <option value="sport">กีฬา</option>
+                    <option value="entertainment">บันเทิง</option>
+                    <option value="lifestyle">ไลฟ์สไตล์</option>
+                </select>
+            </div>
+        </section>
+
+        <!-- รายการกิจกรรม -->
+        <section class="event-feed">
+            <div class="event-list" id="eventList">
+            <!-- โครงสร้างการ์ดกิจกรรม 1 ใบ -->
+            <div class="event-card">
+                <div class="event-logo">
+                    <img src="../Picture/EntertainmentActivityLogo.png" alt="Logo">
+                </div>
+                <div class="event-info">
+                    <div class="event-badge">ตี๋น้อย</div>
+                    
+                    <!-- ใช้แท็ก img เรียกไฟล์ svg  -->
+                    <div class="event-time-date">
+                        <span><img src="../Picture/TimeIcon.svg" class="detail-icon" alt="Time"> 19.00</span>
+                        <span><img src="../Picture/CalendarIcon.svg" class="detail-icon" alt="Calendar"> Sat, 10 Oct</span>
+                    </div>
+                    <div class="event-location">
+                        <img src="../Picture/LocationIcon.svg" class="detail-icon" alt="Location"> Mingle, ม.กรุงเทพ
+                    </div>
+                    
+                </div>
+                <div class="event-action">
+                    <button class="join-btn">+</button>
+                    <div class="capacity">0/6</div>
+                </div>
+            </div>
+        </section>
+        <section class="load-more-btn">
+            <button id="loadMoreBtn">แสดงเพิ่มเติม</button>
+        </section>
+        </main>
+
+    </div>
+</body>
+</html>
