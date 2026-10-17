@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Your Event</title>
+  <link rel="stylesheet" href="../css/CreateEvent.css">
+</head>
+<body>
+
+  <div class="app-container">
+
+    <header class="header">
+      <div class="logo-TUmeet">
+        <img src="../Picture/LogoTUmeet.svg" alt="Logo TUmeet" class="icon-logo">
+      </div>
+      <div class="header-action">
+        <button type="button" class="icon-btn" aria-label="Notification">
+          <img src="../Picture/Vector.svg" alt="Notification" class="vector-img">
+        </button>
+        <button type="button" class="icon-btn" aria-label="Profile">
+          <img src="../Picture/profile.svg" alt="Profile" class="profile-img">
+        </button>
+      </div>
+    </header>
+
+
+    <main class="main-content">
+      <div class="banner">
+        <img src="../Picture/create-event-logo.svg" alt="Create Your Event Logo" class="logo-banner">
+      </div>
+      
+      <form class="event-form">
+        <div class="form-group form-group-row">
+          <label for="eventType">Event Type</label>
+          <div class="select-wrapper">
+            <select name="eventType" id="eventType">
+              <option value="" disabled selected hidden>หมวดหมู่</option>
+              <option value="bordgame">บอร์ดเกม</option>
+              <option value="study">ติวหนังสือ</option>
+              <option value="sport">กีฬา</option>
+              <option value="E-sport">อีสปอร์ต</option>
+              <option value="food">อาหาร/เครื่องดื่ม</option>
+              <option value="consert">คอนเสิร์ต</option>
+              <option value="other">อื่นๆ</option>            
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="eventName">Event Name</label>
+          <input type="text" id="eventName" name="eventName" placeholder="ตัวอย่าง ไปกินตี๋น้อย">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group size-group">
+            <label for="eventSize">Size</label>
+            <input type="number" id="eventSize" name="eventSize" value="1" min="1">
+          </div>
+
+          <div class="form-group date-group">
+            <label for="eventDate">Date</label>
+            <input type="date" id="eventDate" class="eventDate" name="eventDate" placeholder="dd/mm/yy">
+          </div>
+
+          <div class="form-group time-group">
+            <label for="eventTime">Time</label>
+            <input type="time" id="eventTime" class="eventTime" name="eventTime">
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn-create">CREATE</button>
+        </div>
+      </form>
+    </main>
+  </div>
+<script src="../js/api.js"></script>
+<script src="../js/CreateEvent.js"></script>
+</body>
+</html>
