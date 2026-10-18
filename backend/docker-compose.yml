@@ -13,11 +13,21 @@ services:
     command: >
       /bin/bash -c "
       /opt/mssql/bin/sqlservr &
-      sleep 15 &&
-      (/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P 'TuMeet_StrongPass123!' -C -Q \"IF NOT EXISTS (SELECT name FROM sys.databases WHERE name = N'tumeetdb') CREATE DATABASE [tumeetdb];\" ||
-       /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P 'TuMeet_StrongPass123!' -Q \"IF NOT EXISTS (SELECT name FROM sys.databases WHERE name = N'tumeetdb') CREATE DATABASE [tumeetdb];\") ;
+      for i in {1..30}; do
+        if /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P 'TuMeet_StrongPass123!' -C -Q \"IF NOT EXISTS (SELECT name FROM sys.databases WHERE name = N'tumeetdb') CREATE DATABASE [tumeetdb];\" > /dev/null 2>&1 ||
+           /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P 'TuMeet_StrongPass123!' -Q \"IF NOT EXISTS (SELECT name FROM sys.databases WHERE name = N'tumeetdb') CREATE DATABASE [tumeetdb];\" > /dev/null 2>&1; then
+          echo 'Database tumeetdb is ready!';
+          break;
+        fi;
+        sleep 1;
+      done;
       wait
       "
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P 'TuMeet_StrongPass123!' -C -d tumeetdb -Q 'SELECT 1' || /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P 'TuMeet_StrongPass123!' -d tumeetdb -Q 'SELECT 1'"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
     restart: unless-stopped
 
 volumes:

@@ -15,17 +15,26 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true, length = 20)
-    private String username;
+    @Column(name = "student_id", nullable = false, unique = true, length = 20)
+    private String studentId;
 
-    @Column(nullable = false)
-    private String password;
-
-    @Column(nullable = false, length = 150)
-    private String name;
-
-    @Column(length = 150)
+    @Column(nullable = false, unique = true, length = 150)
     private String email;
+
+    @Column(length = 50)
+    private String type;
+
+    @Column(length = 50)
+    private String statusname;
+
+    @Column(length = 20)
+    private String prefixname;
+
+    @Column(name = "displayname_th", length = 150)
+    private String displayname_th;
+
+    @Column(name = "displayname_en", length = 150)
+    private String displayname_en;
 
     @Column(length = 150)
     private String faculty;
@@ -36,11 +45,15 @@ public class User {
     public User() {
     }
 
-    public User(String username, String password, String name, String email, String faculty, String department) {
-        this.username = username;
-        this.password = password;
-        this.name = name;
+    public User(String studentId, String email, String type, String statusname, String prefixname,
+                String displayname_th, String displayname_en, String faculty, String department) {
+        this.studentId = studentId;
         this.email = email;
+        this.type = type;
+        this.statusname = statusname;
+        this.prefixname = prefixname;
+        this.displayname_th = displayname_th;
+        this.displayname_en = displayname_en;
         this.faculty = faculty;
         this.department = department;
     }
@@ -53,28 +66,12 @@ public class User {
         this.id = id;
     }
 
-    public String getUsername() {
-        return username;
+    public String getStudentId() {
+        return studentId;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+    public void setStudentId(String studentId) {
+        this.studentId = studentId;
     }
 
     public String getEmail() {
@@ -83,6 +80,46 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getStatusname() {
+        return statusname;
+    }
+
+    public void setStatusname(String statusname) {
+        this.statusname = statusname;
+    }
+
+    public String getPrefixname() {
+        return prefixname;
+    }
+
+    public void setPrefixname(String prefixname) {
+        this.prefixname = prefixname;
+    }
+
+    public String getDisplayname_th() {
+        return displayname_th;
+    }
+
+    public void setDisplayname_th(String displayname_th) {
+        this.displayname_th = displayname_th;
+    }
+
+    public String getDisplayname_en() {
+        return displayname_en;
+    }
+
+    public void setDisplayname_en(String displayname_en) {
+        this.displayname_en = displayname_en;
     }
 
     public String getFaculty() {
