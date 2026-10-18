@@ -111,3 +111,13 @@ if (loadMoreBtn && eventList) {
         });
     });
 }
+// ===================================
+// ปุ่มสร้างกิจกรรม
+// ===================================
+const createEventBtn = document.getElementById("createEventBtn");
+
+if (createEventBtn) {
+    createEventBtn.addEventListener("click", () => {
+        window.location.href = "./CreateEvent.html";
+    });
+}
