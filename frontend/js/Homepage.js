@@ -37,7 +37,7 @@ setInterval(() => {
 // ตารางจับคู่ชื่อหมวดหมู่กับไฟล์รูปภาพ Logo
 const categoryLogos = {
     'วิชาการ': '../Picture/AcademicActivityLogo.svg',
-    'บันเทิง': '../Picture/EntertainmentActivityLogo.svg',
+    'บันเทิง': '../Picture/EntertainmentAcivityLogo.svg',
     'กีฬา': '../Picture/HealthActivityLogo.svg',
     'ไลฟ์สไตล์': '../Picture/LifestyleActivityLogo.svg',
     'default': '../Picture/LogoTUmeet.svg' 
