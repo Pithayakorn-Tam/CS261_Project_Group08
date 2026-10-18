@@ -11,24 +11,29 @@
 }
 
 body {
-  background-color: #f5f5f5;
+  background-color: #f0f0f0;
   display: flex;
   justify-content: center;
-  align-items: flex-start;
+  align-items: center;
   min-height: 100vh;
-  padding-top: 20px;
+  margin: 0;
 }
 
+/* ปรับให้กรอบหลักยืดหยุ่นตามหน้าจอ (Responsive) */
 .app-container {
-  width: 360px;
-  min-height: 740px;
+  width: 100%;
+  max-width: 430px;           
+  height: 100vh;               
+  max-height: 850px;           
   background-color: #ffffff;
-  border: 1px solid #ccc;
+  border: 1px solid #dedede;
   display: flex;
   flex-direction: column;
   position: relative;
   overflow-y: auto;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 }
+
 
 .header {
   width: 100%;
@@ -60,6 +65,12 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: transform 0.1s ease, opacity 0.1s ease;
+}
+
+.icon-btn:active {
+  transform: scale(0.90);
+  opacity: 0.8;
 }
 
 .vector-img {
@@ -109,14 +120,14 @@ body {
   flex-direction: row;
   justify-content: flex-start;
   align-items: center;
-  gap: 16px; /* ระยะห่างระหว่างคำว่า Event Type กับช่องเลือกหมวดหมู่ */
+  gap: 16px;
 }
 
 .form-group label {
   font-size: 15px;
   font-weight: 700;
   color: #000;
-  white-space: nowrap; /* ป้องกันไม่ให้ข้อความขึ้นบรรทัดใหม่ */
+  white-space: nowrap;
 }
 
 /* Style Inputs & Select */
@@ -140,7 +151,6 @@ input::placeholder {
   color: #a0a0a0;
 }
 
-/* ให้ช่อง select ยืดขยายพื้นที่ที่เหลืออย่างพอดี */
 .form-group-row .select-wrapper {
   flex: 1;
 }
@@ -220,47 +230,11 @@ input[type="time"] {
   font-size: 13px;
   font-weight: 700;
   cursor: pointer;
-  transition: background-color 0.2s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.btn-create:hover {
-  background-color: #1925a3;
-}
-
-.icon-btn {
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: transform 0.1s ease, opacity 0.1s ease; /* เพิ่ม transition ให้มีความนุ่มนวล */
-}
-
-.icon-btn:active {
-  transform: scale(0.90);
-  opacity: 0.8;
-}
-
-.btn-create {
-  width: 80px;
-  height: 36px;
-  background-color: #2333cf;
-  color: #ffffff;
-  border: none;
-  border-radius: 6px;
-  font-size: 13px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.1s ease;
   display: flex;
   align-items: center;
   justify-content: center;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.1s ease;
 }
 
 .btn-create:hover {
@@ -272,4 +246,3 @@ input[type="time"] {
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
   background-color: #141d82;
 }
-

@@ -11,17 +11,20 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
+    margin: 0;
 }
 
-/* จำลองหน้าจอมือถือ */
+/* ปรับจำลองหน้าจอมือถือให้ Responsive และยืดหยุ่นขึ้น */
 .mobile-container {
-    width: 360px;
-    height: 800px;
+    width: 100%;                  
+    max-width: 430px;             
+    height: 100vh;                
+    max-height: 880px;            
     background-color: #ffffff;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    position: relative;
-    overflow-y: auto; /* ให้เลื่อนจอได้ */
+    overflow-y: auto;            
+    border-radius: 0px;          
 }
+
 
 /*Header*/
 .app-header {
