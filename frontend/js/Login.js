@@ -38,7 +38,7 @@ loginForm.addEventListener('submit', async function(event) {
 
         // กรณีสำเร็จ
         alert('เข้าสู่ระบบสำเร็จ!');
-        // window.location.href = '/dashboard.html';
+        window.location.href = '../html/Homepage.html';
 
     } catch (error) {
         // 6. แสดงข้อความแจ้งเตือนเมื่อเกิดข้อผิดพลาด

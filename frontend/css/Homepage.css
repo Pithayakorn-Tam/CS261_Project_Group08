@@ -1,0 +1,279 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Mitr', sans-serif;
+}
+
+body {
+    background-color: #f0f0f0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+}
+
+/* ปรับจำลองหน้าจอมือถือให้ Responsive และยืดหยุ่นขึ้น */
+.mobile-container {
+    width: 100%;                  
+    max-width: 430px;             
+    height: 100vh;                
+    max-height: 880px;            
+    background-color: #ffffff;
+    overflow-y: auto;            
+    border-radius: 0px;          
+}
+
+
+/*Header*/
+.app-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    border-bottom: 1px solid #eaeaea;
+}
+.logo img {
+    height: 24px;
+}
+.header-actions {
+    display: flex;
+    gap: 16px;
+}
+.icon-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+.icon-btn img {
+    width: 24px;
+    height: 24px;
+}
+
+
+/* แบนเนอร์ */
+.recommend-section { 
+    padding: 16px; 
+}
+.recommend-title { 
+    font-size: 24px;
+    color: #2e3bcf; 
+    text-align: center; 
+    margin-bottom: 8px; 
+    font-weight: 800;
+}
+.recommend-title .highlight { 
+    font-size: 40px;
+    color: #f2bc57; 
+}
+.carousel-container { 
+    width: 100%; 
+    border-radius: 12px; 
+    border: 1px solid #2e3bcf;
+    overflow: hidden; 
+    position: relative;
+}
+.carousel-slide { 
+    display: flex; 
+    transition: transform 0.5s ease-in-out; 
+}
+.carousel-item { 
+    min-width: 100%; 
+    height: 120px; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+}
+.carousel-dots { 
+    text-align: center; 
+    margin-top: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px; 
+}
+/* จุดสถานะปกติ (สั้น) */
+.dot { 
+    height: 6px; 
+    width: 14px; 
+    background-color: #ccc; 
+    border-radius: 4px; 
+    display: inline-block; 
+    transition: width 0.3s ease, background-color 0.3s ease; 
+}
+/* จุดสถานะที่ถูกเลือก (ยาว) */
+.dot.active { 
+    width: 24px;
+    background-color: #2e3bcf;
+}
+
+
+/* ส่วนปุ่มสร้างกิจกรรม */
+.create-event-section { 
+    padding: 16px; 
+}
+.create-btn { 
+    width: 100%; 
+    background-color: #3b42d0;
+    color: white; 
+    border: none; 
+    border-radius: 8px; 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    padding: 6px 12px;
+    cursor: pointer; 
+}
+.create-text { 
+    display: flex; 
+    flex-direction: column; 
+    text-align: left; 
+    font-size: 16px;
+    font-weight: 500; 
+    margin-left: 8px; /* ขยับข้อความทั้งหมดออกห่างจากขอบซ้ายนิดนึง */
+}
+.create-text .eng {
+    letter-spacing: 0.5px;
+}
+.create-text .th { 
+    margin-left: 22px; /*ดันข้อความ*/
+}
+.create-icon { 
+    background-color: white; 
+    color: #3b42d0; 
+    font-size: 36px;
+    font-weight: bold; 
+    width: 48px;
+    height: 40px;
+    border-radius: 8px; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    line-height: 1;
+}
+
+/* ส่วน Feed Header */
+.feed-header-section { 
+    padding: 16px 16px 8px 16px; 
+    margin-bottom: 12px;
+}
+.feed-title-container {
+    text-align: center; 
+    border-bottom: 3px solid #f2bc57;
+    padding-bottom: 8px;
+    margin-bottom: 12px;
+    font-size: 20px; 
+    font-weight: 800; 
+    display: flex;
+    flex-direction: column;
+}
+.feed-title-th { align-self: flex-start;}
+.feed-title-en { align-self: flex-end;}
+.exclaim-red { 
+    color: #ff6b6b; 
+    font-size: 40px;
+}
+.exclaim-blue { 
+    color: #2e3bcf; 
+    font-size: 40px;
+}
+
+/* ส่วนตัวกรอง (Dropdown) */
+.filter-container { 
+    display: flex; 
+    justify-content: flex-end; 
+    align-items: center; 
+    gap: 8px; 
+}
+
+.filter-label { 
+    font-size: 16px; 
+    text-align: right; 
+    line-height: 1;
+    font-weight: 600;
+}
+
+.filter-dropdown { 
+    border: 1px solid #2e3bcf; 
+    color: #2e3bcf; 
+    border-radius: 8px; 
+    padding: 4px 12px; 
+    font-size: 16px; 
+    font-weight: medium;
+    outline: none; 
+    background-color: white;
+}
+/* ส่วนการ์ดกิจกรรม */
+.event-feed { padding: 0 16px 20px 16px; }
+.event-card { 
+    display: flex; 
+    align-items: center; 
+    border: 1px solid #000; 
+    border-radius: 5px; 
+    padding: 8px; 
+    margin-bottom: 12px; 
+    background-color: white;    
+    font-size: 12px; 
+    font-weight: medium; }
+.event-logo { 
+    width: 50px; 
+    height: 50px;
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    margin-right: 12px; 
+    flex-shrink: 0; 
+    overflow: hidden;}
+.event-logo img { 
+    width: 100%; 
+    height: 100%; 
+    object-fit: contain; }
+.event-info { 
+    flex-grow: 1; 
+    display: flex; 
+    flex-direction: column; 
+    gap: 4px; }
+.event-badge { 
+    background-color: #2e3bcf; 
+    color: white; 
+    padding: 2px 8px; 
+    border-radius: 4px; 
+    align-self: flex-start; }
+.event-time-date { 
+    display: flex; 
+    gap: 8px; }
+.event-location { 
+    font-size: 12px;}
+.event-action { 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    gap: 4px; 
+    margin-left: 8px;}
+.join-btn { 
+    background-color: #2e3bcf; 
+    color: white; 
+    border: none; 
+    border-radius: 8px; 
+    width: 40px; 
+    height: 40px; 
+    font-size: 24px; 
+    font-weight: bold; 
+    cursor: pointer; 
+    line-height: 1;}
+.capacity { 
+    font-size: 10px; 
+    font-weight: medium;}
+.detail-icon {
+    width: 14px; 
+    height: 14px;
+    vertical-align: middle;
+    margin-right: 4px;
+}
+
+
+/* ปุ่มโหลดเพิ่ม */
+.load-more-btn {
+    padding: 16px;
+}
