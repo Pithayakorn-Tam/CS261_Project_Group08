@@ -1,0 +1,49 @@
+
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TU Meet - Join Activity</title>
+
+    <link rel="stylesheet" href="../css/Join.css">
+    <link href="https://fonts.googleapis.com/css2?family=Mitr:wght@300;400;500;600;700&display=swap"
+          rel="stylesheet">
+
+    <script src="Join.js" defer></script>
+</head>
+<body>
+
+ 
+<div id="joinPopup" class="join-popup hidden"
+     role="dialog"
+     aria-modal="true"
+     aria-labelledby="joinPopupTitle"
+     aria-describedby="joinPopupMessage">
+
+    <div class="join-popup-card">
+
+        <h2 id="joinPopupTitle">
+            เข้าร่วมกิจกรรมสำเร็จ
+        </h2>
+
+        <p id="joinPopupMessage">
+            คุณเข้าร่วมกิจกรรมนี้เรียบร้อยแล้ว
+        </p>
+
+        <div id="joinPopupIcon"
+             class="join-popup-icon success"
+             aria-hidden="true">
+        </div>
+
+        <button type="button"
+                id="joinPopupClose"
+                class="join-popup-close">
+            ตกลง
+        </button>
+
+    </div>
+</div>
+
+</body>
+</html>

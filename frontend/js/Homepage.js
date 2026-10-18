@@ -121,3 +121,32 @@ if (createEventBtn) {
         window.location.href = "./CreateEvent.html";
     });
 }
+// ==========================================
+// join popup
+// ==========================================
+async function loadJoinPopup() {
+    const container = document.getElementById('joinPopupContainer');
+
+    try {
+        const response = await fetch('../html/Join.html');
+
+        if (!response.ok) {
+            throw new Error('ไม่สามารถโหลด Join.html ได้');
+        }
+
+        container.innerHTML = await response.text();
+
+        // เริ่มทำงานของ Popup หลังโหลด HTML เสร็จ
+        initJoinPopup();
+    } catch (error) {
+        console.error('โหลด Popup ไม่สำเร็จ:', error);
+    }
+}
+
+function initJoinPopup() {
+    // ผูกปุ่มเข้าร่วมกิจกรรม
+    // แสดง Popup เมื่อเข้าร่วมสำเร็จหรือไม่สำเร็จ
+    // ปิด Popup เมื่อกดปุ่มตกลง
+}
+
+loadJoinPopup();
