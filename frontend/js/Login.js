@@ -6,8 +6,8 @@ loginForm.addEventListener('submit', async function(event) {
     event.preventDefault();
 
     // 2. ดึงค่าจากฟอร์ม
-    const username = document.getElementById('username').value;
-    const password = document.getElementById('password').value;
+    const email = document.getElementById('email').value;
+    const studentId = document.getElementById('studentId').value;
     const submitBtn = document.getElementById('submitBtn');
     const errorBox = document.getElementById('errorBox');
 
@@ -18,14 +18,14 @@ loginForm.addEventListener('submit', async function(event) {
 
     try {
         // 4. ส่งข้อมูลไปยัง Backend 
-        const response = await fetch('/api/login', {
+        const response = await fetch('http://localhost:8080/api/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                username: username,
-                password: password
+                email: email,
+                studentId: studentId
             })
         });
 
@@ -33,7 +33,7 @@ loginForm.addEventListener('submit', async function(event) {
 
         // 5. ตรวจสอบสถานะการตอบกลับ
         if (!response.ok) {
-            throw new Error(data.message || 'รหัสนักศึกษาหรือรหัสผ่านไม่ถูกต้อง');
+            throw new Error(data.message || 'อีเมลหรือรหัสนักศึกษาไม่ถูกต้อง');
         }
 
         // กรณีสำเร็จ
@@ -52,21 +52,21 @@ loginForm.addEventListener('submit', async function(event) {
     
 });
 // ดึง element ของช่องกรอกข้อมูล
-const usernameInput = document.getElementById('username');
-const passwordInput = document.getElementById('password');
+const emailInput = document.getElementById('email');
+const studentIdInput = document.getElementById('studentId');
 
-// เปลี่ยนข้อความเตือนเมื่อไม่ได้กรอก Username
-usernameInput.oninvalid = function(event) {
-    event.target.setCustomValidity('กรุณากรอกรหัสนักศึกษา');
+// เปลี่ยนข้อความเตือนเมื่อไม่ได้กรอก Email
+emailInput.oninvalid = function(event) {
+    event.target.setCustomValidity('กรุณากรอกอีเมลมหาวิทยาลัย');
 };
-usernameInput.oninput = function(event) {
+emailInput.oninput = function(event) {
     event.target.setCustomValidity(''); // ล้างข้อความเตือนเมื่อผู้ใช้เริ่มพิมพ์
 };
 
-// เปลี่ยนข้อความเตือนเมื่อไม่ได้กรอก Password
-passwordInput.oninvalid = function(event) {
-    event.target.setCustomValidity('กรุณากรอกรหัสผ่าน');
+// เปลี่ยนข้อความเตือนเมื่อไม่ได้กรอก Student ID
+studentIdInput.oninvalid = function(event) {
+    event.target.setCustomValidity('กรุณากรอกรหัสนักศึกษา');
 };
-passwordInput.oninput = function(event) {
+studentIdInput.oninput = function(event) {
     event.target.setCustomValidity(''); // ล้างข้อความเตือนเมื่อผู้ใช้เริ่มพิมพ์
 };
