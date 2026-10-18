@@ -8,6 +8,7 @@ eventForm.addEventListener('submit', async function(event) {
     // 2. ดึงค่าจากฟอร์ม
     const eventType = document.getElementById('eventType').value;
     const eventName = document.getElementById('eventName').value.trim();
+    const eventLocation = document.getElementById('eventLocation').value.trim();
     const eventSize = document.getElementById('eventSize').value;
     const eventDate = document.getElementById('eventDate').value;
     const eventTime = document.getElementById('eventTime').value;
@@ -35,6 +36,7 @@ eventForm.addEventListener('submit', async function(event) {
             body: JSON.stringify({
                 eventType: eventType,
                 eventName: eventName,
+                eventLocation: eventLocation,
                 eventSize: parseInt(eventSize, 10),
                 eventDate: eventDate,
                 eventTime: eventTime
@@ -71,6 +73,7 @@ eventForm.addEventListener('submit', async function(event) {
 // ดึง element ของช่องกรอกข้อมูล เพื่อตั้งค่า Custom Validity (เหมือนโค้ดของเพื่อน)
 const eventTypeInput = document.getElementById('eventType');
 const eventNameInput = document.getElementById('eventName');
+const eventLocationInput = document.getElementById('eventLocation');
 const eventSizeInput = document.getElementById('eventSize');
 const eventDateInput = document.getElementById('eventDate');
 const eventTimeInput = document.getElementById('eventTime');
@@ -87,6 +90,13 @@ eventNameInput.oninvalid = function(event) {
     event.target.setCustomValidity('กรุณากรอกชื่อกิจกรรม');
 };
 eventNameInput.oninput = function(event) {
+    event.target.setCustomValidity('');
+};
+
+eventLocationInput.oninvalid = function(event) {
+    event.target.setCustomValidity('กรุณากรอกสถานที่จัดกิจกรรม');
+};
+eventLocationInput.oninput = function(event) {
     event.target.setCustomValidity('');
 };
 
