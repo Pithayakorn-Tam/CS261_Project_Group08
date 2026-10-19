@@ -8,13 +8,13 @@ eventForm.addEventListener('submit', async function(event) {
     // 2. ดึงค่าจากฟอร์ม
     const eventType = document.getElementById('eventType').value;
     const eventName = document.getElementById('eventName').value.trim();
-    const eventLocation = document.getElementById('eventLocation').value.trim();
+    const eventLocationElem = document.getElementById('eventLocation');
+    const eventLocation = eventLocationElem ? eventLocationElem.value.trim() : null;
     const eventSize = document.getElementById('eventSize').value;
     const eventDate = document.getElementById('eventDate').value;
     const eventTime = document.getElementById('eventTime').value;
 
     const submitBtn = document.querySelector('.btn-create');
-    // สมมติว่าใน HTML หน้า Create Event มี <div id="errorBox" class="hidden"></div> สำหรับแสดงข้อความเตือน
     const errorBox = document.getElementById('errorBox'); 
 
     // 3. เตรียมสถานะระหว่างรอข้อมูลจาก Backend
@@ -22,24 +22,35 @@ eventForm.addEventListener('submit', async function(event) {
     submitBtn.disabled = true;
     submitBtn.textContent = 'CREATING...';
 
-    // 4. ดึง Token ยืนยันตัวตน (ที่บันทึกไว้หลังจาก Login สำเร็จ)
-    const token = localStorage.getItem('token');
+    // 4. ดึงข้อมูลผู้ใช้ (ที่บันทึกไว้หลังจาก Login หรือใช้ Mock Student ID: 6800000001)
+    let creatorStudentId = '6800000001';
+    try {
+        const storedLogin = JSON.parse(localStorage.getItem('loginData') || '{}');
+        if (storedLogin.studentId) {
+            creatorStudentId = storedLogin.studentId;
+        } else if (localStorage.getItem('studentId')) {
+            creatorStudentId = localStorage.getItem('studentId');
+        }
+    } catch (e) {
+        console.warn('Cannot read login data, using default creator:', e);
+    }
 
     try {
         // 5. ส่งข้อมูลไปยัง Backend
-        const response = await fetch('http://localhost:8080/api/login', { 
+        const response = await fetch('http://localhost:8080/api/events', { 
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
-                'Authorization': token ? `Bearer ${token}` : '' // แนบ Token ไปยืนยันตัวตน
+                'Content-Type': 'application/json'
             },
             body: JSON.stringify({
                 eventType: eventType,
                 eventName: eventName,
+                location: eventLocation,
                 eventLocation: eventLocation,
                 eventSize: parseInt(eventSize, 10),
                 eventDate: eventDate,
-                eventTime: eventTime
+                eventTime: eventTime,
+                creatorStudentId: creatorStudentId
             })
         });
 
@@ -52,8 +63,8 @@ eventForm.addEventListener('submit', async function(event) {
 
         // กรณีสำเร็จ
         alert('สร้างกิจกรรมสำเร็จ!');
-        eventForm.reset(); // ล้างข้อมูลในฟอร์ม
-        // window.location.href = '/dashboard.html'; // พากลับหน้า Dashboard หรือตามที่ตกลงกันไว้
+        eventForm.reset();
+        window.location.href = './Homepage.html';
 
     } catch (error) {
         // 7. แสดงข้อความแจ้งเตือนเมื่อเกิดข้อผิดพลาด
@@ -70,7 +81,7 @@ eventForm.addEventListener('submit', async function(event) {
     }
 });
 
-// ดึง element ของช่องกรอกข้อมูล เพื่อตั้งค่า Custom Validity (เหมือนโค้ดของเพื่อน)
+// ดึง element ของช่องกรอกข้อมูล เพื่อตั้งค่า Custom Validity
 const eventTypeInput = document.getElementById('eventType');
 const eventNameInput = document.getElementById('eventName');
 const eventLocationInput = document.getElementById('eventLocation');
@@ -93,12 +104,14 @@ eventNameInput.oninput = function(event) {
     event.target.setCustomValidity('');
 };
 
-eventLocationInput.oninvalid = function(event) {
-    event.target.setCustomValidity('กรุณากรอกสถานที่จัดกิจกรรม');
-};
-eventLocationInput.oninput = function(event) {
-    event.target.setCustomValidity('');
-};
+if (eventLocationInput) {
+    eventLocationInput.oninvalid = function(event) {
+        event.target.setCustomValidity('กรุณากรอกสถานที่จัดกิจกรรม');
+    };
+    eventLocationInput.oninput = function(event) {
+        event.target.setCustomValidity('');
+    };
+}
 
 eventSizeInput.oninvalid = function(event) {
     event.target.setCustomValidity('กรุณาระบุจำนวนคน');
