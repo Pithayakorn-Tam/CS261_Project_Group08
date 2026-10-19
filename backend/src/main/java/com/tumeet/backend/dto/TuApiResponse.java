@@ -1,21 +1,23 @@
 package com.tumeet.backend.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class TuApiResponse {
 
-    private long timestamp;
     private boolean status;
     private String message;
-    private StudentData data;
+    private String type;
+    private String username;
+    private String tu_status;
+    private String statusid;
+    private String displayname_th;
+    private String displayname_en;
+    private String email;
+    private String department;
+    private String faculty;
 
     public TuApiResponse() {
-    }
-
-    public long getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(long timestamp) {
-        this.timestamp = timestamp;
     }
 
     public boolean isStatus() {
@@ -34,98 +36,75 @@ public class TuApiResponse {
         this.message = message;
     }
 
-    public StudentData getData() {
-        return data;
+    public String getType() {
+        return type;
     }
 
-    public void setData(StudentData data) {
-        this.data = data;
+    public void setType(String type) {
+        this.type = type;
     }
 
-    public static class StudentData {
-        private String type;
-        private String statusname;
-        private String userName;
-        private String prefixname;
-        private String displayname_th;
-        private String displayname_en;
-        private String email;
-        private String faculty;
-        private String department;
+    public String getUsername() {
+        return username;
+    }
 
-        public StudentData() {
-        }
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
-        public String getType() {
-            return type;
-        }
+    public String getTu_status() {
+        return tu_status;
+    }
 
-        public void setType(String type) {
-            this.type = type;
-        }
+    public void setTu_status(String tu_status) {
+        this.tu_status = tu_status;
+    }
 
-        public String getStatusname() {
-            return statusname;
-        }
+    public String getStatusid() {
+        return statusid;
+    }
 
-        public void setStatusname(String statusname) {
-            this.statusname = statusname;
-        }
+    public void setStatusid(String statusid) {
+        this.statusid = statusid;
+    }
 
-        public String getUserName() {
-            return userName;
-        }
+    public String getDisplayname_th() {
+        return displayname_th;
+    }
 
-        public void setUserName(String userName) {
-            this.userName = userName;
-        }
+    public void setDisplayname_th(String displayname_th) {
+        this.displayname_th = displayname_th;
+    }
 
-        public String getPrefixname() {
-            return prefixname;
-        }
+    public String getDisplayname_en() {
+        return displayname_en;
+    }
 
-        public void setPrefixname(String prefixname) {
-            this.prefixname = prefixname;
-        }
+    public void setDisplayname_en(String displayname_en) {
+        this.displayname_en = displayname_en;
+    }
 
-        public String getDisplayname_th() {
-            return displayname_th;
-        }
+    public String getEmail() {
+        return email;
+    }
 
-        public void setDisplayname_th(String displayname_th) {
-            this.displayname_th = displayname_th;
-        }
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
-        public String getDisplayname_en() {
-            return displayname_en;
-        }
+    public String getDepartment() {
+        return department;
+    }
 
-        public void setDisplayname_en(String displayname_en) {
-            this.displayname_en = displayname_en;
-        }
+    public void setDepartment(String department) {
+        this.department = department;
+    }
 
-        public String getEmail() {
-            return email;
-        }
+    public String getFaculty() {
+        return faculty;
+    }
 
-        public void setEmail(String email) {
-            this.email = email;
-        }
-
-        public String getFaculty() {
-            return faculty;
-        }
-
-        public void setFaculty(String faculty) {
-            this.faculty = faculty;
-        }
-
-        public String getDepartment() {
-            return department;
-        }
-
-        public void setDepartment(String department) {
-            this.department = department;
-        }
+    public void setFaculty(String faculty) {
+        this.faculty = faculty;
     }
 }

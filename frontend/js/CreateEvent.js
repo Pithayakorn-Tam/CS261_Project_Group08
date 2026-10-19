@@ -22,8 +22,8 @@ eventForm.addEventListener('submit', async function(event) {
     submitBtn.disabled = true;
     submitBtn.textContent = 'CREATING...';
 
-    // 4. ดึงข้อมูลผู้ใช้ (ที่บันทึกไว้หลังจาก Login หรือใช้ Mock Student ID: 6800000001)
-    let creatorStudentId = '6800000001';
+    // 4. ดึงข้อมูลผู้ใช้ (ที่บันทึกไว้หลังจาก Login หรือใช้ Mock Student ID: 6800000000)
+    let creatorStudentId = '6800000000';
     try {
         const storedLogin = JSON.parse(localStorage.getItem('loginData') || '{}');
         if (storedLogin.studentId) {

@@ -7,12 +7,16 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "events")
@@ -53,6 +57,14 @@ public class Event {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "creator_id", nullable = false)
     private User creator;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "event_participants",
+            joinColumns = @JoinColumn(name = "event_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private Set<User> participants = new HashSet<>();
 
     public Event() {
     }
@@ -182,5 +194,25 @@ public class Event {
 
     public void setCreator(User creator) {
         this.creator = creator;
+    }
+
+    public Set<User> getParticipants() {
+        return participants;
+    }
+
+    public void setParticipants(Set<User> participants) {
+        this.participants = participants != null ? participants : new HashSet<>();
+    }
+
+    public void addParticipant(User user) {
+        if (user != null && this.participants.add(user)) {
+            this.currentParticipants = this.participants.size();
+        }
+    }
+
+    public void removeParticipant(User user) {
+        if (user != null && this.participants.remove(user)) {
+            this.currentParticipants = this.participants.size();
+        }
     }
 }

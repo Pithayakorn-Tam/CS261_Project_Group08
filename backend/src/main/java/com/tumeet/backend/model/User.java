@@ -24,6 +24,12 @@ public class User {
     @Column(length = 50)
     private String type;
 
+    @Column(name = "tu_status", length = 50)
+    private String tu_status;
+
+    @Column(name = "statusid", length = 20)
+    private String statusid;
+
     @Column(length = 50)
     private String statusname;
 
@@ -45,11 +51,28 @@ public class User {
     public User() {
     }
 
-    public User(String studentId, String email, String type, String statusname, String prefixname,
+    public User(String studentId, String email, String type, String tu_status, String statusid,
                 String displayname_th, String displayname_en, String faculty, String department) {
         this.studentId = studentId;
         this.email = email;
         this.type = type;
+        this.tu_status = tu_status;
+        this.statusid = statusid;
+        this.statusname = tu_status;
+        this.displayname_th = displayname_th;
+        this.displayname_en = displayname_en;
+        this.faculty = faculty;
+        this.department = department;
+    }
+
+    public User(String studentId, String email, String type, String tu_status, String statusid,
+                String statusname, String prefixname, String displayname_th, String displayname_en,
+                String faculty, String department) {
+        this.studentId = studentId;
+        this.email = email;
+        this.type = type;
+        this.tu_status = tu_status;
+        this.statusid = statusid;
         this.statusname = statusname;
         this.prefixname = prefixname;
         this.displayname_th = displayname_th;
@@ -88,6 +111,22 @@ public class User {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getTu_status() {
+        return tu_status;
+    }
+
+    public void setTu_status(String tu_status) {
+        this.tu_status = tu_status;
+    }
+
+    public String getStatusid() {
+        return statusid;
+    }
+
+    public void setStatusid(String statusid) {
+        this.statusid = statusid;
     }
 
     public String getStatusname() {
