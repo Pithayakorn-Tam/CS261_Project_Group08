@@ -7,15 +7,15 @@
   <link rel="stylesheet" href="../css/Profile.css">
 </head>
 <body>
-  
+
   <div class="app-container">
 
-    <!-- Header (คงความสูงมาตรฐาน 48px ไว้เท่าเดิม) -->
+    <!-- Header -->
     <header class="header">
       <div class="logo-TUmeet">
-         <a href="./Homepage.html" aria-label="กลับไปหน้า Home">
-                    <img src="../Picture/LogoTUmeet.svg" alt="Logo TUmeet" class="icon-logo">
-                </a>
+        <a href="./Homepage.html" aria-label="กลับไปหน้า Home">
+          <img src="../Picture/LogoTUmeet.svg" alt="Logo TUmeet" class="icon-logo">
+        </a>
       </div>
       <div class="header-action">
         <button type="button" class="icon-btn" aria-label="Notification">
@@ -23,18 +23,17 @@
         </button>
         <button type="button" class="icon-btn" aria-label="Profile">
           <a href="Profile.html" aria-label="ไปหน้า Profile">
-                     <img src="../Picture/profile.svg" alt="Profile" class="profile-img">
-                </a>  
+            <img src="../Picture/profile.svg" alt="Profile" class="profile-img">
+          </a>  
         </button>
       </div>
     </header>
 
-    <!-- พื้นที่เนื้อหาหลัก (Main Container) -->
+    <!-- พื้นที่เนื้อหาหลัก -->
     <main class="main-content">
 
       <!-- Profile Section -->
       <div class="profile-section">
-        <!-- รูปโปรไฟล์ + ปุ่มแก้ไขเลือกรูป -->
         <div class="avatar-container">
           <div class="avatar-wrapper" id="avatarWrapper">
             <img src="../Picture/profile-img.svg" alt="Profile Picture" class="avatar-img" id="avatarImg">
@@ -43,9 +42,7 @@
           </div>
         </div>
 
-        <!-- ข้อมูลผู้ใช้ -->
         <form class="info-container" id="profileForm" onsubmit="return false;">
-          <!-- Username -->
           <div class="input-group">
             <label class="input-label">Username</label>
             <div class="input-box username-display-box" id="usernameDisplayBox">
@@ -58,13 +55,11 @@
             </div>
           </div>
 
-          <!-- Student ID -->
           <div class="input-group">
             <label class="input-label">Student ID</label>
             <div class="input-box bold-text" id="studentIdDisplay">6800000000</div>
           </div>
 
-          <!-- Student E-mail -->
           <div class="input-group">
             <label class="input-label">Student E-mail</label>
             <div class="input-box bold-text email-box" id="emailDisplay">abcd@dome.tu.ac.th</div>
@@ -75,122 +70,33 @@
       <!-- ส่วนกิจกรรม: ที่คุณสร้าง/เข้าร่วม -->
       <div class="activity-section">
         <h3 class="section-title">ที่คุณสร้าง/เข้าร่วม</h3>
-        <div class="event-list">
-          <!-- การ์ดที่ 1: บอร์ดเกม -->
-          <div class="event-card">
-            <div class="event-logo">
-              <img src="../Picture/EntertainmentAcivityLogo.svg" alt="Entertainment Logo">
-            </div>
-            <div class="event-info">
-              <div class="event-badge">บอร์ดเกม</div>
-              <div class="event-time-date">
-                <span><img src="../Picture/TimeIcon.svg" class="detail-icon" alt="Time"> 12.00</span>
-                <span><img src="../Picture/CalendarIcon.svg" class="detail-icon" alt="Calendar"> 10 OCT 2026</span>
-              </div>
-              <div class="event-location">
-                <img src="../Picture/LocationIcon.svg" class="detail-icon" alt="Location"> Tsuki cafe, เชียงราก 2
-              </div>
-            </div>
-            <div class="event-action">
-              <button class="join-btn">+</button>
-              <div class="capacity">1/6</div>
-            </div>
-          </div>
-
-          <!-- การ์ดที่ 2: ตีแบตมินตัน-->
-          <div class="event-card">
-            <div class="event-logo">
-              <img src="../Picture/HealthActivityLogo.svg" alt="Lifestyle Logo">
-            </div>
-            <div class="event-info">
-              <div class="event-badge">ตีแบตมินตัน</div>
-              <div class="event-time-date">
-                <span><img src="../Picture/TimeIcon.svg" class="detail-icon" alt="Time"> 19.00</span>
-                <span><img src="../Picture/CalendarIcon.svg" class="detail-icon" alt="Calendar"> Sat, 10 Oct</span>
-              </div>
-              <div class="event-location">
-                <img src="../Picture/LocationIcon.svg" class="detail-icon" alt="Location"> ยิม มธ.
-              </div>
-            </div>
-            <div class="event-action">
-              <button class="join-btn">+</button>
-              <div class="capacity">2/6</div>
-            </div>
-          </div>
+        <div class="event-list" id="activeEventsList">
+          <!-- การ์ดกิจกรรมปัจจุบันจะถูกสร้างด้วย JS มาใส่ตรงนี้ -->
         </div>
       </div>
 
       <!-- ส่วนกิจกรรม: ที่เคยสร้าง/เข้าร่วม -->
       <div class="activity-section">
         <h3 class="section-title">ที่เคยสร้าง/เข้าร่วม</h3>
-        <div class="event-list">
-          <!-- การ์ดที่ 3: -->
-          <div class="event-card">
-            <div class="event-logo">
-              <img src="../Picture/AcademicActivityLogo.svg" alt="Lifestyle Logo">
-            </div>
-            <div class="event-info">
-              <div class="event-badge">อ่านหนังสือ</div>
-              <div class="event-time-date">
-                <span><img src="../Picture/TimeIcon.svg" class="detail-icon" alt="Time"> 19.00</span>
-                <span><img src="../Picture/CalendarIcon.svg" class="detail-icon" alt="Calendar"> 7 OCT 2026</span>
-              </div>
-              <div class="event-location">
-                <img src="../Picture/LocationIcon.svg" class="detail-icon" alt="Location"> ห้องสมุดป๋วย
-              </div>
-            </div>
-            <div class="event-action">
-              <button class="join-btn">+</button>
-              <div class="capacity">5/6</div>
-            </div>
-          </div>
-
-          <!-- การ์ดที่ 4: ตี๋น้อย (8 OCT 2026) -->
-          <div class="event-card">
-            <div class="event-logo">
-              <img src="../Picture/LifestyleActivityLogo.svg" alt="Lifestyle Logo">
-            </div>
-            <div class="event-info">
-              <div class="event-badge">ตี๋น้อย</div>
-              <div class="event-time-date">
-                <span><img src="../Picture/TimeIcon.svg" class="detail-icon" alt="Time"> 19.00</span>
-                <span><img src="../Picture/CalendarIcon.svg" class="detail-icon" alt="Calendar"> 8 OCT 2026</span>
-              </div>
-              <div class="event-location">
-                <img src="../Picture/LocationIcon.svg" class="detail-icon" alt="Location"> Mingle, ม.กรุงเทพ
-              </div>
-            </div>
-            <div class="event-action">
-              <button class="join-btn">+</button>
-              <div class="capacity">6/6</div>
-            </div>
-          </div>
-
-          <!-- การ์ดที่ 5: ตี๋น้อย (9 OCT 2026) -->
-          <div class="event-card">
-            <div class="event-logo">
-              <img src="../Picture/LifestyleActivityLogo.svg" alt="Lifestyle Logo">
-            </div>
-            <div class="event-info">
-              <div class="event-badge">ตี๋น้อย</div>
-              <div class="event-time-date">
-                <span><img src="../Picture/TimeIcon.svg" class="detail-icon" alt="Time"> 19.00</span>
-                <span><img src="../Picture/CalendarIcon.svg" class="detail-icon" alt="Calendar"> 9 OCT 2026</span>
-              </div>
-              <div class="event-location">
-                <img src="../Picture/LocationIcon.svg" class="detail-icon" alt="Location"> Mingle, ม.กรุงเทพ
-              </div>
-            </div>
-            <div class="event-action">
-              <button class="join-btn">+</button>
-              <div class="capacity">4/6</div>
-            </div>
-          </div>
+        <div class="event-list" id="pastEventsList">
+          <!-- การ์ดกิจกรรมในอดีตจะถูกสร้างด้วย JS มาใส่ตรงนี้ -->
         </div>
       </div>
 
     </main>
 
+  </div>
+
+  <!-- Modal ยืนยันการยกเลิกการเข้าร่วมกิจกรรม -->
+  <div class="modal-overlay" id="cancelModal" style="display: none;">
+    <div class="modal-box">
+      <h3 class="modal-title">ยกเลิกการเข้าร่วมกิจกรรม</h3>
+      <p class="modal-desc">ท่านยืนยันที่จะยกเลิกการเข้าร่วมกิจกรรมหรือไม่</p>
+      <div class="modal-actions">
+        <button type="button" class="modal-btn confirm-btn" id="confirmCancelBtn">ยืนยัน</button>
+        <button type="button" class="modal-btn dismiss-btn" id="dismissCancelBtn">ยกเลิก</button>
+      </div>
+    </div>
   </div>
 
   <script src="../js/Profile.js"></script>

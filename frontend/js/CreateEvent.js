@@ -22,24 +22,35 @@ eventForm.addEventListener('submit', async function(event) {
     submitBtn.disabled = true;
     submitBtn.textContent = 'CREATING...';
 
-    // 4. ดึง Token ยืนยันตัวตน (ที่บันทึกไว้หลังจาก Login สำเร็จ)
-    const token = localStorage.getItem('token');
+    // 4. ดึงข้อมูลผู้ใช้ (ที่บันทึกไว้หลังจาก Login หรือใช้ Mock Student ID: 6800000000)
+    let creatorStudentId = '6800000000';
+    try {
+        const storedLogin = JSON.parse(localStorage.getItem('loginData') || '{}');
+        if (storedLogin.studentId) {
+            creatorStudentId = storedLogin.studentId;
+        } else if (localStorage.getItem('studentId')) {
+            creatorStudentId = localStorage.getItem('studentId');
+        }
+    } catch (e) {
+        console.warn('Cannot read login data, using default creator:', e);
+    }
 
     try {
         // 5. ส่งข้อมูลไปยัง Backend
-        const response = await fetch('http://localhost:8080/api/login', { 
+        const response = await fetch('http://localhost:8080/api/events', { 
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
-                'Authorization': token ? `Bearer ${token}` : '' // แนบ Token ไปยืนยันตัวตน
+                'Content-Type': 'application/json'
             },
             body: JSON.stringify({
                 eventType: eventType,
                 eventName: eventName,
+                location: eventLocation,
                 eventLocation: eventLocation,
                 eventSize: parseInt(eventSize, 10),
                 eventDate: eventDate,
-                eventTime: eventTime
+                eventTime: eventTime,
+                creatorStudentId: creatorStudentId
             })
         });
 

@@ -17,8 +17,8 @@ public class DataInitializer {
     @Bean
     public CommandLineRunner seedInitialData(UserRepository userRepository, EventRepository eventRepository) {
         return args -> {
-            // 1. Seed 10 mock users (6800000001 - 6800000010)
-            for (int i = 1; i <= 10; i++) {
+            // 1. Seed 10 mock users (6800000000 - 6800000009)
+            for (int i = 0; i <= 9; i++) {
                 String indexStr = String.format("%02d", i);
                 String studentId = String.format("68000000%02d", i);
 
@@ -33,6 +33,8 @@ public class DataInitializer {
                             email,
                             "student",
                             "ปกติ",
+                            "10",
+                            "ปกติ",
                             prefix,
                             displayNameTh,
                             displayNameEn,
@@ -44,9 +46,14 @@ public class DataInitializer {
                 }
             }
 
+            // Remove legacy mock user 6800000010 if exists
+            userRepository.findByStudentId("6800000010").ifPresent(userRepository::delete);
+
             // 2. Seed 4 default events if no events exist yet
             if (eventRepository.count() == 0) {
-                User defaultCreator = userRepository.findByStudentId("6800000001").orElse(null);
+                User defaultCreator = userRepository.findByStudentId("6800000000")
+                        .or(() -> userRepository.findByStudentId("6800000001"))
+                        .orElse(null);
                 if (defaultCreator != null) {
                     Event e1 = new Event("ตี๋น้อย", "food", "Mingle, ม.กรุงเทพ", 6, LocalDate.of(2026, 10, 10), "19.00", defaultCreator);
                     e1.setCurrentParticipants(0);

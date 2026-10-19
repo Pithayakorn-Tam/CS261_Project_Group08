@@ -39,3 +39,8 @@ buildNumber.properties
 ehthumbs.db
 Thumbs.db
 
+# Local env & Ngrok binaries
+.env
+*.env
+ngrok.exe
+ngrok.zip

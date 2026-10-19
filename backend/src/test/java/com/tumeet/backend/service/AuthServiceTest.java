@@ -32,54 +32,65 @@ class AuthServiceTest {
     void setUp() {
         mockUser = new User();
         mockUser.setId(1L);
-        mockUser.setStudentId("6800000001");
-        mockUser.setEmail("mock01@dome.tu.ac.th");
+        mockUser.setStudentId("6800000000");
+        mockUser.setEmail("mock00@dome.tu.ac.th");
+        mockUser.setDisplayname_th("นักศึกษาจำลอง ทดสอบ00");
     }
 
     @Test
-    @DisplayName("เข้าสู่ระบบสำเร็จเมื่อข้อมูลรหัสนักศึกษาและอีเมลตรงกันในฐานข้อมูล")
-    void authenticate_Success() {
-        LoginRequest request = new LoginRequest("mock01@dome.tu.ac.th", "6800000001");
-        when(userRepository.findByStudentId("6800000001")).thenReturn(Optional.of(mockUser));
+    @DisplayName("เข้าสู่ระบบข้อมูลจำลอง 6800000000 สำเร็จเมื่อรหัสผ่านคือ 1111111111111")
+    void authenticate_MockUser_Success() {
+        when(userRepository.findByStudentId("6800000000")).thenReturn(Optional.of(mockUser));
 
+        LoginRequest request = new LoginRequest("6800000000", "1111111111111");
         LoginResponse response = authService.authenticate(request);
 
         assertTrue(response.isStatus());
         assertEquals("Login Success", response.getMessage());
+        assertEquals("6800000000", response.getStudentId());
+        assertEquals("mock00@dome.tu.ac.th", response.getEmail());
+        assertEquals("นักศึกษาจำลอง ทดสอบ00", response.getDisplayname_th());
+
+        // ตรวจสอบว่าค้นหาแค่ใน DB ไม่มีการเรียกต่อ
+        verify(userRepository, times(1)).findByStudentId("6800000000");
     }
 
     @Test
-    @DisplayName("เข้าสู่ระบบล้มเหลวเมื่ออีเมลไม่ตรงกับรหัสนักศึกษาในฐานข้อมูล")
-    void authenticate_EmailMismatch() {
-        LoginRequest request = new LoginRequest("wrong@dome.tu.ac.th", "6800000001");
-        when(userRepository.findByStudentId("6800000001")).thenReturn(Optional.of(mockUser));
-
+    @DisplayName("เข้าสู่ระบบข้อมูลจำลองล้มเหลวทันทีเมื่อรหัสผ่านไม่ใช่ 1111111111111")
+    void authenticate_MockUser_WrongPassword_Fails() {
+        LoginRequest request = new LoginRequest("6800000000", "wrong_password");
         LoginResponse response = authService.authenticate(request);
 
         assertFalse(response.isStatus());
-        assertTrue(response.getMessage().contains("Email does not match"));
+        assertEquals("รหัสนักศึกษาหรือรหัสผ่านไม่ถูกต้อง", response.getMessage());
+
+        // ไม่มีการค้นหา DB หรือเรียก API ภายนอก
+        verify(userRepository, never()).findByStudentId(anyString());
     }
 
     @Test
-    @DisplayName("เข้าสู่ระบบล้มเหลวเมื่อไม่ระบุรหัสนักศึกษาหรืออีเมล")
+    @DisplayName("เข้าสู่ระบบข้อมูลจำลอง 6800000009 สำเร็จเมื่อรหัสผ่านคือ 1111111111111")
+    void authenticate_MockUser_Boundary09_Success() {
+        User mock09 = new User();
+        mock09.setStudentId("6800000009");
+        mock09.setEmail("mock09@dome.tu.ac.th");
+        when(userRepository.findByStudentId("6800000009")).thenReturn(Optional.of(mock09));
+
+        LoginRequest request = new LoginRequest("6800000009", "1111111111111");
+        LoginResponse response = authService.authenticate(request);
+
+        assertTrue(response.isStatus());
+        assertEquals("6800000009", response.getStudentId());
+    }
+
+    @Test
+    @DisplayName("เข้าสู่ระบบล้มเหลวเมื่อไม่ระบุรหัสนักศึกษาหรือเลขบัตรประชาชน")
     void authenticate_MissingFields() {
         LoginRequest request = new LoginRequest("", "");
 
         LoginResponse response = authService.authenticate(request);
 
         assertFalse(response.isStatus());
-        assertTrue(response.getMessage().contains("required"));
-    }
-
-    @Test
-    @DisplayName("เข้าสู่ระบบล้มเหลวเมื่อไม่พบผู้ใช้ในระบบและยังไม่ได้ตั้งค่า TU API Key")
-    void authenticate_UserNotFound_NoApiKey() {
-        LoginRequest request = new LoginRequest("newuser@dome.tu.ac.th", "9999999999");
-        when(userRepository.findByStudentId("9999999999")).thenReturn(Optional.empty());
-
-        LoginResponse response = authService.authenticate(request);
-
-        assertFalse(response.isStatus());
-        assertTrue(response.getMessage().contains("not found"));
+        assertTrue(response.getMessage().contains("กรุณากรอก"));
     }
 }

@@ -118,4 +118,83 @@ public class EventService {
 
         return EventResponse.success("ดึงรายการกิจกรรมของผู้ใช้สำเร็จ", eventDtos);
     }
+
+    @Transactional(readOnly = true)
+    public EventResponse getEventsByParticipant(String studentId) {
+        if (studentId == null || studentId.isBlank()) {
+            return EventResponse.error("กรุณาระบุรหัสนักศึกษา");
+        }
+
+        Optional<User> userOpt = userRepository.findByStudentId(studentId.trim());
+        if (userOpt.isEmpty()) {
+            return EventResponse.error("ไม่พบข้อมูลผู้ใช้สำหรับรหัสนักศึกษา: " + studentId);
+        }
+
+        List<Event> joinedEvents = eventRepository.findByParticipantsContaining(userOpt.get());
+        List<EventDto> eventDtos = joinedEvents.stream()
+                .map(EventDto::fromEntity)
+                .toList();
+
+        return EventResponse.success("ดึงรายการกิจกรรมที่เข้าร่วมสำเร็จ", eventDtos);
+    }
+
+    @Transactional
+    public EventResponse joinEvent(Long eventId, String studentId) {
+        if (eventId == null || studentId == null || studentId.isBlank()) {
+            return EventResponse.error("กรุณาระบุรหัสกิจกรรมและรหัสนักศึกษา");
+        }
+
+        Optional<Event> eventOpt = eventRepository.findById(eventId);
+        if (eventOpt.isEmpty()) {
+            return EventResponse.error("ไม่พบกิจกรรมรหัส: " + eventId);
+        }
+
+        Optional<User> userOpt = userRepository.findByStudentId(studentId.trim());
+        if (userOpt.isEmpty()) {
+            return EventResponse.error("ไม่พบข้อมูลผู้ใช้สำหรับรหัสนักศึกษา: " + studentId);
+        }
+
+        Event event = eventOpt.get();
+        User user = userOpt.get();
+
+        if (event.getParticipants().contains(user)) {
+            return EventResponse.error("คุณได้เข้าร่วมกิจกรรมนี้แล้ว");
+        }
+
+        if (event.getCurrentParticipants() >= event.getEventSize()) {
+            return EventResponse.error("กิจกรรมนี้เต็มแล้ว");
+        }
+
+        event.addParticipant(user);
+        Event saved = eventRepository.save(event);
+        return EventResponse.success("เข้าร่วมกิจกรรมสำเร็จ", EventDto.fromEntity(saved));
+    }
+
+    @Transactional
+    public EventResponse leaveEvent(Long eventId, String studentId) {
+        if (eventId == null || studentId == null || studentId.isBlank()) {
+            return EventResponse.error("กรุณาระบุรหัสกิจกรรมและรหัสนักศึกษา");
+        }
+
+        Optional<Event> eventOpt = eventRepository.findById(eventId);
+        if (eventOpt.isEmpty()) {
+            return EventResponse.error("ไม่พบกิจกรรมรหัส: " + eventId);
+        }
+
+        Optional<User> userOpt = userRepository.findByStudentId(studentId.trim());
+        if (userOpt.isEmpty()) {
+            return EventResponse.error("ไม่พบข้อมูลผู้ใช้สำหรับรหัสนักศึกษา: " + studentId);
+        }
+
+        Event event = eventOpt.get();
+        User user = userOpt.get();
+
+        if (!event.getParticipants().contains(user)) {
+            return EventResponse.error("คุณไม่ได้อยู่ในรายชื่อผู้เข้าร่วมกิจกรรมนี้");
+        }
+
+        event.removeParticipant(user);
+        Event saved = eventRepository.save(event);
+        return EventResponse.success("ยกเลิกการเข้าร่วมกิจกรรมสำเร็จ", EventDto.fromEntity(saved));
+    }
 }
