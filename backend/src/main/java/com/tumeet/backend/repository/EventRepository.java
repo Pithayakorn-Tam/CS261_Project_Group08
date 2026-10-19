@@ -13,4 +13,6 @@ public interface EventRepository extends JpaRepository<Event, Long> {
     List<Event> findByCreator(User creator);
 
     List<Event> findByStatusOrderByEventDateAsc(String status);
+
+    List<Event> findByStatusOrderByIdAsc(String status);
 }

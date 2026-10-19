@@ -76,7 +76,7 @@ public class EventService {
         event.setEventType(request.getEventType().trim());
         event.setLocation(request.getLocation() != null ? request.getLocation().trim() : null);
         event.setEventSize(request.getEventSize());
-        event.setCurrentParticipants(1); // ผู้สร้างนับเป็น 1 คนแรกเสมอ
+        event.setCurrentParticipants(0); // เริ่มต้นที่ 0/eventSize
         event.setEventDate(eventDate);
         event.setEventTime(request.getEventTime().trim());
         event.setStatus("OPEN");
@@ -92,7 +92,7 @@ public class EventService {
 
     @Transactional(readOnly = true)
     public EventResponse getAllOpenEvents() {
-        List<Event> openEvents = eventRepository.findByStatusOrderByEventDateAsc("OPEN");
+        List<Event> openEvents = eventRepository.findByStatusOrderByIdAsc("OPEN");
         List<EventDto> eventDtos = openEvents.stream()
                 .map(EventDto::fromEntity)
                 .toList();

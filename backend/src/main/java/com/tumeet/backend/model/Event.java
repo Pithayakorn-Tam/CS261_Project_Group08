@@ -35,7 +35,7 @@ public class Event {
     private Integer eventSize;
 
     @Column(name = "current_participants", nullable = false)
-    private Integer currentParticipants = 1;
+    private Integer currentParticipants = 0;
 
     @Column(name = "event_date", nullable = false)
     private LocalDate eventDate;
@@ -62,7 +62,7 @@ public class Event {
         this.eventName = eventName;
         this.eventType = eventType;
         this.eventSize = eventSize;
-        this.currentParticipants = 1;
+        this.currentParticipants = 0;
         this.eventDate = eventDate;
         this.eventTime = eventTime;
         this.status = "OPEN";
@@ -75,7 +75,7 @@ public class Event {
         this.eventType = eventType;
         this.location = location;
         this.eventSize = eventSize;
-        this.currentParticipants = 1;
+        this.currentParticipants = 0;
         this.eventDate = eventDate;
         this.eventTime = eventTime;
         this.status = "OPEN";

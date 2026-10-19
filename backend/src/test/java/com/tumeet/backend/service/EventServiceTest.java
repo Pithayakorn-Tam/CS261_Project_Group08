@@ -76,7 +76,7 @@ class EventServiceTest {
         assertEquals("ไปกินตี๋น้อย", dto.getEventName());
         assertEquals("food", dto.getEventType());
         assertEquals(4, dto.getEventSize());
-        assertEquals(1, dto.getCurrentParticipants());
+        assertEquals(0, dto.getCurrentParticipants());
         assertEquals(LocalDate.of(2026, 10, 25), dto.getEventDate());
         assertEquals("18:00", dto.getEventTime());
         assertEquals("OPEN", dto.getStatus());
@@ -135,7 +135,7 @@ class EventServiceTest {
         Event e2 = new Event("ไปกินตี๋น้อย", "food", 4, LocalDate.of(2026, 10, 25), "18:00", mockUser);
         e2.setId(2L);
 
-        when(eventRepository.findByStatusOrderByEventDateAsc("OPEN")).thenReturn(List.of(e1, e2));
+        when(eventRepository.findByStatusOrderByIdAsc("OPEN")).thenReturn(List.of(e1, e2));
 
         EventResponse response = eventService.getAllOpenEvents();
 

@@ -15,7 +15,6 @@ eventForm.addEventListener('submit', async function(event) {
     const eventTime = document.getElementById('eventTime').value;
 
     const submitBtn = document.querySelector('.btn-create');
-    // สมมติว่าใน HTML หน้า Create Event มี <div id="errorBox" class="hidden"></div> สำหรับแสดงข้อความเตือน
     const errorBox = document.getElementById('errorBox'); 
 
     // 3. เตรียมสถานะระหว่างรอข้อมูลจาก Backend
@@ -64,8 +63,8 @@ eventForm.addEventListener('submit', async function(event) {
 
         // กรณีสำเร็จ
         alert('สร้างกิจกรรมสำเร็จ!');
-        eventForm.reset(); // ล้างข้อมูลในฟอร์ม
-        // window.location.href = '/dashboard.html'; // พากลับหน้า Dashboard หรือตามที่ตกลงกันไว้
+        eventForm.reset();
+        window.location.href = './Homepage.html';
 
     } catch (error) {
         // 7. แสดงข้อความแจ้งเตือนเมื่อเกิดข้อผิดพลาด
@@ -82,9 +81,10 @@ eventForm.addEventListener('submit', async function(event) {
     }
 });
 
-// ดึง element ของช่องกรอกข้อมูล เพื่อตั้งค่า Custom Validity (เหมือนโค้ดของเพื่อน)
+// ดึง element ของช่องกรอกข้อมูล เพื่อตั้งค่า Custom Validity
 const eventTypeInput = document.getElementById('eventType');
 const eventNameInput = document.getElementById('eventName');
+const eventLocationInput = document.getElementById('eventLocation');
 const eventSizeInput = document.getElementById('eventSize');
 const eventDateInput = document.getElementById('eventDate');
 const eventTimeInput = document.getElementById('eventTime');
@@ -104,7 +104,6 @@ eventNameInput.oninput = function(event) {
     event.target.setCustomValidity('');
 };
 
-const eventLocationInput = document.getElementById('eventLocation');
 if (eventLocationInput) {
     eventLocationInput.oninvalid = function(event) {
         event.target.setCustomValidity('กรุณากรอกสถานที่จัดกิจกรรม');
