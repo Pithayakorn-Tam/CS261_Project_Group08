@@ -37,11 +37,6 @@ loginForm.addEventListener('submit', async function(event) {
         }
 
         // กรณีสำเร็จ
-        localStorage.setItem('loginData', JSON.stringify({
-            studentId: studentId,
-            email: email
-        }));
-        localStorage.setItem('studentId', studentId);
         alert('เข้าสู่ระบบสำเร็จ!');
         window.location.href = '../html/Homepage.html';
 
