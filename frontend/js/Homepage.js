@@ -81,6 +81,10 @@ if (loadMoreBtn && eventList) {
         newEvents.forEach(event => {
             const newCard = document.createElement('div');
             newCard.className = 'event-card';
+            const capParts = (event.capacity || '0/1').split('/');
+            newCard.dataset.participants = capParts[0] ? capParts[0].trim() : '0';
+            newCard.dataset.capacity = capParts[1] ? capParts[1].trim() : '1';
+            newCard.dataset.open = 'true';
 
             // เช็กโลโก้ตามหมวดหมู่ ถ้าไม่มีให้ใช้ LogoTUmeet
             const logoSrc = categoryLogos[event.category] || categoryLogos['default'];
@@ -136,17 +140,13 @@ async function loadJoinPopup() {
 
         container.innerHTML = await response.text();
 
-        // เริ่มทำงานของ Popup หลังโหลด HTML เสร็จ
-        initJoinPopup();
+        // เริ่มทำงานของ Popup หลังโหลด HTML เสร็จ (ฟังก์ชันถูกประกาศใน Join.js)
+        if (typeof initJoinPopup === 'function') {
+            initJoinPopup();
+        }
     } catch (error) {
         console.error('โหลด Popup ไม่สำเร็จ:', error);
     }
-}
-
-function initJoinPopup() {
-    // ผูกปุ่มเข้าร่วมกิจกรรม
-    // แสดง Popup เมื่อเข้าร่วมสำเร็จหรือไม่สำเร็จ
-    // ปิด Popup เมื่อกดปุ่มตกลง
 }
 
 loadJoinPopup();

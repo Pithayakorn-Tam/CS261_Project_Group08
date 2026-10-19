@@ -31,7 +31,7 @@ public class EventParticipant {
     private User user;
 
     @CreationTimestamp
-    @Column(name = "joined_at", updatable = false)
+    @Column(name = "joined_at", updatable = false, nullable = true)
     private LocalDateTime joinedAt;
 
     public EventParticipant() {}

@@ -247,8 +247,21 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   if (confirmCancelBtn) {
-    confirmCancelBtn.addEventListener("click", () => {
+    confirmCancelBtn.addEventListener("click", async () => {
       if (selectedEventIdToCancel) {
+        try {
+          const storedUserData = JSON.parse(localStorage.getItem("loginData")) || {};
+          if (storedUserData.studentId) {
+            await fetch(`${API_BASE_URL}/events/${selectedEventIdToCancel}/leave`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ studentId: storedUserData.studentId })
+            });
+          }
+        } catch (e) {
+          console.warn("Error calling leave API:", e);
+        }
+
         const index = activeEventsMock.findIndex(item => item.id == selectedEventIdToCancel);
         if (index !== -1) {
           activeEventsMock.splice(index, 1);

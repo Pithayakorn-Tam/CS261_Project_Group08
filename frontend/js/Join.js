@@ -38,7 +38,7 @@ function initJoinPopup() {
     }
 
     // รับการคลิกปุ่ม Join บนหน้า Home
-    document.addEventListener('click', function (event) {
+    document.addEventListener('click', async function (event) {
         const button = event.target.closest('.join-btn');
 
         if (!button || button.disabled) return;
@@ -105,10 +105,35 @@ function initJoinPopup() {
             return;
         }
 
-        /*
-         * จำลองการเข้าร่วมสำเร็จสำหรับทดสอบหน้าเว็บ
-         * ระบบจริงต้องส่งคำขอไป Backend ก่อน
-         */
+        const eventId = card.dataset.eventId;
+        let studentId = '6800000000';
+        try {
+            const storedLogin = JSON.parse(localStorage.getItem('loginData') || '{}');
+            if (storedLogin.studentId) {
+                studentId = storedLogin.studentId;
+            } else if (localStorage.getItem('studentId')) {
+                studentId = localStorage.getItem('studentId');
+            }
+        } catch (e) {
+            console.warn('Cannot read login data:', e);
+        }
+
+        if (eventId) {
+            try {
+                const res = await fetch(`http://localhost:8080/api/events/${eventId}/join`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ studentId: studentId })
+                });
+                const resData = await res.json();
+                if (!res.ok) {
+                    showPopup(false, 'ไม่สามารถเข้าร่วมกิจกรรมได้', resData.message || 'เกิดข้อผิดพลาดในการเข้าร่วมกิจกรรม');
+                    return;
+                }
+            } catch (err) {
+                console.warn('Join API error, falling back to local state:', err);
+            }
+        }
 
         const newParticipants = participants + 1;
         card.dataset.participants = String(newParticipants);
