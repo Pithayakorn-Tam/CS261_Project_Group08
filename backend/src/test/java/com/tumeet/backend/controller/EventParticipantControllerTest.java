@@ -104,6 +104,27 @@ class EventParticipantControllerTest {
     }
 
     @Test
+    @DisplayName("POST /api/events/leave คืนค่า 400 Bad Request เมื่อยกเลิกไม่สำเร็จ")
+    void leaveEvent_ReturnsBadRequest() throws Exception {
+        String requestJson = """
+                {
+                    "eventId": 1,
+                    "studentId": "6800000002"
+                }
+                """;
+
+        when(eventParticipantService.leaveEvent(any(LeaveEventRequest.class)))
+                .thenReturn(new ActionResponse(false, "คุณไม่ได้เป็นผู้เข้าร่วมกิจกรรมนี้"));
+
+        mockMvc.perform(post("/api/events/leave")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestJson))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.status").value(false))
+                .andExpect(jsonPath("$.message").value("คุณไม่ได้เป็นผู้เข้าร่วมกิจกรรมนี้"));
+    }
+
+    @Test
     @DisplayName("GET /api/events/{id}/participants คืนค่า 200 OK")
     void getParticipants_ReturnsOk() throws Exception {
         when(eventParticipantService.getParticipantsByEventId(1L))

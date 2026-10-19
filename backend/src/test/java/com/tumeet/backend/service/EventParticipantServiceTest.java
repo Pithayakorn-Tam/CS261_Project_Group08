@@ -159,4 +159,53 @@ class EventParticipantServiceTest {
         assertEquals(1, result.size());
         assertEquals(participantUser, result.get(0).getUser());
     }
+
+    @Test
+    @DisplayName("เข้าร่วมกิจกรรมล้มเหลวเมื่อข้อมูลคำขอเป็นค่าว่างหรือไม่ถูกต้อง")
+    void joinEvent_InvalidRequest_Fails() {
+        ActionResponse res1 = eventParticipantService.joinEvent(null);
+        assertFalse(res1.isStatus());
+
+        ActionResponse res2 = eventParticipantService.joinEvent(new JoinEventRequest(null, "6800000002"));
+        assertFalse(res2.isStatus());
+
+        ActionResponse res3 = eventParticipantService.joinEvent(new JoinEventRequest(10L, "  "));
+        assertFalse(res3.isStatus());
+    }
+
+    @Test
+    @DisplayName("ยกเลิกการเข้าร่วมกิจกรรมล้มเหลวเมื่อไม่ได้เป็นผู้เข้าร่วม")
+    void leaveEvent_NotJoined_Fails() {
+        LeaveEventRequest request = new LeaveEventRequest(10L, "6800000002");
+
+        when(userRepository.findByStudentId("6800000002")).thenReturn(Optional.of(participantUser));
+        when(eventRepository.findById(10L)).thenReturn(Optional.of(sampleEvent));
+        when(eventParticipantRepository.findByEventIdAndUserStudentId(10L, "6800000002"))
+                .thenReturn(Optional.empty());
+
+        ActionResponse response = eventParticipantService.leaveEvent(request);
+
+        assertFalse(response.isStatus());
+        assertTrue(response.getMessage().contains("คุณไม่ได้เป็นผู้เข้าร่วมกิจกรรมนี้"));
+    }
+
+    @Test
+    @DisplayName("ยกเลิกการเข้าร่วมเมื่อกิจกรรมสถานะ FULL แล้วปรับสถานะกลับเป็น OPEN ได้สำเร็จ")
+    void leaveEvent_RestoresStatusToOpen() {
+        sampleEvent.setCurrentParticipants(4);
+        sampleEvent.setStatus("FULL");
+        LeaveEventRequest request = new LeaveEventRequest(10L, "6800000002");
+        EventParticipant participant = new EventParticipant(sampleEvent, participantUser);
+
+        when(userRepository.findByStudentId("6800000002")).thenReturn(Optional.of(participantUser));
+        when(eventRepository.findById(10L)).thenReturn(Optional.of(sampleEvent));
+        when(eventParticipantRepository.findByEventIdAndUserStudentId(10L, "6800000002"))
+                .thenReturn(Optional.of(participant));
+
+        ActionResponse response = eventParticipantService.leaveEvent(request);
+
+        assertTrue(response.isStatus());
+        assertEquals("OPEN", sampleEvent.getStatus());
+        assertEquals(3, sampleEvent.getCurrentParticipants());
+    }
 }

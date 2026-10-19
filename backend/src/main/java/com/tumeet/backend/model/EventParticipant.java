@@ -1,5 +1,6 @@
 package com.tumeet.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
         @UniqueConstraint(columnNames = {"event_id", "user_id"})
     }
 )
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class EventParticipant {
 
     @Id
@@ -20,10 +22,12 @@ public class EventParticipant {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "event_id", nullable = false)
+    @JsonIgnoreProperties({"participants", "hibernateLazyInitializer", "handler"})
     private Event event;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private User user;
 
     @CreationTimestamp

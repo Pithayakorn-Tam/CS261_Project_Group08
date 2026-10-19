@@ -34,10 +34,16 @@ public class EventParticipantService {
     }
 
     public ActionResponse joinEvent(JoinEventRequest request) {
+        if (request == null || request.getEventId() == null || request.getStudentId() == null || request.getStudentId().isBlank()) {
+            return new ActionResponse(false, "ข้อมูลคำขอไม่ถูกต้อง กรุณาระบุรหัสกิจกรรมและรหัสนักศึกษา");
+        }
+
+        String studentId = request.getStudentId().trim();
+
         // 1. ตรวจสอบข้อมูลผู้ใช้
-        Optional<User> userOptional = userRepository.findByStudentId(request.getStudentId());
+        Optional<User> userOptional = userRepository.findByStudentId(studentId);
         if (userOptional.isEmpty()) {
-            return new ActionResponse(false, "ไม่พบข้อมูลผู้ใช้งานรหัสนักศึกษา: " + request.getStudentId());
+            return new ActionResponse(false, "ไม่พบข้อมูลผู้ใช้งานรหัสนักศึกษา: " + studentId);
         }
         User user = userOptional.get();
 
@@ -79,10 +85,16 @@ public class EventParticipantService {
     }
 
     public ActionResponse leaveEvent(LeaveEventRequest request) {
+        if (request == null || request.getEventId() == null || request.getStudentId() == null || request.getStudentId().isBlank()) {
+            return new ActionResponse(false, "ข้อมูลคำขอไม่ถูกต้อง กรุณาระบุรหัสกิจกรรมและรหัสนักศึกษา");
+        }
+
+        String studentId = request.getStudentId().trim();
+
         // 1. ตรวจสอบข้อมูลผู้ใช้
-        Optional<User> userOptional = userRepository.findByStudentId(request.getStudentId());
+        Optional<User> userOptional = userRepository.findByStudentId(studentId);
         if (userOptional.isEmpty()) {
-            return new ActionResponse(false, "ไม่พบข้อมูลผู้ใช้งานรหัสนักศึกษา: " + request.getStudentId());
+            return new ActionResponse(false, "ไม่พบข้อมูลผู้ใช้งานรหัสนักศึกษา: " + studentId);
         }
         User user = userOptional.get();
 

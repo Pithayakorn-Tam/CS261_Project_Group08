@@ -1,5 +1,6 @@
 package com.tumeet.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -20,6 +21,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "events")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Event {
 
     @Id
@@ -56,6 +58,7 @@ public class Event {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "creator_id", nullable = false)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private User creator;
 
     @ManyToMany(fetch = FetchType.LAZY)
