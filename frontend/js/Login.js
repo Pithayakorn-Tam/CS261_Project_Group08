@@ -36,11 +36,18 @@ loginForm.addEventListener('submit', async function(event) {
             throw new Error(data.message || 'รหัสนักศึกษาหรือเลขบัตรประชาชนไม่ถูกต้อง');
         }
 
-        // กรณีสำเร็จ
+        // กรณีสำเร็จ: บันทึกข้อมูลผู้ใช้จาก Backend ลง localStorage เพื่อให้หน้า Profile และ CreateEvent นำไปใช้ต่อได้ทันที
+        const resolvedStudentId = data.studentId || studentId;
         localStorage.setItem('loginData', JSON.stringify({
-            studentId: studentId
+            studentId: resolvedStudentId,
+            email: data.email || `${resolvedStudentId}@dome.tu.ac.th`,
+            username: data.displayname_th || data.username || resolvedStudentId,
+            displayname_th: data.displayname_th || '',
+            displayname_en: data.displayname_en || '',
+            faculty: data.faculty || '',
+            department: data.department || ''
         }));
-        localStorage.setItem('studentId', studentId);
+        localStorage.setItem('studentId', resolvedStudentId);
         
         alert('เข้าสู่ระบบสำเร็จ!');
         window.location.href = '../html/Homepage.html';

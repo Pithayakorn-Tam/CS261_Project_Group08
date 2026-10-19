@@ -4,6 +4,8 @@ import com.tumeet.backend.model.Event;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class EventDto {
 
@@ -18,6 +20,7 @@ public class EventDto {
     private String status;
     private LocalDateTime createdAt;
     private CreatorDto creator;
+    private List<CreatorDto> participants = new ArrayList<>();
 
     public EventDto() {
     }
@@ -41,6 +44,14 @@ public class EventDto {
 
         if (event.getCreator() != null) {
             dto.setCreator(CreatorDto.fromEntity(event.getCreator()));
+        }
+
+        if (event.getParticipants() != null) {
+            dto.setParticipants(
+                    event.getParticipants().stream()
+                            .map(CreatorDto::fromEntity)
+                            .toList()
+            );
         }
 
         return dto;
@@ -132,5 +143,13 @@ public class EventDto {
 
     public void setCreator(CreatorDto creator) {
         this.creator = creator;
+    }
+
+    public List<CreatorDto> getParticipants() {
+        return participants;
+    }
+
+    public void setParticipants(List<CreatorDto> participants) {
+        this.participants = participants != null ? participants : new ArrayList<>();
     }
 }
