@@ -1,44 +1,165 @@
-"# CS261_Project_Group08" 
+# TU Meet (CS261 Project Group 08)
 
-# TUMeet (CS261 Project Group 08)
+TU Meet คือเว็บแอปพลิเคชันสำหรับการค้นหาเพื่อนร่วมทำกิจกรรมต่าง ๆ ภายในมหาวิทยาลัยธรรมศาสตร์ ออกแบบขึ้นเพื่อให้นักศึกษาสามารถสร้างกิจกรรม, ค้นหากิจกรรมที่สนใจ, กดเข้าร่วมหรือยกเลิกการเข้าร่วม, และจัดการข้อมูลโปรไฟล์ส่วนตัวได้อย่างสะดวก รวดเร็ว และปลอดภัย
 
-TUMeet is a real-time chat application designed with a decoupled architecture, separating the client-side frontend from the server-side backend. The system supports real-time communication using Spring WebSockets, utilizes Microsoft SQL Server as the primary relational database, and is fully containerized using Docker.
+---
 
-## Features
-* **Real-time Messaging:** Instant bidirectional communication powered by Spring WebSocket.
-* **REST API Integration:** Clean API interfaces configured with CORS to facilitate secure communication between the frontend and backend.
-* **Containerized Deployment:** Backend packaged as a WAR file running on Apache Tomcat 10.1 alongside MS SQL Server 2022 within isolated Docker containers.
-* **Decoupled Architecture:** Strict separation of UI client assets and server logic for independent development and deployment workflows.
+## 🏗️ 1. สถาปัตยกรรมและหลักการทำงานของระบบ (System Architecture)
 
-## Project Structure
-The root workspace `CS261_Project_Group08` is structured as follows:
+ระบบ TU Meet พัฒนาด้วยรูปแบบ **Decoupled Architecture** (แยกส่วนการทำงานระหว่าง Client-Side และ Server-Side ออกจากกันอย่างสมบูรณ์) เพื่อความยืดหยุ่นในการพัฒนาและรองรับการขยายตัวในอนาคต
 
-```text
-CS261_Project_Group08/
-├── README.md
-├── .gitignore
-├── frontend/
-│   ├── index.html
-│   ├── css/
-│   │   └── style.css
-│   └── js/
-│       └── api.js
-└── backend/
-    ├── Dockerfile
-    ├── pom.xml
-    ├── mvnw
-    ├── mvnw.cmd
-    ├── .gitattributes
-    └── src/
-        ├── main/
-        │   ├── java/com/tumeet/backend/
-        │   │   ├── BackendApplication.java
-        │   │   ├── ServletInitializer.java
-        │   │   ├── config/
-        │   │   │   └── WebConfig.java
-        │   │   ├── controller/
-        │   │   ├── model/
-        │   │   └── repository/
-        │   └── resources/
-        │       └── application.properties
-        └── test/
+```
++-------------------------------------------------------------+
+|                  Client-Side (Frontend)                     |
+|           HTML5 / CSS3 / Vanilla JavaScript (ES6+)          |
++-------------------------------------------------------------+
+                              |
+                     REST API (HTTP / JSON)
+                              |
++-------------------------------------------------------------+
+|                  Server-Side (Backend)                      |
+|           Spring Boot 4.x / Java 22 / Spring Data JPA       |
++-------------------------------------------------------------+
+                              |
+                       JDBC Connection
+                              |
++-------------------------------------------------------------+
+|                  Database (Containerized)                   |
+|           Microsoft SQL Server 2022 (Docker)                |
++-------------------------------------------------------------+
+```
+
+### หลักการทำงานของฟังก์ชันหลัก:
+
+1. **ระบบยืนยันตัวตน (Authentication Flow):**
+   * **TU REST API v1:** เชื่อมต่อกับระบบยืนยันตัวตนของมหาวิทยาลัยธรรมศาสตร์ (`https://restapi.tu.ac.th/api/v1/auth/Ad/verify`) โดยตรวจสอบ `UserName` (รหัสนักศึกษา) และ `PassWord` (เลขบัตรประชาชน) ผ่านการเข้ารหัส HTTPS ที่ปลอดภัย และนำข้อมูลนักศึกษา (ชื่อ-นามสกุล, อีเมล, คณะ, สาขา) มาบันทึกหรืออัปเดตลงฐานข้อมูลอัตโนมัติ
+   * **In-Memory Mock Login:** สำหรับการพัฒนาและทดสอบแบบออฟไลน์ ระบบมีบัญชีจำลอง (Mock Accounts) ที่ตรวจสอบในหน่วยความจำโดยไม่ต้องเชื่อมต่ออินเทอร์เน็ต
+2. **ระบบฟีดกิจกรรม (Event Feed & Filtering Flow):**
+   * ดึงข้อมูลกิจกรรมจากฐานข้อมูล SQL Server จริง 100% ผ่าน REST API (`GET /api/events`)
+   * **Smart Event Sorting:** คัดแยกกิจกรรมที่ยังไม่หมดเวลา (`Active`) ไว้ด้านบนสุด โดยกิจกรรมที่ผู้ใช้เพิ่งสร้างใหม่จะปรากฏอยู่บนสุดเสมอ ตามด้วยการเรียงตามวัน/เวลาจัดกิจกรรม ส่วนกิจกรรมที่วัน/เวลาผ่านไปแล้ว (`Expired`) จะถูกดันลงไปอยู่ด้านล่างสุด พร้อมปรับป้ายกำกับเป็นสีเทาและซ่อนปุ่มกดเข้าร่วม
+   * **Category Filter (Now Showing):** รองรับการกรองตามหมวดหมู่ (วิชาการ, กีฬา, บันเทิง, ไลฟ์สไตล์) โดยยังคงรักษาเงื่อนไขการเรียงลำดับความสดใหม่ของกิจกรรม
+3. **ระบบการเข้าร่วมและยกเลิกกิจกรรม (Join & Leave Flow):**
+   * ผู้ใช้สามารถกดปุ่ม `+` เพื่อเข้าร่วมกิจกรรม (`POST /api/events/{id}/join`) โดยระบบจะตรวจสอบความจุ (`event_size`), สถานะของกิจกรรม, และป้องกันการเข้าร่วมซ้ำ
+   * ผู้ใช้สามารถยกเลิกการเข้าร่วมกิจกรรมได้ผ่านหน้า Profile (`POST /api/events/{id}/leave`) โดยมีกล่องข้อความยืนยัน (Modal) ข้อมูลผู้เข้าร่วมและจำนวนคนจะถูกปรับปรุงในฐานข้อมูลแบบ Real-time ทันที
+4. **ระบบจัดการโปรไฟล์และประวัติกิจกรรม (Profile Management):**
+   * แสดงข้อมูลนักศึกษาที่ซิงค์จากระบบ และรองรับการแก้ไข Username
+   * แยกแสดงรายการกิจกรรมออกเป็น 2 ส่วนอย่างชัดเจน ได้แก่ **"ที่คุณสร้าง/เข้าร่วม"** (กิจกรรมที่ยังดำเนินการอยู่) และ **"ที่เคยสร้าง/เข้าร่วม"** (กิจกรรมในอดีตที่หมดเวลาแล้ว)
+
+---
+
+## 📋 2. รายการ User Stories (US) และสถานะการดำเนินงาน
+
+### 🏃‍♂️ Sprint 1 Backlog
+| รหัส US | รายละเอียด User Story | สถานะ |
+| :---: | :--- | :---: |
+| **US1** | นศ.มธ. สร้างห้องกิจกรรม | **เสร็จสมบูรณ์ (Completed)** |
+| **US2** | นศ.มธ. เข้าร่วมห้องกิจกรรม | **เสร็จสมบูรณ์ (Completed)** |
+| **US3** | นศ.มธ. ต้องการยกเลิกเข้าร่วมห้องกิจกรรม | **เสร็จสมบูรณ์ (Completed)** |
+| **US4** | นศ.มธ. LOGIN by TU API (รองรับทั้ง TU API จริง และ Mock Accounts) | **เสร็จสมบูรณ์ (Completed)** |
+| **US5** | นศ.มธ. ยกเลิกการสร้างห้องกิจกรรม | **เสร็จสมบูรณ์ (Completed)** |
+| **US6** | นศ.มธ. แก้ไขข้อมูลส่วนตัวและดูประวัติการเข้าร่วม/สร้างห้องกิจกรรม | **เสร็จสมบูรณ์ (Completed)** |
+
+### 🚀 Sprint 2 Backlog
+| รหัส US | รายละเอียด User Story | สถานะ |
+| :---: | :--- | :---: |
+| **US7** | นศ.มธ. ใช้ระบบห้องแชทเพื่อพูดคุยกับเพื่อนร่วมกิจกรรม | **แผนการพัฒนาถัดไป (Planned)** |
+| **US8** | นศ.มธ. ประเมินคะแนนผู้เข้าร่วมกิจกรรมคนอื่นๆ | **แผนการพัฒนาถัดไป (Planned)** |
+| **US9** | นศ.มธ. มี Badges แสดงที่หน้าโปรไฟล์ในกิจกรรมนั้นๆ | **แผนการพัฒนาถัดไป (Planned)** |
+
+---
+
+## 🛠️ 3. วิธีการเริ่มใช้งานระบบอย่างเป็นขั้นตอน (Step-by-Step Setup Guide)
+
+### สิ่งที่ต้องติดตั้งล่วงหน้า (Prerequisites)
+1. **Git**
+2. **Docker Desktop** (สำหรับรันฐานข้อมูล MS SQL Server 2022)
+3. **Java Development Kit (JDK) 22**
+4. **Web Browser** (เช่น Google Chrome, Microsoft Edge) หรือส่วนขยาย **Live Server** บน VS Code
+
+---
+
+### ขั้นตอนที่ 1: การ Clone โปรเจกต์
+เปิด Terminal หรือ PowerShell แล้วรันคำสั่ง:
+```bash
+git clone https://github.com/Pithayakorn-Tam/CS261_Project_Group08.git
+cd CS261_Project_Group08
+```
+
+---
+
+### ขั้นตอนที่ 2: เริ่มต้นรันฐานข้อมูล (Database) ด้วย Docker
+ฐานข้อมูลใช้ Microsoft SQL Server 2022 ซึ่งถูกคอนฟิกไว้ผ่าน `docker-compose.yml` ให้เปิดเฉพาะพอร์ต `1433`:
+```bash
+cd backend
+docker compose up -d
+```
+> ระบบจะสร้าง Container ชื่อ `tumeet-db` และเริ่มต้นฐานข้อมูล `tumeetdb` ให้อัตโนมัติ
+
+---
+
+### ขั้นตอนที่ 3: รันระบบเซิร์ฟเวอร์ Backend (Spring Boot)
+ใช้ Maven Wrapper ที่ติดตั้งมาพร้อมกับโปรเจกต์:
+
+* **บน Windows (PowerShell / Command Prompt):**
+  ```powershell
+  cd backend
+  .\mvnw.cmd spring-boot:run
+  ```
+* **บน macOS / Linux:**
+  ```bash
+  cd backend
+  ./mvnw spring-boot:run
+  ```
+> เมื่อเซิร์ฟเวอร์เริ่มทำงานสำเร็จ จะพร้อมให้บริการ REST API ที่ `http://localhost:8080` (พร้อมรัน Data Initializer เพื่อสร้างข้อมูลตั้งต้นอัตโนมัติ)
+
+---
+
+### ขั้นตอนที่ 4: เปิดใช้งานระบบฝั่ง Frontend
+สามารถเปิดไฟล์หน้าแรกได้ทันทีผ่าน Web Browser หรือรันผ่าน Live Server:
+1. เปิดไฟล์ `frontend/html/Login.html` (หรือเปิดผ่าน Live Server ที่พอร์ต `5500`: `http://localhost:5500/frontend/html/Login.html`)
+2. ระบบจะเปิดหน้าเข้าสู่ระบบ TU Meet พร้อมใช้งาน
+
+---
+
+### 🔑 ข้อมูลบัญชีผู้ใช้จำลองสำหรับทดสอบ (In-Memory Mock Accounts)
+ในกรณีที่ไม่ได้เชื่อมต่อเครือข่าย TU API จริง สามารถใช้ข้อมูลจำลองที่เตรียมไว้ในระบบเพื่อเข้าสู่ระบบและทดสอบได้ทันที:
+
+* **รหัสนักศึกษา (Username):** `6800000000` ถึง `6800000009` (เลือกใช้รหัสใดก็ได้)
+* **รหัสผ่าน / เลขบัตรประชาชน (Password):** `1111111111111` (เลข 1 จำนวน 13 หลัก)
+
+> 💡 **หมายเหตุ:** ข้อมูลบัญชีจำลองเหล่านี้ถูกตรวจสอบในระดับหน่วยความจำ (In-Memory) ไม่ถูกส่งออกไปยังภายนอก และมีข้อมูลนักศึกษาจำลองถูกบันทึกไว้ในฐานข้อมูลล่วงหน้าสำหรับการทดสอบ
+
+---
+
+### 🌐 การเชื่อมต่อกับ TU REST API จริง และการใช้งาน ngrok
+
+#### 1. การตั้งค่า TU Application-Key:
+หากต้องการเชื่อมต่อระบบล็อกอินกับระบบจริงของมหาวิทยาลัยธรรมศาสตร์:
+1. สร้างไฟล์ `.env` ไว้ที่โฟลเดอร์รากของโปรเจกต์ หรือในโฟลเดอร์ `backend/`
+2. กำหนดคีย์ดังนี้:
+   ```env
+   TU_API_KEY=your_actual_application_key_here
+   ```
+> ⚠️ **ข้อควรระวังด้านความปลอดภัย:** ห้ามนำ Token / Application-Key จริงคอมมิตขึ้น GitHub เด็ดขาด (ไฟล์ `.env` ได้รับการป้องกันไว้ใน `.gitignore` เรียบร้อยแล้ว)
+
+#### 2. การใช้งาน ngrok สำหรับ Webhook และ Tunneling:
+ในกรณีที่ต้องการทดสอบการเชื่อมต่อ API กับภายนอก หรือทดสอบบริการภายนอกที่ต้องการ Public Callback URL (เช่น การทดสอบ Webhook):
+1. ติดตั้ง [ngrok](https://ngrok.com/) บนเครื่องคอมพิวเตอร์ของคุณ
+2. รันคำสั่ง Forward พอร์ตของ Backend:
+   ```bash
+   ngrok http 8080
+   ```
+3. นำ URL สาธารณะที่ได้จาก ngrok (เช่น `https://xxxx.ngrok-free.app`) ไปใช้เป็น Callback หรือตั้งค่าบนระบบบริการของ TU REST API
+
+---
+
+## 👥 4. สมาชิกกลุ่ม CS261 Group 08
+
+| ลำดับ | รหัสนักศึกษา | ชื่อ - นามสกุล | GitHub Account | หน้าที่รับผิดชอบ (Role) |
+| :---: | :---: | :--- | :---: | :--- |
+| 1 | `6809617258` | นายพิชญ์ทยากร ศิริสุนทรกมล | [@Pithayakorn-Tam](https://github.com/Pithayakorn-Tam) | Scrum Master / Backend |
+| 2 | `6809616920` | นางสาวฟิฏรี มูเหล็ม | [@Fittri805](https://github.com/Fittri805) | Frontend / Product Owner |
+| 3 | `6809616979` | นางสาวกนกขวัญ พระพรม | [@kanokkhwan-praprom](https://github.com/kanokkhwan-praprom) | Frontend |
+| 4 | `6809681452` | นางสาวปาณิศรา แวงดิศร | [@paniwang16](https://github.com/paniwang16) | UX/UI |
+| 5 | `6809617159` | นายเทพแทนไท เผือกสวัสดิ์ | [@papin002](https://github.com/papin002) | Backend |
+| 6 | `6809617514` | นางสาวอัจฉริยา สาระปัญญา | [@atchariyaff](https://github.com/atchariyaff) | Frontend / UI |
