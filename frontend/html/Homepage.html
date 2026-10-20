@@ -5,14 +5,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TU Meet</title>
-    <link rel="stylesheet" href="../css/Homepage.css">
+    <link rel="stylesheet" href="../css/Homepage.css?v=3">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Mitr:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <script src="../js/Homepage.js" defer></script>
+    <script src="../js/Homepage.js?v=3" defer></script>
 
-    <link rel="stylesheet" href="../css/Join.css">
-    <script src="../js/Join.js" defer></script>
+    <link rel="stylesheet" href="../css/Join.css?v=3">
+    <script src="../js/Join.js?v=3" defer></script>
 </head>
 
 <body>
@@ -102,34 +102,9 @@
                 </div>
             </section>
 
-            <!-- รายการกิจกรรม -->
+            <!-- รายการกิจกรรม (ดึงจากฐานข้อมูลผ่าน Homepage.js เท่านั้น) -->
             <section class="event-feed">
-                <div class="event-list" id="eventList">
-                    <div class="event-card" data-capacity="6" data-participants="0" data-open="true">
-                        <div class="event-logo">
-                            <img src="../Picture/LifestyleActivityLogo.svg" alt="Logo">
-                        </div>
-                        <div class="event-info">
-                            <div class="event-badge">ตี๋น้อย</div>
-
-                            <!-- ใช้แท็ก img เรียกไฟล์ svg  -->
-                            <div class="event-time-date">
-                                <span><img src="../Picture/TimeIcon.svg" class="detail-icon" alt="Time"> 19.00</span>
-                                <span><img src="../Picture/CalendarIcon.svg" class="detail-icon" alt="Calendar"> Sat, 10
-                                    Oct</span>
-                            </div>
-                            <div class="event-location">
-                                <img src="../Picture/LocationIcon.svg" class="detail-icon" alt="Location"> Mingle,
-                                ม.กรุงเทพ
-                            </div>
-
-                        </div>
-                        <div class="event-action">
-                            <button class="join-btn">+</button>
-                            <div class="capacity">0/6</div>
-                        </div>
-                    </div>
-                </div>
+                <div class="event-list" id="eventList"></div>
             </section>
             <section class="load-more-btn">
                 <button id="loadMoreBtn">แสดงเพิ่มเติม</button>

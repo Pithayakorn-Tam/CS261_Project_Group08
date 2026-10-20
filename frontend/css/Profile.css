@@ -324,7 +324,21 @@ body {
 .event-badge { 
   font-size: 14px;
   font-weight: 700;
-  color: #000000;
+  color: #ffffff;
+  background-color: #2e3bcf;
+  padding: 2px 8px;
+  border-radius: 4px;
+  align-self: flex-start;
+}
+
+.event-card.expired {
+  border-color: #8e8e8e;
+  color: #666666;
+}
+
+.event-card.expired .event-badge {
+  background-color: #8e8e8e;
+  color: #ffffff;
 }
 
 .event-time-date { 

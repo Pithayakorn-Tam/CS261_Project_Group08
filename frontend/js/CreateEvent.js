@@ -64,7 +64,7 @@ eventForm.addEventListener('submit', async function(event) {
         // กรณีสำเร็จ
         alert('สร้างกิจกรรมสำเร็จ!');
         eventForm.reset(); // ล้างข้อมูลในฟอร์ม
-        // window.location.href = '/dashboard.html'; // พากลับหน้า Dashboard หรือตามที่ตกลงกันไว้
+        window.location.href = './Homepage.html'; // เด้งกลับไปหน้า Home ทันที
 
     } catch (error) {
         // 7. แสดงข้อความแจ้งเตือนเมื่อเกิดข้อผิดพลาด

@@ -209,13 +209,19 @@ public class Event {
 
     public void addParticipant(User user) {
         if (user != null && this.participants.add(user)) {
-            this.currentParticipants = this.participants.size();
+            this.currentParticipants = (this.currentParticipants != null ? this.currentParticipants : 0) + 1;
+            if (this.eventSize != null && this.currentParticipants >= this.eventSize) {
+                this.status = "FULL";
+            }
         }
     }
 
     public void removeParticipant(User user) {
         if (user != null && this.participants.remove(user)) {
-            this.currentParticipants = this.participants.size();
+            this.currentParticipants = Math.max(0, (this.currentParticipants != null ? this.currentParticipants : 1) - 1);
+            if ("FULL".equalsIgnoreCase(this.status) && (this.eventSize == null || this.currentParticipants < this.eventSize)) {
+                this.status = "OPEN";
+            }
         }
     }
 }
