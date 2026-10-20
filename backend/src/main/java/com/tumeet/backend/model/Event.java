@@ -1,5 +1,6 @@
 package com.tumeet.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -20,6 +21,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "events")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Event {
 
     @Id
@@ -56,6 +58,7 @@ public class Event {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "creator_id", nullable = false)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private User creator;
 
     @ManyToMany(fetch = FetchType.LAZY)
@@ -206,13 +209,19 @@ public class Event {
 
     public void addParticipant(User user) {
         if (user != null && this.participants.add(user)) {
-            this.currentParticipants = this.participants.size();
+            this.currentParticipants = (this.currentParticipants != null ? this.currentParticipants : 0) + 1;
+            if (this.eventSize != null && this.currentParticipants >= this.eventSize) {
+                this.status = "FULL";
+            }
         }
     }
 
     public void removeParticipant(User user) {
         if (user != null && this.participants.remove(user)) {
-            this.currentParticipants = this.participants.size();
+            this.currentParticipants = Math.max(0, (this.currentParticipants != null ? this.currentParticipants : 1) - 1);
+            if ("FULL".equalsIgnoreCase(this.status) && (this.eventSize == null || this.currentParticipants < this.eventSize)) {
+                this.status = "OPEN";
+            }
         }
     }
 }

@@ -147,4 +147,36 @@ class EventServiceTest {
         assertEquals("บอร์ดเกม", dtos.get(0).getEventName());
         assertEquals("ไปกินตี๋น้อย", dtos.get(1).getEventName());
     }
+
+    @Test
+    @DisplayName("เข้าร่วมและยกเลิกการเข้าร่วมกิจกรรมผ่าน EventService สำเร็จ")
+    void joinAndLeaveEvent_Success() {
+        Event event = new Event("ตีแบดมินตัน", "sport", "ยิม มธ.", 4, LocalDate.of(2026, 10, 13), "20.00", mockUser);
+        event.setId(3L);
+        event.setCurrentParticipants(2);
+
+        User participantUser = new User();
+        participantUser.setId(2L);
+        participantUser.setStudentId("6800000000");
+        participantUser.setEmail("mock00@dome.tu.ac.th");
+        participantUser.setDisplayname_th("นักศึกษาจำลอง ทดสอบ00");
+
+        when(eventRepository.findById(3L)).thenReturn(Optional.of(event));
+        when(userRepository.findByStudentId("6800000000")).thenReturn(Optional.of(participantUser));
+        when(eventRepository.save(any(Event.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        // 1. ทดสอบกดเข้าร่วม (Join)
+        EventResponse joinRes = eventService.joinEvent(3L, "6800000000");
+        assertTrue(joinRes.isStatus());
+        assertEquals("เข้าร่วมกิจกรรมสำเร็จ", joinRes.getMessage());
+        assertEquals(3, event.getCurrentParticipants());
+        assertTrue(event.getParticipants().contains(participantUser));
+
+        // 2. ทดสอบกดยกเลิกการเข้าร่วม (Leave)
+        EventResponse leaveRes = eventService.leaveEvent(3L, "6800000000");
+        assertTrue(leaveRes.isStatus());
+        assertEquals("ยกเลิกการเข้าร่วมกิจกรรมสำเร็จ", leaveRes.getMessage());
+        assertEquals(2, event.getCurrentParticipants());
+        assertFalse(event.getParticipants().contains(participantUser));
+    }
 }

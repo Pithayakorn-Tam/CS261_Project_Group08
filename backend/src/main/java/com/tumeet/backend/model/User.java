@@ -1,5 +1,6 @@
 package com.tumeet.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -9,6 +10,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "users")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class User {
 
     @Id
@@ -47,6 +49,9 @@ public class User {
 
     @Column(length = 150)
     private String department;
+
+    @Column(length = 100)
+    private String username;
 
     public User() {
     }
@@ -175,5 +180,13 @@ public class User {
 
     public void setDepartment(String department) {
         this.department = department;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }

@@ -92,8 +92,11 @@ public class EventService {
 
     @Transactional(readOnly = true)
     public EventResponse getAllOpenEvents() {
-        List<Event> openEvents = eventRepository.findByStatusOrderByIdAsc("OPEN");
-        List<EventDto> eventDtos = openEvents.stream()
+        List<Event> allEvents = eventRepository.findAllByOrderByIdAsc();
+        if (allEvents.isEmpty()) {
+            allEvents = eventRepository.findByStatusOrderByIdAsc("OPEN");
+        }
+        List<EventDto> eventDtos = allEvents.stream()
                 .map(EventDto::fromEntity)
                 .toList();
 
@@ -190,6 +193,11 @@ public class EventService {
         User user = userOpt.get();
 
         if (!event.getParticipants().contains(user)) {
+            if (event.getCreator() != null && user.getStudentId().equals(event.getCreator().getStudentId())) {
+                event.getParticipants().clear();
+                eventRepository.delete(event);
+                return EventResponse.success("ยกเลิกกิจกรรมสำเร็จ", EventDto.fromEntity(event));
+            }
             return EventResponse.error("คุณไม่ได้อยู่ในรายชื่อผู้เข้าร่วมกิจกรรมนี้");
         }
 

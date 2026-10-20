@@ -82,4 +82,15 @@ class AuthServiceTest {
         assertTrue(response.isStatus());
         assertEquals("6800000009", response.getStudentId());
     }
+
+    @Test
+    @DisplayName("เข้าสู่ระบบล้มเหลวเมื่อไม่ระบุรหัสนักศึกษาหรือเลขบัตรประชาชน")
+    void authenticate_MissingFields() {
+        LoginRequest request = new LoginRequest("", "");
+
+        LoginResponse response = authService.authenticate(request);
+
+        assertFalse(response.isStatus());
+        assertTrue(response.getMessage().contains("กรุณากรอก"));
+    }
 }

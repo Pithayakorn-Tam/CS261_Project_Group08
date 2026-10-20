@@ -240,6 +240,15 @@ body {
     padding: 2px 8px; 
     border-radius: 4px; 
     align-self: flex-start; }
+/* สไตล์สำหรับกิจกรรมที่หมดเวลาแล้ว (เปลี่ยนสีฟ้าเป็นสีเทา) */
+.event-card.expired {
+    border-color: #8e8e8e;
+    color: #666666;
+}
+.event-card.expired .event-badge {
+    background-color: #8e8e8e;
+    color: #ffffff;
+}
 .event-time-date { 
     display: flex; 
     gap: 8px; }
