@@ -12,22 +12,23 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
+    padding: 24px;
 }
 
 .login-container {
     width: 100%;
-    max-width: 380px;
-    padding: 20px;
+    max-width: 520px;
+    padding: clamp(20px, 4vw, 36px);
     text-align: center;
 }
 
 /* โลโก้ */
 .logo-wrapper {
-    margin-bottom: 50px;
+    margin-bottom: clamp(32px, 6vh, 56px);
 }
 
 .logo-img {
-    max-width: 1500px; 
+    max-width: 360px;
     width: 100%;
     height: auto;
     display: block;
@@ -62,8 +63,8 @@ body {
 
 /* ปุ่ม LOGIN สีน้ำเงิน */
 .login-btn {
-    width: 25%;
-    padding: 8px;
+    width: min(100%, 220px);
+    padding: 10px 20px;
     display: block;
     margin: 0 auto;
     font-size: 20px;
@@ -100,4 +101,19 @@ body {
 
 .hidden {
     display: none;
+}
+
+@media (max-width: 480px) {
+    body {
+        padding: 16px;
+    }
+
+    .login-container {
+        max-width: 380px;
+        padding: 20px 8px;
+    }
+
+    .logo-img {
+        max-width: 300px;
+    }
 }
