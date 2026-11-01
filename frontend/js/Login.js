@@ -18,7 +18,10 @@ loginForm.addEventListener('submit', async function(event) {
 
     try {
         // 4. ส่งข้อมูลไปยัง Backend 
-        const response = await fetch('http://localhost:8080/api/login', {
+        const apiBaseUrl = (window.location.protocol === 'file:' || window.location.port === '5500' || window.location.port === '5501')
+            ? 'http://localhost:8080/api'
+            : '/api';
+        const response = await fetch(`${apiBaseUrl}/login`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

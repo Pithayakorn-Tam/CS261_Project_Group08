@@ -94,7 +94,10 @@ eventForm.addEventListener('submit', async function(event) {
 
     try {
         // 5. ส่งข้อมูลไปยัง Backend (ใช้ชื่อคีย์หลักตัวเดียวให้สะอาดเรียบร้อย)
-        const response = await fetch('http://localhost:8080/api/events', { 
+        const apiBaseUrl = (window.location.protocol === 'file:' || window.location.port === '5500' || window.location.port === '5501')
+            ? 'http://localhost:8080/api'
+            : '/api';
+        const response = await fetch(`${apiBaseUrl}/events`, { 
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

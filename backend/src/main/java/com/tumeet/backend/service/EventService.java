@@ -76,7 +76,7 @@ public class EventService {
         event.setEventType(request.getEventType().trim());
         event.setLocation(request.getLocation() != null ? request.getLocation().trim() : null);
         event.setEventSize(request.getEventSize());
-        event.setCurrentParticipants(0); // เริ่มต้นที่ 0/eventSize
+        event.setCurrentParticipants(1); // เริ่มต้นที่ 1/eventSize (นับรวมผู้สร้างกิจกรรม)
         event.setEventDate(eventDate);
         event.setEventTime(request.getEventTime().trim());
         event.setStatus("OPEN");
@@ -159,6 +159,10 @@ public class EventService {
 
         Event event = eventOpt.get();
         User user = userOpt.get();
+
+        if (event.getCreator() != null && user.getStudentId().equals(event.getCreator().getStudentId())) {
+            return EventResponse.error("ผู้สร้างกิจกรรมไม่สามารถเข้าร่วมกิจกรรมของตนเองได้");
+        }
 
         if (event.getParticipants().contains(user)) {
             return EventResponse.error("คุณได้เข้าร่วมกิจกรรมนี้แล้ว");

@@ -1,5 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const API_BASE_URL = "http://localhost:8080/api";
+  const API_BASE_URL = (window.location.protocol === "file:" || window.location.port === "5500" || window.location.port === "5501")
+    ? "http://localhost:8080/api"
+    : "/api";
 
   // Elements ผู้ใช้
   const usernameDisplayBox = document.getElementById("usernameDisplayBox");
@@ -28,6 +30,7 @@ document.addEventListener("DOMContentLoaded", () => {
     bordgame: "../Picture/EntertainmentAcivityLogo.svg",
     "E-sport": "../Picture/EntertainmentAcivityLogo.svg",
     consert: "../Picture/EntertainmentAcivityLogo.svg",
+    concert: "../Picture/EntertainmentAcivityLogo.svg",
     บันเทิง: "../Picture/EntertainmentAcivityLogo.svg",
     food: "../Picture/LifestyleActivityLogo.svg",
     other: "../Picture/LifestyleActivityLogo.svg",
@@ -203,7 +206,7 @@ document.addEventListener("DOMContentLoaded", () => {
       // 2. กิจกรรมที่ผู้ใช้สร้าง (ยกเว้น 4 กิจกรรมตั้งต้น id 1-4 หากไม่ได้กดเข้าร่วมเอง)
       createdDtos.forEach(dto => {
         if (dto && dto.id != null && !eventMap.has(dto.id)) {
-          const isSystemDefaultSeeded = dto.id <= 4 && (studentId === "6800000000" || studentId === "6800000001");
+          const isSystemDefaultSeeded = dto.id <= 4 && (studentId === "6800000000" || studentId === "6800000001" || studentId === "6800000009");
           if (!isSystemDefaultSeeded) {
             eventMap.set(dto.id, mapDtoToProfileEvent(dto, true, false));
           }

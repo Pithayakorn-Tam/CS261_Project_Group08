@@ -4,7 +4,7 @@ services:
     container_name: tumeet-db
     environment:
       ACCEPT_EULA: "Y"
-      MSSQL_SA_PASSWORD: "TuMeet_StrongPass123!"
+      MSSQL_SA_PASSWORD: "${DB_PASSWORD:-TuMeet_StrongPass123!}"
       MSSQL_PID: "Developer"
     ports:
       - "1433:1433"
@@ -27,26 +27,62 @@ services:
       test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P 'TuMeet_StrongPass123!' -C -d tumeetdb -Q 'SELECT 1' || /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P 'TuMeet_StrongPass123!' -d tumeetdb -Q 'SELECT 1'"]
       interval: 5s
       timeout: 5s
-      retries: 10
+      retries: 12
+    networks:
+      - tumeet-network
     restart: unless-stopped
 
   tumeet-backend:
-    profiles: ["app"]
     build:
-      context: .
+      context: ./backend
       dockerfile: Dockerfile
     container_name: tumeet-backend
     ports:
       - "8080:8080"
+    env_file:
+      - path: ./.env
+        required: false
     environment:
       DB_HOST: "tumeet-db"
-      DB_NAME: "tumeetdb"
-      DB_USERNAME: "sa"
-      DB_PASSWORD: "TuMeet_StrongPass123!"
+      DB_NAME: "${DB_NAME:-tumeetdb}"
+      DB_USERNAME: "${DB_USERNAME:-sa}"
+      DB_PASSWORD: "${DB_PASSWORD:-TuMeet_StrongPass123!}"
+      TU_API_KEY: "${TU_API_KEY:-}"
     depends_on:
       tumeet-db:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:8080/api/events > /dev/null || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 25s
+    networks:
+      - tumeet-network
     restart: unless-stopped
+
+  tumeet-frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: tumeet-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      tumeet-backend:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O /dev/null http://127.0.0.1:80/ || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - tumeet-network
+    restart: unless-stopped
+
+networks:
+  tumeet-network:
+    driver: bridge
 
 volumes:
   mssql-data:
