@@ -184,7 +184,7 @@ function createEventCardElement(event) {
     const dateFormatted = formatEventDate(event.eventDate || event.date);
     const location = event.location || event.eventLocation || '-';
 
-    const currentParticipants = event.currentParticipants ?? 0;
+    const currentParticipants = event.currentParticipants ?? 1;
     const eventSize = event.eventSize ?? 1;
     const capacityText = event.capacity ? event.capacity : `${currentParticipants}/${eventSize}`;
 
@@ -199,12 +199,15 @@ function createEventCardElement(event) {
     const currentStudentId = getCurrentStudentId();
     const isAlreadyJoined = Array.isArray(event.participants) &&
         event.participants.some(p => p && p.studentId === currentStudentId);
+    const isCreator = Boolean(event.creator && event.creator.studentId === currentStudentId);
+    newCard.dataset.creator = isCreator ? 'true' : 'false';
+    const isJoinedOrCreator = isAlreadyJoined || isCreator;
 
     // ถ้ากิจกรรมหมดเวลาแล้ว: ไม่แสดงปุ่มกด (+) หรือเครื่องหมายใดๆ ทั้งสิ้น
     let actionButtonHtml = '';
     if (!expired) {
-        const btnText = isAlreadyJoined ? '✓' : '+';
-        const btnJoinedAttr = isAlreadyJoined ? 'data-joined="true" disabled' : '';
+        const btnText = isJoinedOrCreator ? '✓' : '+';
+        const btnJoinedAttr = isJoinedOrCreator ? 'data-joined="true" disabled' : '';
         actionButtonHtml = `<button class="join-btn" ${btnJoinedAttr}>${btnText}</button>`;
     }
 
