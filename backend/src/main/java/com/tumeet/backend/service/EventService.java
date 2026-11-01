@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Optional;
@@ -68,6 +69,25 @@ public class EventService {
 
         if (request.getEventTime() == null || request.getEventTime().isBlank()) {
             return EventResponse.error("กรุณาระบุเวลาจัดกิจกรรม");
+        }
+
+        // ตรวจสอบเงื่อนไข: ไม่สามารถสร้างกิจกรรมในอดีตได้ และตั้งเวลาล่วงหน้าได้ไม่เกิน 7 วัน
+        LocalDate today = LocalDate.now();
+        if (eventDate.isBefore(today)) {
+            return EventResponse.error("ไม่สามารถสร้างกิจกรรมในอดีตได้");
+        }
+        if (eventDate.isAfter(today.plusDays(7))) {
+            return EventResponse.error("สามารถสร้างกิจกรรมล่วงหน้าได้ไม่เกิน 7 วัน");
+        }
+        if (eventDate.isEqual(today)) {
+            try {
+                String normalizedTime = request.getEventTime().trim().replace('.', ':');
+                LocalTime parsedTime = LocalTime.parse(normalizedTime);
+                if (parsedTime.isBefore(LocalTime.now())) {
+                    return EventResponse.error("ไม่สามารถเลือกเวลาย้อนหลังได้ กรุณาเลือกเวลาใหม่อีกครั้ง");
+                }
+            } catch (DateTimeParseException ignored) {
+            }
         }
 
         // 3. สร้างอ็อบเจกต์ Event และกำหนดค่าความสัมพันธ์ event.setCreator(creator)

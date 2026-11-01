@@ -17,6 +17,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Elements Modal ยกเลิกการเข้าร่วมกิจกรรม
   const cancelModal = document.getElementById("cancelModal");
+  const cancelModalTitle = document.getElementById("cancelModalTitle");
+  const cancelModalDesc = document.getElementById("cancelModalDesc");
   const confirmCancelBtn = document.getElementById("confirmCancelBtn");
   const dismissCancelBtn = document.getElementById("dismissCancelBtn");
   let selectedEventIdToCancel = null;
@@ -206,7 +208,7 @@ document.addEventListener("DOMContentLoaded", () => {
       // 2. กิจกรรมที่ผู้ใช้สร้าง (ยกเว้น 4 กิจกรรมตั้งต้น id 1-4 หากไม่ได้กดเข้าร่วมเอง)
       createdDtos.forEach(dto => {
         if (dto && dto.id != null && !eventMap.has(dto.id)) {
-          const isSystemDefaultSeeded = dto.id <= 4 && (studentId === "6800000000" || studentId === "6800000001" || studentId === "6800000009");
+          const isSystemDefaultSeeded = dto.id <= 5 && (studentId === "6800000000" || studentId === "6800000001" || studentId === "6800000009");
           if (!isSystemDefaultSeeded) {
             eventMap.set(dto.id, mapDtoToProfileEvent(dto, true, false));
           }
@@ -332,7 +334,7 @@ document.addEventListener("DOMContentLoaded", () => {
       actionHTML = `
         <div class="event-action-right joined-action">
           <span class="joined-status-text">${statusLabel}</span>
-          <button type="button" class="cancel-event-btn" data-id="${event.id}" aria-label="ยกเลิกการเข้าร่วม">✕</button>
+          <button type="button" class="cancel-event-btn" data-id="${event.id}" data-is-owner="${event.isOwner ? "true" : "false"}" aria-label="${event.isOwner ? "ยกเลิกการสร้างกิจกรรม" : "ยกเลิกการเข้าร่วม"}">✕</button>
         </div>
       `;
     }
@@ -391,6 +393,15 @@ document.addEventListener("DOMContentLoaded", () => {
     cancelBtns.forEach(btn => {
       btn.addEventListener("click", (e) => {
         selectedEventIdToCancel = e.currentTarget.getAttribute("data-id");
+        const isOwner = e.currentTarget.getAttribute("data-is-owner") === "true";
+        if (cancelModalTitle) {
+          cancelModalTitle.textContent = isOwner ? "ยกเลิกการสร้างกิจกรรม" : "ยกเลิกการเข้าร่วมกิจกรรม";
+        }
+        if (cancelModalDesc) {
+          cancelModalDesc.textContent = isOwner
+            ? "ท่านยืนยันที่จะยกเลิกการสร้างกิจกรรมนี้หรือไม่"
+            : "ท่านยืนยันที่จะยกเลิกการเข้าร่วมกิจกรรมหรือไม่";
+        }
         if (cancelModal) cancelModal.style.display = "flex";
       });
     });
