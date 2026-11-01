@@ -464,20 +464,20 @@ body {
   cursor: pointer;
 }
 
-.confirm-btn {
+.dismiss-btn {
   background-color: #d9d9d9;
   color: #333333;
 }
 
-.confirm-btn:hover {
+.dismiss-btn:hover {
   background-color: #cccccc;
 }
 
-.dismiss-btn {
+.confirm-btn {
   background-color: #e53935;
   color: #ffffff;
 }
 
-.dismiss-btn:hover {
+.confirm-btn:hover {
   background-color: #c62828;
 }

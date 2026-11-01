@@ -33,12 +33,14 @@
       <div class="banner">
         <img src="../Picture/create-event-logo.svg" alt="Create Your Event Logo" class="logo-banner">
       </div>
-      
-      <form class="event-form" novalidate>
+
+      <section class="event-panel" aria-labelledby="event-details-title">
+        <h1 id="event-details-title">Event details</h1>
+        <form class="event-form" novalidate>
         <!-- กล่องแจ้งเตือนรวมด้านบน (ถ้ามี) -->
         <div id="errorBox" class="error-box hidden"></div>
 
-        <div class="form-group form-group-row">
+        <div class="form-group form-group-row event-type-group">
           <label for="eventType">Event Type</label>
           <div class="select-wrapper">
             <select name="eventType" id="eventType">
@@ -55,19 +57,19 @@
           <small id="typeError" class="error-message"></small>
         </div>
 
-        <div class="form-group">
+        <div class="form-group event-name-group">
           <label for="eventName">Event Name</label>
           <input type="text" id="eventName" name="eventName" placeholder="ตัวอย่าง ไปกินตี๋น้อย">
           <small id="nameError" class="error-message"></small>
         </div>
 
-        <div class="form-group">
+        <div class="form-group location-group">
           <label for="eventLocation">Location</label>
           <input type="text" id="eventLocation" name="eventLocation" placeholder="ตัวอย่าง สุกี้ตี๋น้อย สาขา...">
           <small id="locationError" class="error-message"></small>
         </div>
 
-        <div class="form-group">
+        <div class="form-group description-group">
           <label for="eventDescription">Description</label>
           <textarea id="eventDescription" name="eventDescription" placeholder="รายละเอียดเพิ่มเติมเกี่ยวกับกิจกรรม..." rows="3"></textarea>
           <small id="descError" class="error-message"></small>
@@ -131,7 +133,8 @@
         <div class="form-actions">
           <button type="submit" class="btn-create">CREATE</button>
         </div>
-      </form>
+        </form>
+      </section>
     </main>
   </div>
 <script src="../js/api.js?v=3"></script>

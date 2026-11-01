@@ -79,7 +79,7 @@ public class DataInitializer {
                     .or(() -> userRepository.findByStudentId("6800000000"))
                     .orElse(null);
 
-            // 2. Seed initial mock events (4 active in Nov 3-7 + 3 past history events) if no events exist yet
+            // 2. Seed initial 5 mock events (4 active in Nov 3-6 + 1 past expired event) if no events exist yet
             if (eventRepository.count() == 0 && defaultCreator != null) {
                 Event e1 = new Event("ตี๋น้อย", "food", "Mingle, ม.กรุงเทพ", 6, LocalDate.of(2026, 11, 3), "19.00", defaultCreator);
                 e1.setCurrentParticipants(1);
@@ -97,15 +97,7 @@ public class DataInitializer {
                 past1.setCurrentParticipants(4);
                 past1.setStatus("CLOSED");
 
-                Event past2 = new Event("ตี๋น้อย", "food", "Mingle, ม.กรุงเทพ", 6, LocalDate.of(2026, 10, 8), "19.00", defaultCreator);
-                past2.setCurrentParticipants(6);
-                past2.setStatus("CLOSED");
-
-                Event past3 = new Event("ตี๋น้อย", "food", "Mingle, ม.กรุงเทพ", 6, LocalDate.of(2026, 10, 9), "19.00", defaultCreator);
-                past3.setCurrentParticipants(6);
-                past3.setStatus("CLOSED");
-
-                eventRepository.saveAll(List.of(e1, e2, e3, e4, past1, past2, past3));
+                eventRepository.saveAll(List.of(e1, e2, e3, e4, past1));
             } else if (defaultCreator != null) {
                 // Ensure the 4 primary mock events (id 1..4) have creator 6800000009, Nov 3-6 dates, and start at 1 (+ any joined participants)
                 LocalDate[] targetDates = {
@@ -128,9 +120,27 @@ public class DataInitializer {
                     });
                 }
 
-                // Seed the 3 past mock events into DB if not yet present
+                // Keep only 1 expired seeded event (2026-10-07) and remove extra seeded past events (2026-10-08, 2026-10-09)
                 List<Event> existing = eventRepository.findAllByOrderByIdAsc();
+                boolean hasPastOct7 = false;
                 for (Event ev : existing) {
+                    if (LocalDate.of(2026, 10, 8).equals(ev.getEventDate())
+                            || LocalDate.of(2026, 10, 9).equals(ev.getEventDate())
+                            || "test".equalsIgnoreCase(ev.getEventName())) {
+                        if (ev.getParticipants() != null) {
+                            ev.getParticipants().clear();
+                        }
+                        eventRepository.delete(ev);
+                        continue;
+                    }
+                    if (LocalDate.of(2026, 10, 7).equals(ev.getEventDate())) {
+                        hasPastOct7 = true;
+                        ev.setCreator(defaultCreator);
+                        ev.setCurrentParticipants(4);
+                        ev.setStatus("CLOSED");
+                        eventRepository.save(ev);
+                        continue;
+                    }
                     int joinedCount = ev.getParticipants() != null ? ev.getParticipants().size() : 0;
                     int minExpected = 1 + joinedCount;
                     if (ev.getCurrentParticipants() == null || ev.getCurrentParticipants() < minExpected) {
@@ -138,22 +148,12 @@ public class DataInitializer {
                         eventRepository.save(ev);
                     }
                 }
-                boolean hasPastOct7 = existing.stream()
-                        .anyMatch(ev -> LocalDate.of(2026, 10, 7).equals(ev.getEventDate()));
+
                 if (!hasPastOct7) {
                     Event past1 = new Event("อ่านหนังสือ", "study", "ห้องสมุดป๋วย", 4, LocalDate.of(2026, 10, 7), "19.00", defaultCreator);
                     past1.setCurrentParticipants(4);
                     past1.setStatus("CLOSED");
-
-                    Event past2 = new Event("ตี๋น้อย", "food", "Mingle, ม.กรุงเทพ", 6, LocalDate.of(2026, 10, 8), "19.00", defaultCreator);
-                    past2.setCurrentParticipants(6);
-                    past2.setStatus("CLOSED");
-
-                    Event past3 = new Event("ตี๋น้อย", "food", "Mingle, ม.กรุงเทพ", 6, LocalDate.of(2026, 10, 9), "19.00", defaultCreator);
-                    past3.setCurrentParticipants(6);
-                    past3.setStatus("CLOSED");
-
-                    eventRepository.saveAll(List.of(past1, past2, past3));
+                    eventRepository.save(past1);
                 }
             }
         });

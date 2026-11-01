@@ -3,13 +3,20 @@ const eventForm = document.querySelector('.event-form');
 const timeInput = document.getElementById('eventTime');
 const dateInput = document.getElementById('eventDate');
 
-// กำหนดเงื่อนไขวันที่ขั้นต่ำเป็นวันนี้
+function formatDateYYYYMMDD(dateObj) {
+    const year = dateObj.getFullYear();
+    const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+    const day = String(dateObj.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
+
+// กำหนดเงื่อนไขวันที่ขั้นต่ำเป็นวันนี้ และสูงสุดไม่เกิน 7 วันล่วงหน้า
 if (dateInput) {
     const today = new Date();
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, '0');
-    const day = String(today.getDate()).padStart(2, '0');
-    dateInput.min = `${year}-${month}-${day}`;
+    const maxDate = new Date(today);
+    maxDate.setDate(today.getDate() + 7);
+    dateInput.min = formatDateYYYYMMDD(today);
+    dateInput.max = formatDateYYYYMMDD(maxDate);
 }
 
 eventForm.addEventListener('submit', async function(event) {
@@ -61,13 +68,26 @@ eventForm.addEventListener('submit', async function(event) {
         isValid = false;
     }
 
-    // ตรวจสอบเรื่องเวลาย้อนหลัง
-    if (eventDate && eventTime) {
+    // ตรวจสอบเรื่องวันและเวลาย้อนหลัง รวมถึงการตั้งเวลาล่วงหน้าไม่เกิน 7 วัน
+    if (eventDate) {
         const now = new Date();
-        const selectedDateTime = new Date(`${eventDate}T${eventTime}`);
-        if (selectedDateTime < now) {
-            document.getElementById('timeError').textContent = 'ไม่สามารถเลือกเวลาย้อนหลังได้ กรุณาเลือกเวลาใหม่อีกครั้ง';
+        const todayStr = formatDateYYYYMMDD(now);
+        const maxDate = new Date(now);
+        maxDate.setDate(now.getDate() + 7);
+        const maxDateStr = formatDateYYYYMMDD(maxDate);
+
+        if (eventDate < todayStr) {
+            document.getElementById('dateError').textContent = 'ไม่สามารถสร้างกิจกรรมในอดีตได้';
             isValid = false;
+        } else if (eventDate > maxDateStr) {
+            document.getElementById('dateError').textContent = 'สามารถสร้างกิจกรรมล่วงหน้าได้ไม่เกิน 7 วัน';
+            isValid = false;
+        } else if (eventTime) {
+            const selectedDateTime = new Date(`${eventDate}T${eventTime}`);
+            if (selectedDateTime < now) {
+                document.getElementById('timeError').textContent = 'ไม่สามารถเลือกเวลาย้อนหลังได้ กรุณาเลือกเวลาใหม่อีกครั้ง';
+                isValid = false;
+            }
         }
     }
 

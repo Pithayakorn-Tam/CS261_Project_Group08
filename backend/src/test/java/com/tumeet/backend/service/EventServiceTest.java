@@ -36,6 +36,7 @@ class EventServiceTest {
     private EventService eventService;
 
     private User mockUser;
+    private LocalDate validFutureDate;
 
     @BeforeEach
     void setUp() {
@@ -45,16 +46,18 @@ class EventServiceTest {
         mockUser.setEmail("mock01@dome.tu.ac.th");
         mockUser.setDisplayname_th("นักศึกษาจำลอง ทดสอบ01");
         mockUser.setFaculty("คณะวิทยาศาสตร์และเทคโนโลยี");
+
+        validFutureDate = LocalDate.now().plusDays(2);
     }
 
     @Test
-    @DisplayName("สร้าง Event สำเร็จเมื่อข้อมูลถูกต้อง")
+    @DisplayName("สร้าง Event สำเร็จเมื่อข้อมูลถูกต้อง (อยู่ในช่วงไม่เกิน 7 วัน)")
     void createEvent_Success() {
         CreateEventRequest request = new CreateEventRequest();
         request.setEventType("food");
         request.setEventName("ไปกินตี๋น้อย");
         request.setEventSize(4);
-        request.setEventDate("2026-10-25");
+        request.setEventDate(validFutureDate.toString());
         request.setEventTime("18:00");
         request.setCreatorStudentId("6800000001");
 
@@ -77,7 +80,7 @@ class EventServiceTest {
         assertEquals("food", dto.getEventType());
         assertEquals(4, dto.getEventSize());
         assertEquals(1, dto.getCurrentParticipants());
-        assertEquals(LocalDate.of(2026, 10, 25), dto.getEventDate());
+        assertEquals(validFutureDate, dto.getEventDate());
         assertEquals("18:00", dto.getEventTime());
         assertEquals("OPEN", dto.getStatus());
         assertNotNull(dto.getCreator());
@@ -88,6 +91,46 @@ class EventServiceTest {
     }
 
     @Test
+    @DisplayName("สร้าง Event ล้มเหลวเมื่อวันที่อยู่ในอดีต")
+    void createEvent_PastDate_Fails() {
+        CreateEventRequest request = new CreateEventRequest();
+        request.setCreatorStudentId("6800000001");
+        request.setEventName("ไปกินตี๋น้อย");
+        request.setEventType("food");
+        request.setEventSize(4);
+        request.setEventDate(LocalDate.now().minusDays(1).toString());
+        request.setEventTime("18:00");
+
+        when(userRepository.findByStudentId("6800000001")).thenReturn(Optional.of(mockUser));
+
+        EventResponse response = eventService.createEvent(request);
+
+        assertFalse(response.isStatus());
+        assertTrue(response.getMessage().contains("ไม่สามารถสร้างกิจกรรมในอดีตได้"));
+        verify(eventRepository, never()).save(any(Event.class));
+    }
+
+    @Test
+    @DisplayName("สร้าง Event ล้มเหลวเมื่อตั้งวันที่ล่วงหน้าเกิน 7 วัน")
+    void createEvent_MoreThan7DaysAdvance_Fails() {
+        CreateEventRequest request = new CreateEventRequest();
+        request.setCreatorStudentId("6800000001");
+        request.setEventName("ไปกินตี๋น้อย");
+        request.setEventType("food");
+        request.setEventSize(4);
+        request.setEventDate(LocalDate.now().plusDays(8).toString());
+        request.setEventTime("18:00");
+
+        when(userRepository.findByStudentId("6800000001")).thenReturn(Optional.of(mockUser));
+
+        EventResponse response = eventService.createEvent(request);
+
+        assertFalse(response.isStatus());
+        assertTrue(response.getMessage().contains("สามารถสร้างกิจกรรมล่วงหน้าได้ไม่เกิน 7 วัน"));
+        verify(eventRepository, never()).save(any(Event.class));
+    }
+
+    @Test
     @DisplayName("สร้าง Event ล้มเหลวเมื่อไม่พบผู้ใช้ในระบบ")
     void createEvent_UserNotFound() {
         CreateEventRequest request = new CreateEventRequest();
@@ -95,7 +138,7 @@ class EventServiceTest {
         request.setEventName("อ่านหนังสือ");
         request.setEventType("study");
         request.setEventSize(2);
-        request.setEventDate("2026-10-25");
+        request.setEventDate(validFutureDate.toString());
         request.setEventTime("18:00");
 
         when(userRepository.findByStudentId("9999999999")).thenReturn(Optional.empty());
@@ -115,7 +158,7 @@ class EventServiceTest {
         request.setEventName("ไปกินตี๋น้อย");
         request.setEventType("food");
         request.setEventSize(0);
-        request.setEventDate("2026-10-25");
+        request.setEventDate(validFutureDate.toString());
         request.setEventTime("18:00");
 
         when(userRepository.findByStudentId("6800000001")).thenReturn(Optional.of(mockUser));
@@ -130,9 +173,9 @@ class EventServiceTest {
     @Test
     @DisplayName("ดึงรายการ Event ที่เปิดรับอยู่สำเร็จ")
     void getAllOpenEvents_Success() {
-        Event e1 = new Event("บอร์ดเกม", "bordgame", 6, LocalDate.of(2026, 10, 20), "13:00", mockUser);
+        Event e1 = new Event("บอร์ดเกม", "bordgame", 6, validFutureDate, "13:00", mockUser);
         e1.setId(1L);
-        Event e2 = new Event("ไปกินตี๋น้อย", "food", 4, LocalDate.of(2026, 10, 25), "18:00", mockUser);
+        Event e2 = new Event("ไปกินตี๋น้อย", "food", 4, validFutureDate, "18:00", mockUser);
         e2.setId(2L);
 
         when(eventRepository.findByStatusOrderByIdAsc("OPEN")).thenReturn(List.of(e1, e2));
@@ -151,7 +194,7 @@ class EventServiceTest {
     @Test
     @DisplayName("เข้าร่วมและยกเลิกการเข้าร่วมกิจกรรมผ่าน EventService สำเร็จ")
     void joinAndLeaveEvent_Success() {
-        Event event = new Event("ตีแบดมินตัน", "sport", "ยิม มธ.", 4, LocalDate.of(2026, 10, 13), "20.00", mockUser);
+        Event event = new Event("ตีแบดมินตัน", "sport", "ยิม มธ.", 4, validFutureDate, "20.00", mockUser);
         event.setId(3L);
         event.setCurrentParticipants(2);
 
