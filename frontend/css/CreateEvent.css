@@ -56,8 +56,8 @@ body {
     cursor: pointer;
 }
 .icon-btn img {
-    width: 24px;
-    height: 24px;
+    width: 30px;
+    height: 30px;
 }
 
 
@@ -182,7 +182,7 @@ input::placeholder {
 /* Row Size, Date, Time */
 .form-row {
   display: flex;
-  gap: 10px;
+  gap: 9px;
   align-items: flex-start;
 }
 
@@ -356,4 +356,116 @@ input[type="time"] {
 /* ซ่อนลูกศรเดิมของ Select Wrapper */
 .size-select-wrapper::after {
   display: none;
+}
+
+@media (min-width: 900px) {
+  body {
+    display: block;
+    background-color: #fff;
+  }
+
+  .app-container {
+    width: 100%;
+    max-width: none;
+    height: auto;
+    min-height: 100vh;
+    max-height: none;
+    overflow-y: auto;
+  }
+
+  .app-header {
+    height: 52px;
+    flex-shrink: 0;
+    padding: 8px 24px 8px 32px;
+  }
+
+  .logo img {
+    height: 26px;
+  }
+
+  .main-content {
+    min-height: calc(100vh - 52px);
+    padding: 0;
+    display: grid;
+    grid-template-columns: 42.65% minmax(0, 1fr);
+  }
+
+  .banner {
+    min-height: 100%;
+    margin: 0;
+    background:
+      radial-gradient(ellipse at 18% 24%, rgba(255, 255, 255, 0.8), transparent 38%),
+      radial-gradient(ellipse at 78% 72%, rgba(255, 255, 255, 0.65), transparent 42%),
+      linear-gradient(135deg, #dcecf6, #edf7fc 48%, #d9eaf4);
+  }
+
+  .logo-banner {
+    width: 74%;
+  }
+
+  .event-panel {
+    width: min(570px, calc(100% - 72px));
+    justify-self: center;
+    align-self: center;
+  }
+
+  .event-panel h1 {
+    margin-bottom: 4px;
+    font-size: 34px;
+    line-height: 1.2;
+    font-weight: 700;
+  }
+
+  .event-form {
+    display: grid;
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.3fr);
+    gap: 6px 24px;
+  }
+
+  .event-form > .error-box,
+  .location-group,
+  .description-group,
+  .form-row,
+  .form-actions {
+    grid-column: 1 / -1;
+  }
+
+  .event-type-group {
+    grid-column: 1;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 4px;
+  }
+
+  .event-name-group {
+    grid-column: 2;
+  }
+
+  .location-group input {
+    height: 70px;
+  }
+
+  .description-group textarea {
+    height: 70px;
+    min-height: 70px;
+  }
+
+  .form-row {
+    gap: 24px;
+  }
+
+  .size-group {
+    width: 94px;
+    flex: 0 0 94px;
+  }
+
+  .date-group,
+  .time-group {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .form-actions {
+    margin-top: 12px;
+  }
 }
