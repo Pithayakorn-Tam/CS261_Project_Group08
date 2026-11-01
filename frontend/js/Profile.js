@@ -206,7 +206,7 @@ document.addEventListener("DOMContentLoaded", () => {
       // 2. กิจกรรมที่ผู้ใช้สร้าง (ยกเว้น 4 กิจกรรมตั้งต้น id 1-4 หากไม่ได้กดเข้าร่วมเอง)
       createdDtos.forEach(dto => {
         if (dto && dto.id != null && !eventMap.has(dto.id)) {
-          const isSystemDefaultSeeded = dto.id <= 4 && (studentId === "6800000000" || studentId === "6800000001");
+          const isSystemDefaultSeeded = dto.id <= 4 && (studentId === "6800000000" || studentId === "6800000001" || studentId === "6800000009");
           if (!isSystemDefaultSeeded) {
             eventMap.set(dto.id, mapDtoToProfileEvent(dto, true, false));
           }

@@ -54,6 +54,16 @@ function initJoinPopup() {
         const isOpen = card.dataset.open !== 'false';
         const isCancelled = card.dataset.cancelled === 'true';
         const alreadyJoined = button.dataset.joined === 'true';
+        const isCreator = card.dataset.creator === 'true';
+
+        if (isCreator) {
+            showPopup(
+                false,
+                'ไม่สามารถเข้าร่วมกิจกรรมได้',
+                'ผู้สร้างกิจกรรมไม่สามารถเข้าร่วมกิจกรรมของตนเองได้'
+            );
+            return;
+        }
 
         if (isCancelled) {
             showPopup(

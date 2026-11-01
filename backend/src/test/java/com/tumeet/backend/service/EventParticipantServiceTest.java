@@ -58,7 +58,7 @@ class EventParticipantServiceTest {
 
         sampleEvent = new Event("ไปกินสุกี้", "food", 4, LocalDate.of(2026, 10, 25), "18:00", creatorUser);
         sampleEvent.setId(10L);
-        sampleEvent.setCurrentParticipants(0);
+        // sampleEvent เริ่มต้น currentParticipants = 1 (รวมผู้สร้าง) จาก Constructor
         sampleEvent.setStatus("OPEN");
     }
 
@@ -75,7 +75,7 @@ class EventParticipantServiceTest {
 
         assertTrue(response.isStatus());
         assertEquals("เข้าร่วมกิจกรรมสำเร็จ", response.getMessage());
-        assertEquals(1, sampleEvent.getCurrentParticipants());
+        assertEquals(2, sampleEvent.getCurrentParticipants());
         verify(eventParticipantRepository, times(1)).save(any(EventParticipant.class));
         verify(eventRepository, times(1)).save(sampleEvent);
     }
@@ -115,7 +115,7 @@ class EventParticipantServiceTest {
     @Test
     @DisplayName("ยกเลิกการเข้าร่วมกิจกรรมสำเร็จ และลดจำนวนผู้เข้าร่วมลงเหลือ 0 ได้อย่างถูกต้อง")
     void leaveEvent_Success_ReducesToZero() {
-        sampleEvent.setCurrentParticipants(1);
+        // sampleEvent เริ่มต้น currentParticipants = 1 (รวมผู้สร้าง) จาก Constructor
         LeaveEventRequest request = new LeaveEventRequest(10L, "6800000002");
         EventParticipant participant = new EventParticipant(sampleEvent, participantUser);
 
@@ -128,9 +128,24 @@ class EventParticipantServiceTest {
 
         assertTrue(response.isStatus());
         assertEquals("ยกเลิกการเข้าร่วมกิจกรรมสำเร็จ", response.getMessage());
-        assertEquals(0, sampleEvent.getCurrentParticipants());
+        assertEquals(1, sampleEvent.getCurrentParticipants());
         verify(eventParticipantRepository, times(1)).delete(participant);
         verify(eventRepository, times(1)).save(sampleEvent);
+    }
+
+    @Test
+    @DisplayName("ผู้สร้างไม่สามารถเข้าร่วมกิจกรรมของตนเองได้")
+    void joinEvent_CreatorCannotJoin() {
+        JoinEventRequest request = new JoinEventRequest(10L, "6800000001");
+
+        when(userRepository.findByStudentId("6800000001")).thenReturn(Optional.of(creatorUser));
+        when(eventRepository.findById(10L)).thenReturn(Optional.of(sampleEvent));
+
+        ActionResponse response = eventParticipantService.joinEvent(request);
+
+        assertFalse(response.isStatus());
+        assertTrue(response.getMessage().contains("ผู้สร้างกิจกรรมไม่สามารถเข้าร่วมกิจกรรมของตนเองได้"));
+        verify(eventParticipantRepository, never()).save(any(EventParticipant.class));
     }
 
     @Test

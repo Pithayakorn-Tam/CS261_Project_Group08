@@ -76,7 +76,7 @@ class EventServiceTest {
         assertEquals("ไปกินตี๋น้อย", dto.getEventName());
         assertEquals("food", dto.getEventType());
         assertEquals(4, dto.getEventSize());
-        assertEquals(0, dto.getCurrentParticipants());
+        assertEquals(1, dto.getCurrentParticipants());
         assertEquals(LocalDate.of(2026, 10, 25), dto.getEventDate());
         assertEquals("18:00", dto.getEventTime());
         assertEquals("OPEN", dto.getStatus());
@@ -178,5 +178,11 @@ class EventServiceTest {
         assertEquals("ยกเลิกการเข้าร่วมกิจกรรมสำเร็จ", leaveRes.getMessage());
         assertEquals(2, event.getCurrentParticipants());
         assertFalse(event.getParticipants().contains(participantUser));
+
+        // 3. ทดสอบผู้สร้างไม่สามารถกดเข้าร่วมกิจกรรมของตนเองได้
+        when(userRepository.findByStudentId("6800000001")).thenReturn(Optional.of(mockUser));
+        EventResponse creatorJoinRes = eventService.joinEvent(3L, "6800000001");
+        assertFalse(creatorJoinRes.isStatus());
+        assertTrue(creatorJoinRes.getMessage().contains("ผู้สร้างกิจกรรมไม่สามารถเข้าร่วมกิจกรรมของตนเองได้"));
     }
 }

@@ -64,6 +64,10 @@ public class EventParticipantService {
             return new ActionResponse(false, "กิจกรรมนี้มีผู้เข้าร่วมเต็มแล้ว");
         }
 
+        if (event.getCreator() != null && user.getStudentId().equals(event.getCreator().getStudentId())) {
+            return new ActionResponse(false, "ผู้สร้างกิจกรรมไม่สามารถเข้าร่วมกิจกรรมของตนเองได้");
+        }
+
         // 4. ตรวจสอบการเข้าร่วมซ้ำ
         if (eventParticipantRepository.existsByEventIdAndUserStudentId(event.getId(), user.getStudentId())) {
             return new ActionResponse(false, "คุณได้เข้าร่วมกิจกรรมนี้ไปแล้ว");
@@ -121,7 +125,7 @@ public class EventParticipantService {
         eventParticipantRepository.delete(participantOptional.get());
 
         // 6. ลดจำนวนคนและปรับสถานะกิจกรรมกลับเป็น OPEN หากมีที่ว่าง
-        int updatedCount = Math.max(0, event.getCurrentParticipants() - 1);
+        int updatedCount = Math.max(1, event.getCurrentParticipants() - 1);
         event.setCurrentParticipants(updatedCount);
 
         if ("FULL".equalsIgnoreCase(event.getStatus()) && updatedCount < event.getEventSize()) {

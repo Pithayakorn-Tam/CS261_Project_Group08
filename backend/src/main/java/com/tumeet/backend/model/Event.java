@@ -41,7 +41,7 @@ public class Event {
     private Integer eventSize;
 
     @Column(name = "current_participants", nullable = false)
-    private Integer currentParticipants = 0;
+    private Integer currentParticipants = 1;
 
     @Column(name = "event_date", nullable = false)
     private LocalDate eventDate;
@@ -77,7 +77,7 @@ public class Event {
         this.eventName = eventName;
         this.eventType = eventType;
         this.eventSize = eventSize;
-        this.currentParticipants = 0;
+        this.currentParticipants = 1;
         this.eventDate = eventDate;
         this.eventTime = eventTime;
         this.status = "OPEN";
@@ -90,7 +90,7 @@ public class Event {
         this.eventType = eventType;
         this.location = location;
         this.eventSize = eventSize;
-        this.currentParticipants = 0;
+        this.currentParticipants = 1;
         this.eventDate = eventDate;
         this.eventTime = eventTime;
         this.status = "OPEN";
@@ -209,7 +209,7 @@ public class Event {
 
     public void addParticipant(User user) {
         if (user != null && this.participants.add(user)) {
-            this.currentParticipants = (this.currentParticipants != null ? this.currentParticipants : 0) + 1;
+            this.currentParticipants = (this.currentParticipants != null ? this.currentParticipants : 1) + 1;
             if (this.eventSize != null && this.currentParticipants >= this.eventSize) {
                 this.status = "FULL";
             }
@@ -218,7 +218,7 @@ public class Event {
 
     public void removeParticipant(User user) {
         if (user != null && this.participants.remove(user)) {
-            this.currentParticipants = Math.max(0, (this.currentParticipants != null ? this.currentParticipants : 1) - 1);
+            this.currentParticipants = Math.max(1, (this.currentParticipants != null ? this.currentParticipants : 2) - 1);
             if ("FULL".equalsIgnoreCase(this.status) && (this.eventSize == null || this.currentParticipants < this.eventSize)) {
                 this.status = "OPEN";
             }
