@@ -120,7 +120,10 @@ function initJoinPopup() {
 
         if (eventId) {
             try {
-                const res = await fetch(`http://localhost:8080/api/events/${eventId}/join`, {
+                const apiBaseUrl = (window.location.protocol === 'file:' || window.location.port === '5500' || window.location.port === '5501')
+                    ? 'http://localhost:8080/api'
+                    : '/api';
+                const res = await fetch(`${apiBaseUrl}/events/${eventId}/join`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ studentId: studentId })
