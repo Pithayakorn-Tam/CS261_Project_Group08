@@ -1,5 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const API_BASE_URL = "http://localhost:8080/api";
+  const API_BASE_URL = (window.location.protocol === "file:" || window.location.port === "5500" || window.location.port === "5501")
+    ? "http://localhost:8080/api"
+    : "/api";
 
   // Elements ผู้ใช้
   const usernameDisplayBox = document.getElementById("usernameDisplayBox");
@@ -28,6 +30,7 @@ document.addEventListener("DOMContentLoaded", () => {
     bordgame: "../Picture/EntertainmentAcivityLogo.svg",
     "E-sport": "../Picture/EntertainmentAcivityLogo.svg",
     consert: "../Picture/EntertainmentAcivityLogo.svg",
+    concert: "../Picture/EntertainmentAcivityLogo.svg",
     บันเทิง: "../Picture/EntertainmentAcivityLogo.svg",
     food: "../Picture/LifestyleActivityLogo.svg",
     other: "../Picture/LifestyleActivityLogo.svg",

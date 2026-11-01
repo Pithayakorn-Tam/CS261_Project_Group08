@@ -37,6 +37,7 @@ const categoryLogos = {
     'bordgame': '../Picture/EntertainmentAcivityLogo.svg',
     'E-sport': '../Picture/EntertainmentAcivityLogo.svg',
     'consert': '../Picture/EntertainmentAcivityLogo.svg',
+    'concert': '../Picture/EntertainmentAcivityLogo.svg',
     'บันเทิง': '../Picture/EntertainmentAcivityLogo.svg',
     'food': '../Picture/LifestyleActivityLogo.svg',
     'other': '../Picture/LifestyleActivityLogo.svg',
@@ -48,7 +49,7 @@ const categoryLogos = {
 const filterCategoryMap = {
     'academic': ['study', 'วิชาการ', 'academic'],
     'sport': ['sport', 'กีฬา'],
-    'entertainment': ['bordgame', 'E-sport', 'consert', 'บันเทิง', 'entertainment'],
+    'entertainment': ['bordgame', 'E-sport', 'consert', 'concert', 'บันเทิง', 'entertainment'],
     'lifestyle': ['food', 'other', 'ไลฟ์สไตล์', 'lifestyle']
 };
 
@@ -237,7 +238,10 @@ let allFetchedEvents = [];
 
 async function fetchEventsFromBackend() {
     try {
-        const response = await fetch('http://localhost:8080/api/events');
+        const apiBaseUrl = (window.location.protocol === 'file:' || window.location.port === '5500' || window.location.port === '5501')
+            ? 'http://localhost:8080/api'
+            : '/api';
+        const response = await fetch(`${apiBaseUrl}/events`);
         if (!response.ok) {
             throw new Error('ไม่สามารถดึงข้อมูลกิจกรรมจากฐานข้อมูลได้');
         }
