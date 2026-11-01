@@ -10,32 +10,34 @@
 
   <div class="app-container">
 
-    <header class="header">
-      <div class="logo-TUmeet">
-         <a href="./Homepage.html" aria-label="กลับไปหน้า Home">
-                     <img src="../Picture/LogoTUmeet.svg" alt="Logo TUmeet" class="icon-logo">
-                </a>
+    <!-- Header -->
+    <header class="app-header">
+      <div class="logo">
+        <a href="./Homepage.html" aria-label="กลับไปหน้า Home">
+          <img src="../Picture/LogoTUmeet.svg" alt="TU Meet Logo">
+        </a>
       </div>
-    
-      <div class="header-action">
-        <button type="button" class="icon-btn" aria-label="Notification">
-          <img src="../Picture/Vector.svg" alt="Notification" class="vector-img">
+      <div class="header-actions">
+        <button class="icon-btn">
+          <img src="../Picture/NotificationIcon.svg" alt="Notifications">
         </button>
-        <button type="button" class="icon-btn" aria-label="Profile">
+        <button class="icon-btn">
           <a href="Profile.html" aria-label="ไปหน้า Profile">
-            <img src="../Picture/profile.svg" alt="Profile" class="profile-img">
-          </a>
+            <img src="../Picture/ProfileIcon.svg" alt="Profile">
+          </a>  
         </button>
       </div>
     </header>
-
 
     <main class="main-content">
       <div class="banner">
         <img src="../Picture/create-event-logo.svg" alt="Create Your Event Logo" class="logo-banner">
       </div>
       
-      <form class="event-form">
+      <form class="event-form" novalidate>
+        <!-- กล่องแจ้งเตือนรวมด้านบน (ถ้ามี) -->
+        <div id="errorBox" class="error-box hidden"></div>
+
         <div class="form-group form-group-row">
           <label for="eventType">Event Type</label>
           <div class="select-wrapper">
@@ -46,36 +48,83 @@
               <option value="sport">กีฬา</option>
               <option value="E-sport">อีสปอร์ต</option>
               <option value="food">อาหาร/เครื่องดื่ม</option>
-              <option value="consert">คอนเสิร์ต</option>
+              <option value="concert">คอนเสิร์ต</option>
               <option value="other">อื่นๆ</option>            
             </select>
           </div>
+          <small id="typeError" class="error-message"></small>
         </div>
 
         <div class="form-group">
           <label for="eventName">Event Name</label>
           <input type="text" id="eventName" name="eventName" placeholder="ตัวอย่าง ไปกินตี๋น้อย">
+          <small id="nameError" class="error-message"></small>
         </div>
 
         <div class="form-group">
           <label for="eventLocation">Location</label>
-          <input type="text" id="eventLocation" name="eventLocation" placeholder="ตัวอย่าง สุกี้ตี๋น้อย สาขา..." required>
+          <input type="text" id="eventLocation" name="eventLocation" placeholder="ตัวอย่าง สุกี้ตี๋น้อย สาขา...">
+          <small id="locationError" class="error-message"></small>
+        </div>
+
+        <div class="form-group">
+          <label for="eventDescription">Description</label>
+          <textarea id="eventDescription" name="eventDescription" placeholder="รายละเอียดเพิ่มเติมเกี่ยวกับกิจกรรม..." rows="3"></textarea>
+          <small id="descError" class="error-message"></small>
         </div>
 
         <div class="form-row">
           <div class="form-group size-group">
             <label for="eventSize">Size</label>
-            <input type="number" id="eventSize" name="eventSize" value="1" min="1">
+              <div class="select-wrapper size-select-wrapper">
+
+                <!-- Select เดิม เก็บไว้ส่งค่าให้ Backend -->
+                <select name="eventSize" id="eventSize" class="size-native-select">
+                  <option value="2" selected>2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                  <option value="6">6</option>
+                  <option value="7">7</option>
+                  <option value="8">8</option>
+                  <option value="9">9</option>
+                  <option value="10">10</option>
+                  <option value="11">11</option>
+                  <option value="12">12</option>
+                  <option value="13">13</option>
+                  <option value="14">14</option>
+                  <option value="15">15</option>
+                  <option value="16">16</option>
+                  <option value="17">17</option>
+                  <option value="18">18</option>
+                  <option value="19">19</option>
+                  <option value="20">20</option>
+                </select>
+
+                <!-- ปุ่ม Dropdown -->
+                <button type="button" id="sizeDropdownBtn"
+                        class="size-dropdown-btn">
+                  <span id="sizeSelected">2</span>
+                  <span class="size-arrow"></span>
+                </button>
+
+                <!-- รายการตัวเลือก -->
+                <div id="sizeDropdownMenu" class="size-dropdown-menu hidden">
+                </div>
+
+              </div>
           </div>
 
           <div class="form-group date-group">
             <label for="eventDate">Date</label>
             <input type="date" id="eventDate" class="eventDate" name="eventDate" placeholder="dd/mm/yy">
+            <small id="dateError" class="error-message"></small>
           </div>
 
           <div class="form-group time-group">
             <label for="eventTime">Time</label>
             <input type="time" id="eventTime" class="eventTime" name="eventTime">
+            <small id="timeError" class="error-message"></small>
           </div>
         </div>
 
