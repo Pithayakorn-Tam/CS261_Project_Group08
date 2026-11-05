@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Optional;
@@ -70,13 +71,32 @@ public class EventService {
             return EventResponse.error("กรุณาระบุเวลาจัดกิจกรรม");
         }
 
+        // ตรวจสอบเงื่อนไข: ไม่สามารถสร้างกิจกรรมในอดีตได้ และตั้งเวลาล่วงหน้าได้ไม่เกิน 7 วัน
+        LocalDate today = LocalDate.now();
+        if (eventDate.isBefore(today)) {
+            return EventResponse.error("ไม่สามารถสร้างกิจกรรมในอดีตได้");
+        }
+        if (eventDate.isAfter(today.plusDays(7))) {
+            return EventResponse.error("สามารถสร้างกิจกรรมล่วงหน้าได้ไม่เกิน 7 วัน");
+        }
+        if (eventDate.isEqual(today)) {
+            try {
+                String normalizedTime = request.getEventTime().trim().replace('.', ':');
+                LocalTime parsedTime = LocalTime.parse(normalizedTime);
+                if (parsedTime.isBefore(LocalTime.now())) {
+                    return EventResponse.error("ไม่สามารถเลือกเวลาย้อนหลังได้ กรุณาเลือกเวลาใหม่อีกครั้ง");
+                }
+            } catch (DateTimeParseException ignored) {
+            }
+        }
+
         // 3. สร้างอ็อบเจกต์ Event และกำหนดค่าความสัมพันธ์ event.setCreator(creator)
         Event event = new Event();
         event.setEventName(request.getEventName().trim());
         event.setEventType(request.getEventType().trim());
         event.setLocation(request.getLocation() != null ? request.getLocation().trim() : null);
         event.setEventSize(request.getEventSize());
-        event.setCurrentParticipants(0); // เริ่มต้นที่ 0/eventSize
+        event.setCurrentParticipants(1); // เริ่มต้นที่ 1/eventSize (นับรวมผู้สร้างกิจกรรม)
         event.setEventDate(eventDate);
         event.setEventTime(request.getEventTime().trim());
         event.setStatus("OPEN");
@@ -159,6 +179,10 @@ public class EventService {
 
         Event event = eventOpt.get();
         User user = userOpt.get();
+
+        if (event.getCreator() != null && user.getStudentId().equals(event.getCreator().getStudentId())) {
+            return EventResponse.error("ผู้สร้างกิจกรรมไม่สามารถเข้าร่วมกิจกรรมของตนเองได้");
+        }
 
         if (event.getParticipants().contains(user)) {
             return EventResponse.error("คุณได้เข้าร่วมกิจกรรมนี้แล้ว");

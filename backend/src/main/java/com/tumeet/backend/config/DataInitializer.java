@@ -8,6 +8,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -18,8 +19,9 @@ public class DataInitializer {
     @Bean
     public CommandLineRunner seedInitialData(UserRepository userRepository,
                                              EventRepository eventRepository,
-                                             JdbcTemplate jdbcTemplate) {
-        return args -> {
+                                             JdbcTemplate jdbcTemplate,
+                                             TransactionTemplate transactionTemplate) {
+        return args -> transactionTemplate.executeWithoutResult(status -> {
             // 0. Ensure event_participants.joined_at allows NULL and has default SYSDATETIME()
             try {
                 jdbcTemplate.execute("""
@@ -73,85 +75,87 @@ public class DataInitializer {
             // Remove legacy mock user 6800000010 if exists
             userRepository.findByStudentId("6800000010").ifPresent(userRepository::delete);
 
-            User defaultCreator = userRepository.findByStudentId("6800000000")
-                    .or(() -> userRepository.findByStudentId("6800000001"))
+            User defaultCreator = userRepository.findByStudentId("6800000009")
+                    .or(() -> userRepository.findByStudentId("6800000000"))
                     .orElse(null);
 
-            // 2. Seed initial mock events (4 active + 3 past history events) if no events exist yet
+            // 2. Seed initial 5 mock events (4 active in Nov 3-6 + 1 past expired event) if no events exist yet
             if (eventRepository.count() == 0 && defaultCreator != null) {
-                Event e1 = new Event("ตี๋น้อย", "food", "Mingle, ม.กรุงเทพ", 6, LocalDate.of(2026, 10, 25), "19.00", defaultCreator);
-                e1.setCurrentParticipants(0);
+                Event e1 = new Event("ตี๋น้อย", "food", "Mingle, ม.กรุงเทพ", 6, LocalDate.of(2026, 11, 3), "19.00", defaultCreator);
+                e1.setCurrentParticipants(1);
 
-                Event e2 = new Event("อ่านหนังสือ", "study", "ห้องสมุด", 3, LocalDate.of(2026, 10, 26), "18.00", defaultCreator);
+                Event e2 = new Event("อ่านหนังสือ", "study", "ห้องสมุด", 3, LocalDate.of(2026, 11, 4), "18.00", defaultCreator);
                 e2.setCurrentParticipants(1);
 
-                Event e3 = new Event("ตีแบดมินตัน", "sport", "ยิม มธ.", 4, LocalDate.of(2026, 10, 27), "20.00", defaultCreator);
-                e3.setCurrentParticipants(2);
+                Event e3 = new Event("ตีแบดมินตัน", "sport", "ยิม มธ.", 4, LocalDate.of(2026, 11, 5), "20.00", defaultCreator);
+                e3.setCurrentParticipants(1);
 
-                Event e4 = new Event("บอร์ดเกม", "bordgame", "Mingle, ม.กรุงเทพ", 6, LocalDate.of(2026, 10, 28), "13.00", defaultCreator);
-                e4.setCurrentParticipants(4);
+                Event e4 = new Event("บอร์ดเกม", "bordgame", "Mingle, ม.กรุงเทพ", 6, LocalDate.of(2026, 11, 6), "13.00", defaultCreator);
+                e4.setCurrentParticipants(1);
 
                 Event past1 = new Event("อ่านหนังสือ", "study", "ห้องสมุดป๋วย", 4, LocalDate.of(2026, 10, 7), "19.00", defaultCreator);
                 past1.setCurrentParticipants(4);
+                past1.setStatus("CLOSED");
 
-                Event past2 = new Event("ตี๋น้อย", "food", "Mingle, ม.กรุงเทพ", 6, LocalDate.of(2026, 10, 8), "19.00", defaultCreator);
-                past2.setCurrentParticipants(6);
-
-                Event past3 = new Event("ตี๋น้อย", "food", "Mingle, ม.กรุงเทพ", 6, LocalDate.of(2026, 10, 9), "19.00", defaultCreator);
-                past3.setCurrentParticipants(6);
-
-                eventRepository.saveAll(List.of(e1, e2, e3, e4, past1, past2, past3));
+                eventRepository.saveAll(List.of(e1, e2, e3, e4, past1));
             } else if (defaultCreator != null) {
-                // Ensure the 4 primary mock events (id 1..4) have active future dates so they can be joined
-                eventRepository.findById(1L).ifPresent(ev -> {
-                    if (ev.getEventDate().isBefore(LocalDate.of(2026, 10, 24))) {
-                        ev.setEventDate(LocalDate.of(2026, 10, 25));
-                        ev.setStatus("OPEN");
+                // Ensure the 4 primary mock events (id 1..4) have creator 6800000009, Nov 3-6 dates, and start at 1 (+ any joined participants)
+                LocalDate[] targetDates = {
+                        LocalDate.of(2026, 11, 3),
+                        LocalDate.of(2026, 11, 4),
+                        LocalDate.of(2026, 11, 5),
+                        LocalDate.of(2026, 11, 6)
+                };
+                for (int idx = 0; idx < 4; idx++) {
+                    long eventId = idx + 1L;
+                    LocalDate targetDate = targetDates[idx];
+                    eventRepository.findById(eventId).ifPresent(ev -> {
+                        ev.setCreator(defaultCreator);
+                        ev.setEventDate(targetDate);
+                        int joinedCount = ev.getParticipants() != null ? ev.getParticipants().size() : 0;
+                        int expectedCount = 1 + joinedCount;
+                        ev.setCurrentParticipants(expectedCount);
+                        ev.setStatus(expectedCount >= ev.getEventSize() ? "FULL" : "OPEN");
                         eventRepository.save(ev);
-                    }
-                });
-                eventRepository.findById(2L).ifPresent(ev -> {
-                    if (ev.getEventDate().isBefore(LocalDate.of(2026, 10, 24))) {
-                        ev.setEventDate(LocalDate.of(2026, 10, 26));
-                        ev.setStatus("OPEN");
-                        eventRepository.save(ev);
-                    }
-                });
-                eventRepository.findById(3L).ifPresent(ev -> {
-                    if (ev.getEventDate().isBefore(LocalDate.of(2026, 10, 24))) {
-                        ev.setEventDate(LocalDate.of(2026, 10, 27));
-                        ev.setStatus("OPEN");
-                        eventRepository.save(ev);
-                    }
-                });
-                eventRepository.findById(4L).ifPresent(ev -> {
-                    if (ev.getEventDate().isBefore(LocalDate.of(2026, 10, 24))) {
-                        ev.setEventDate(LocalDate.of(2026, 10, 28));
-                        ev.setStatus("OPEN");
-                        eventRepository.save(ev);
-                    }
-                });
+                    });
+                }
 
-                // Seed the 3 past mock events into DB if not yet present
+                // Keep only 1 expired seeded event (2026-10-07) and remove extra seeded past events (2026-10-08, 2026-10-09)
                 List<Event> existing = eventRepository.findAllByOrderByIdAsc();
-                boolean hasPastOct7 = existing.stream()
-                        .anyMatch(ev -> LocalDate.of(2026, 10, 7).equals(ev.getEventDate()));
+                boolean hasPastOct7 = false;
+                for (Event ev : existing) {
+                    if (LocalDate.of(2026, 10, 8).equals(ev.getEventDate())
+                            || LocalDate.of(2026, 10, 9).equals(ev.getEventDate())
+                            || "test".equalsIgnoreCase(ev.getEventName())) {
+                        if (ev.getParticipants() != null) {
+                            ev.getParticipants().clear();
+                        }
+                        eventRepository.delete(ev);
+                        continue;
+                    }
+                    if (LocalDate.of(2026, 10, 7).equals(ev.getEventDate())) {
+                        hasPastOct7 = true;
+                        ev.setCreator(defaultCreator);
+                        ev.setCurrentParticipants(4);
+                        ev.setStatus("CLOSED");
+                        eventRepository.save(ev);
+                        continue;
+                    }
+                    int joinedCount = ev.getParticipants() != null ? ev.getParticipants().size() : 0;
+                    int minExpected = 1 + joinedCount;
+                    if (ev.getCurrentParticipants() == null || ev.getCurrentParticipants() < minExpected) {
+                        ev.setCurrentParticipants(minExpected);
+                        eventRepository.save(ev);
+                    }
+                }
+
                 if (!hasPastOct7) {
                     Event past1 = new Event("อ่านหนังสือ", "study", "ห้องสมุดป๋วย", 4, LocalDate.of(2026, 10, 7), "19.00", defaultCreator);
                     past1.setCurrentParticipants(4);
                     past1.setStatus("CLOSED");
-
-                    Event past2 = new Event("ตี๋น้อย", "food", "Mingle, ม.กรุงเทพ", 6, LocalDate.of(2026, 10, 8), "19.00", defaultCreator);
-                    past2.setCurrentParticipants(6);
-                    past2.setStatus("CLOSED");
-
-                    Event past3 = new Event("ตี๋น้อย", "food", "Mingle, ม.กรุงเทพ", 6, LocalDate.of(2026, 10, 9), "19.00", defaultCreator);
-                    past3.setCurrentParticipants(6);
-                    past3.setStatus("CLOSED");
-
-                    eventRepository.saveAll(List.of(past1, past2, past3));
+                    eventRepository.save(past1);
                 }
             }
-        };
+        });
     }
 }

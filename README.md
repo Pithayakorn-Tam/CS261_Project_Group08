@@ -10,22 +10,22 @@ TU Meet คือเว็บแอปพลิเคชันสำหรับ
 
 ```
 +-------------------------------------------------------------+
-|                  Client-Side (Frontend)                     |
-|           HTML5 / CSS3 / Vanilla JavaScript (ES6+)          |
+|            Client-Side (Frontend - tumeet-frontend)         |
+|     Nginx (Port 80) + HTML5 / CSS3 / Vanilla JS (ES6+)     |
 +-------------------------------------------------------------+
                               |
-                     REST API (HTTP / JSON)
+           Reverse Proxy (/api/*) & REST API (JSON)
                               |
 +-------------------------------------------------------------+
-|                  Server-Side (Backend)                      |
-|           Spring Boot 4.x / Java 22 / Spring Data JPA       |
+|            Server-Side (Backend - tumeet-backend)           |
+|    Tomcat 10.1 / Spring Boot 4.x / Java 21 / Spring JPA     |
 +-------------------------------------------------------------+
                               |
                        JDBC Connection
                               |
 +-------------------------------------------------------------+
-|                  Database (Containerized)                   |
-|           Microsoft SQL Server 2022 (Docker)                |
+|                 Database (tumeet-db)                        |
+|           Microsoft SQL Server 2022 (Port 1433)             |
 +-------------------------------------------------------------+
 ```
 
@@ -72,9 +72,8 @@ TU Meet คือเว็บแอปพลิเคชันสำหรับ
 
 ### สิ่งที่ต้องติดตั้งล่วงหน้า (Prerequisites)
 1. **Git**
-2. **Docker Desktop** (สำหรับรันฐานข้อมูล MS SQL Server 2022)
-3. **Java Development Kit (JDK) 22**
-4. **Web Browser** (เช่น Google Chrome, Microsoft Edge) หรือส่วนขยาย **Live Server** บน VS Code
+2. **Docker Desktop** (สำหรับรันระบบทั้งหมด 3 ส่วน: Frontend Nginx, Backend Tomcat/Spring Boot, และ Database MS SQL Server 2022)
+3. **Web Browser** (เช่น Google Chrome, Microsoft Edge)
 
 ---
 
@@ -87,37 +86,37 @@ cd CS261_Project_Group08
 
 ---
 
-### ขั้นตอนที่ 2: เริ่มต้นรันฐานข้อมูล (Database) ด้วย Docker
-ฐานข้อมูลใช้ Microsoft SQL Server 2022 ซึ่งถูกคอนฟิกไว้ผ่าน `docker-compose.yml` ให้เปิดเฉพาะพอร์ต `1433`:
+### ขั้นตอนที่ 2: เริ่มต้นรันระบบทั้งหมด (Frontend + Backend + Database) ด้วย Docker Compose
+ที่โฟลเดอร์รากของโปรเจกต์ (`CS261_Project_Group08`) รันคำสั่ง:
 ```bash
-cd backend
-docker compose up -d
+docker compose up -d --build
 ```
-> ระบบจะสร้าง Container ชื่อ `tumeet-db` และเริ่มต้นฐานข้อมูล `tumeetdb` ให้อัตโนมัติ
+> ระบบจะสร้างและรัน Container ทั้ง 3 ส่วนภายใต้เครือข่าย `tumeet-network` อัตโนมัติ:
+> 1. **`tumeet-db`** (พอร์ต `1433`): ฐานข้อมูล MS SQL Server 2022 พร้อมสร้างฐานข้อมูล `tumeetdb` อัตโนมัติ
+> 2. **`tumeet-backend`** (พอร์ต `8080`): คอมไพล์ด้วย Maven Multi-stage build และรันบน Tomcat 10.1 (JDK 21) พร้อมสร้างข้อมูลตั้งต้น (Data Initializer)
+> 3. **`tumeet-frontend`** (พอร์ต `80`): เว็บเซิร์ฟเวอร์ Nginx สำหรับเสิร์ฟหน้าเว็บและทำ Reverse Proxy (`/api/*` -> `tumeet-backend:8080`)
 
 ---
 
-### ขั้นตอนที่ 3: รันระบบเซิร์ฟเวอร์ Backend (Spring Boot)
-ใช้ Maven Wrapper ที่ติดตั้งมาพร้อมกับโปรเจกต์:
+### ขั้นตอนที่ 3: เปิดใช้งานระบบผ่าน Web Browser
+เมื่อ Container ทั้ง 3 ส่วนทำงานพร้อมแล้ว (`healthy`) สามารถเข้าใช้งานได้ทันทีที่:
+* **หน้าเว็บหลัก (ผ่าน Nginx พอร์ต 80):** `http://localhost` (หรือ `http://localhost/html/Login.html`)
+* **ตรวจสอบ Backend API โดยตรง:** `http://localhost:8080/api/events` หรือผ่าน Nginx Proxy ที่ `http://localhost/api/events`
 
-* **บน Windows (PowerShell / Command Prompt):**
-  ```powershell
-  cd backend
-  .\mvnw.cmd spring-boot:run
-  ```
-* **บน macOS / Linux:**
-  ```bash
-  cd backend
-  ./mvnw spring-boot:run
-  ```
-> เมื่อเซิร์ฟเวอร์เริ่มทำงานสำเร็จ จะพร้อมให้บริการ REST API ที่ `http://localhost:8080` (พร้อมรัน Data Initializer เพื่อสร้างข้อมูลตั้งต้นอัตโนมัติ)
+หากต้องการหยุดการทำงานของระบบทั้งหมด:
+```bash
+docker compose down
+```
 
 ---
 
-### ขั้นตอนที่ 4: เปิดใช้งานระบบฝั่ง Frontend
-สามารถเปิดไฟล์หน้าแรกได้ทันทีผ่าน Web Browser หรือรันผ่าน Live Server:
-1. เปิดไฟล์ `frontend/html/Login.html` (หรือเปิดผ่าน Live Server ที่พอร์ต `5500`: `http://localhost:5500/frontend/html/Login.html`)
-2. ระบบจะเปิดหน้าเข้าสู่ระบบ TU Meet พร้อมใช้งาน
+### 💡 ทางเลือกเพิ่มเติม: การรันแยกส่วนสำหรับนักพัฒนา (Local Development)
+หากต้องการรันเฉพาะฐานข้อมูลใน Docker แล้วรัน Backend / Frontend บนเครื่องโดยตรง:
+1. รันเฉพาะฐานข้อมูล: `docker compose up -d tumeet-db`
+2. รัน Backend ด้วย Maven Wrapper:
+   * **Windows:** `cd backend` แล้วรัน `.\mvnw.cmd spring-boot:run`
+   * **macOS / Linux:** `cd backend` แล้วรัน `./mvnw spring-boot:run`
+3. เปิดไฟล์ `frontend/html/Login.html` ผ่านส่วนขยาย **Live Server** (พอร์ต `5500`)
 
 ---
 

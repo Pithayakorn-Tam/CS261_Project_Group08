@@ -4,26 +4,26 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Profile</title>
-  <link rel="stylesheet" href="../css/Profile.css?v=2">
+  <link rel="stylesheet" href="../css/Profile.css?v=4">
 </head>
 <body>
 
   <div class="app-container">
 
     <!-- Header -->
-    <header class="header">
-      <div class="logo-TUmeet">
+    <header class="app-header">
+      <div class="logo">
         <a href="./Homepage.html" aria-label="กลับไปหน้า Home">
-          <img src="../Picture/LogoTUmeet.svg" alt="Logo TUmeet" class="icon-logo">
+          <img src="../Picture/LogoTUmeet.svg" alt="TU Meet Logo">
         </a>
       </div>
-      <div class="header-action">
-        <button type="button" class="icon-btn" aria-label="Notification">
-          <img src="../Picture/Vector.svg" alt="Notification" class="vector-img">
+      <div class="header-actions">
+        <button class="icon-btn">
+          <img src="../Picture/NotificationIcon.svg" alt="Notifications">
         </button>
-        <button type="button" class="icon-btn" aria-label="Profile">
+        <button class="icon-btn">
           <a href="Profile.html" aria-label="ไปหน้า Profile">
-            <img src="../Picture/profile.svg" alt="Profile" class="profile-img">
+            <img src="../Picture/ProfileIcon.svg" alt="Profile">
           </a>  
         </button>
       </div>
@@ -90,8 +90,8 @@
   <!-- Modal ยืนยันการยกเลิกการเข้าร่วมกิจกรรม -->
   <div class="modal-overlay" id="cancelModal" style="display: none;">
     <div class="modal-box">
-      <h3 class="modal-title">ยกเลิกการเข้าร่วมกิจกรรม</h3>
-      <p class="modal-desc">ท่านยืนยันที่จะยกเลิกการเข้าร่วมกิจกรรมหรือไม่</p>
+      <h3 class="modal-title" id="cancelModalTitle">ยกเลิกการเข้าร่วมกิจกรรม</h3>
+      <p class="modal-desc" id="cancelModalDesc">ท่านยืนยันที่จะยกเลิกการเข้าร่วมกิจกรรมหรือไม่</p>
       <div class="modal-actions">
         <button type="button" class="modal-btn confirm-btn" id="confirmCancelBtn">ยืนยัน</button>
         <button type="button" class="modal-btn dismiss-btn" id="dismissCancelBtn">ยกเลิก</button>
@@ -99,6 +99,6 @@
     </div>
   </div>
 
-  <script src="../js/Profile.js?v=3"></script>
+  <script src="../js/Profile.js?v=4"></script>
 </body>
 </html>

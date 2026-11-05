@@ -1,6 +1,6 @@
 @font-face {
   font-family: 'Mitr';
-  src: url(../Font/Mitr/Mitr-Regular.ttf);
+  src: url(../Font/Mitr-Regular.ttf);
 }
 
 * {
@@ -11,7 +11,7 @@
 }
 
 body {
-  background-color: #f0f0f0;
+  background-color: #ffffff;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -19,70 +19,49 @@ body {
   margin: 0;
 }
 
-/* ปรับให้กรอบหลักยืดหยุ่นตามหน้าจอ (Responsive) */
+
 .app-container {
   width: 100%;
   max-width: 430px;           
   height: 100vh;               
   max-height: 850px;           
   background-color: #ffffff;
-  border: 1px solid #dedede;
+  border: none;
   display: flex;
   flex-direction: column;
   position: relative;
   overflow-y: auto;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  box-shadow: none;
 }
 
 
-.header {
-  width: 100%;
-  height: 48px;
-  background-color: #ffffff;
-  border-bottom: 1px solid #dedede;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 16px;
-}
+/*Header*/
+.app-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px 5px;
+    border-bottom: 1px solid #eaeaea;
+    background-color: #FFFAF0;
 
-.icon-logo {
-  height: 22px;
-  width: auto;
 }
-
-.header-action {
-  display: flex;
-  gap: 12px;
-  align-items: center;
+.logo img {
+    height: 24px;
 }
-
+.header-actions {
+    display: flex;
+    gap: 16px;
+}
 .icon-btn {
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: transform 0.1s ease, opacity 0.1s ease;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+.icon-btn img {
+    width: 30px;
+    height: 30px;
 }
 
-.icon-btn:active {
-  transform: scale(0.90);
-  opacity: 0.8;
-}
-
-.vector-img {
-  width: 20px;
-  height: 20px;
-}
-
-.profile-img {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-}
 
 .main-content {
   padding: 20px;
@@ -106,7 +85,7 @@ body {
 .event-form {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 8px;
 }
 
 .form-group {
@@ -130,18 +109,37 @@ body {
   white-space: nowrap;
 }
 
+/* เพิ่มสไตล์สำหรับ textarea ของ Description */
+textarea {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid #333333;
+  border-radius: 6px;
+  font-family: "Mitr", sans-serif;
+  font-size: 14px;
+  background-color: #fff;
+  outline: none;
+  resize: vertical; /* อนุญาตให้ผู้ใช้ปรับความสูงกล่องได้เฉพาะแนวตั้ง */
+  min-height: 70px;
+}
+
+textarea::placeholder {
+  color: #a0a0a0;
+}
+
 /* Style Inputs & Select */
 input[type="text"],
 input[type="number"],
 input[type="date"],
 input[type="time"],
-select {
+select,
+textarea {
   width: 100%;
   height: 38px;
-  padding: 0 10px;
+  padding:  10px;
   border: 1px solid #333333;
   border-radius: 6px;
-  font-family: "Mitr", sans-serif;
+  font-family: "Mitr", sans-serif !important; /* เพิ่ม !important เพื่อบังคับใช้ฟอนต์ Mitr */
   font-size: 14px;
   background-color: #fff;
   outline: none;
@@ -186,7 +184,7 @@ input::placeholder {
 /* Row Size, Date, Time */
 .form-row {
   display: flex;
-  gap: 10px;
+  gap: 9px;
   align-items: flex-start;
 }
 
@@ -245,4 +243,223 @@ input[type="time"] {
   transform: scale(0.95);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
   background-color: #141d82;
+}
+
+.error-message {
+    color: #dc3545;
+    font-size: 12px;
+    margin-top: 0;
+    display: block;
+}
+ /* เพิ่มต่อท้ายไฟล์ CSS เดิม */
+.hidden {
+  display: none !important;
+}
+
+.error-box {
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: 10px;
+  border-radius: 6px;
+  font-size: 13px;
+  border: 1px solid #f5c6cb;
+  margin-bottom: 10px;
+}
+
+.error-message {
+    color: #dc3545;
+    font-size: 11px;
+    margin-top: 0px;
+    display: block;
+}
+/* ปรับความกว้างของ Size group ให้พอดี */
+.size-group {
+  width: 65px;
+}
+
+/* จัดตัวหนังสือใน select ของ Size ให้อยู่ตรงกลาง */
+.size-group select {
+  text-align: center;
+  padding-left: 6px;
+  padding-right: 20px;
+  color: #333;
+}
+
+/* ซ่อน Select เดิม */
+.size-native-select {
+  display: none !important;
+}
+
+/* ปุ่ม Dropdown */
+.size-dropdown-btn {
+  width: 100%;
+  height: 38px;
+  padding: 0 8px;
+  border: 1px solid #333;
+  border-radius: 6px;
+  background: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  font-family: "Mitr", sans-serif;
+  font-size: 14px;
+  color: #333;
+}
+
+/* ลูกศร */
+.size-arrow {
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 6px solid #2333cf;
+}
+
+/* กล่องรายการ */
+.size-dropdown-menu {
+  position: absolute;
+  top: 42px;
+  left: 0;
+  width: 100%;
+  max-height: 99px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+  z-index: 100;
+}
+
+/* ตัวเลือกแต่ละรายการ */
+.size-option {
+  width: 100%;
+  height: 33px;
+  border: none;
+  background: white;
+  cursor: pointer;
+  font-family: "Mitr", sans-serif;
+  font-size: 14px;
+  text-align: center;
+  color: #333;
+}
+
+.size-option:hover {
+  background: #eef0ff;
+  color: #2333cf;
+}
+
+.size-option.selected {
+  background: #e9ecff;
+  color: #2333cf;
+  font-weight: bold;
+}
+
+/* ซ่อนลูกศรเดิมของ Select Wrapper */
+.size-select-wrapper::after {
+  display: none;
+}
+
+/* Responsive layout: ยืดหยุ่นตามความกว้าง */
+.app-container {
+  width: 100%;
+  max-width: none;
+  min-height: 100vh;
+  height: auto;
+  max-height: none;
+  overflow-y: visible;
+}
+
+/* จอใหญ่: แบ่งพื้นที่เป็น banner และฟอร์ม */
+.main-content {
+  width: 100%;
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: clamp(20px, 4vw, 64px);
+  align-items: center;
+  padding: clamp(20px, 4vw, 56px);
+}
+
+.banner {
+  min-width: 0;
+  margin: 0;
+}
+
+.logo-banner {
+  width: min(100%, 420px);
+  height: auto;
+}
+
+.event-panel {
+  width: 100%;
+  max-width: 650px;
+  min-width: 0;
+}
+
+/* จอขนาดกลาง: ลดช่องว่างและขนาดโลโก้แบบค่อยเป็นค่อยไป */
+@media (max-width: 900px) {
+  .main-content {
+    grid-template-columns: minmax(0, 0.75fr) minmax(0, 1.25fr);
+    gap: clamp(16px, 3vw, 32px);
+    padding: clamp(16px, 3vw, 28px);
+  }
+
+  .logo-banner {
+    width: min(100%, 300px);
+  }
+
+  .event-form {
+    gap: 8px;
+  }
+
+  .form-row {
+    gap: 8px;
+  }
+}
+
+/* เมื่อพื้นที่สองคอลัมน์เริ่มไม่พอ ค่อยวางฟอร์มไว้ใต้โลโก้ */
+@media (max-width: 680px) {
+  .main-content {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+    padding: 20px;
+  }
+
+  .banner {
+    min-height: 120px;
+  }
+
+  .logo-banner {
+    width: min(80%, 400px);
+  }
+
+  .event-panel {
+    max-width: 650px;
+    justify-self: center;
+  }
+}
+
+/* มือถือเล็ก: จัดช่อง Size / Date / Time ให้ไม่เบียดกัน */
+@media (max-width: 420px) {
+  .app-header {
+    padding: 12px 16px 5px;
+  }
+
+  .main-content {
+    padding: 16px;
+  }
+
+  .form-row {
+    flex-wrap: wrap;
+  }
+
+  .size-group {
+    flex: 0 0 65px;
+  }
+
+  .date-group,
+  .time-group {
+    flex: 1 1 120px;
+    min-width: 0;
+  }
 }
