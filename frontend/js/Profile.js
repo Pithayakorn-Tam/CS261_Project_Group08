@@ -301,7 +301,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   if (avatarInput) {
-    avatarInput.addEventListener("change", function(event) {
+    avatarInput.addEventListener("change", function (event) {
       const file = event.target.files[0];
       if (file) {
         if (!file.type.startsWith("image/")) {
@@ -310,7 +310,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         const reader = new FileReader();
-        reader.onload = function(e) {
+        reader.onload = function (e) {
           const base64Image = e.target.result;
           avatarImg.src = base64Image;
 
@@ -367,7 +367,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (activeContainer) {
       if (activeEvents.length === 0) {
-        activeContainer.innerHTML = `<div style="text-align:center; color:#888; padding: 16px 0; font-size: 14px;">ยังไม่มีกิจกรรมที่คุณสร้างหรือเข้าร่วม</div>`;
+        activeContainer.innerHTML = `
+    <div class="empty-message">
+      ยังไม่มีกิจกรรมที่คุณสร้างหรือเข้าร่วม
+    </div>`;
       } else {
         activeContainer.innerHTML = activeEvents
           .map(event => createEventCardHTML(event, false))
@@ -377,7 +380,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (pastContainer) {
       if (pastEvents.length === 0) {
-        pastContainer.innerHTML = `<div style="text-align:center; color:#888; padding: 16px 0; font-size: 14px;">ยังไม่มีประวัติกิจกรรมในอดีต</div>`;
+        pastContainer.innerHTML = `
+    <div class="empty-message">
+      ยังไม่มีประวัติกิจกรรมในอดีต
+    </div>`;
       } else {
         pastContainer.innerHTML = pastEvents
           .map(event => createEventCardHTML(event, true))

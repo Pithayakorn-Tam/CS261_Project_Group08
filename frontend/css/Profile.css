@@ -1,6 +1,6 @@
 @font-face {
-  font-family: 'Mitr';
-  src: url(../Font/Mitr-Regular.ttf);
+  font-family: "Mitr";
+  src: url("../Font/Mitr/Mitr-Regular.ttf");
 }
 
 * {
@@ -11,118 +11,103 @@
 }
 
 body {
-  background-color: #f0f0f0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   min-height: 100vh;
-  margin: 0;
+  background: #f0f0f0;
 }
 
-/* กรอบหลักสำหรับหน้าจอมือถือ */
+/* =========================
+   2. Main Layout
+========================= */
 .app-container {
   width: 100%;
-  max-width: 430px;          
-  height: 100vh;              
-  max-height: 850px;          
-  background-color: #ffffff;
-  border: none;
+  min-height: 100vh;
+  background: #fff;
   display: flex;
   flex-direction: column;
-  position: relative;
-  overflow-y: auto;
-  box-shadow: none;
+  overflow-x: hidden;
 }
 
 .main-content {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
   display: flex;
   flex-direction: column;
+  gap: 20px;
   flex: 1;
-  overflow-y: auto;
 }
 
-/*Header*/
+/* =========================
+   3. Header
+========================= */
 .app-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 16px 20px;
-    border-bottom: 1px solid #eaeaea;
-}
-.logo img {
-    height: 24px;
-}
-.header-actions {
-    display: flex;
-    gap: 16px;
-}
-.icon-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-}
-.icon-btn img {
-    width: 24px;
-    height: 24px;
-}
-
-/*Header*/
-.app-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 16px 20px;
-    border-bottom: 1px solid #eaeaea;
-}
-.logo img {
-    height: 24px;
-}
-.header-actions {
-    display: flex;
-    gap: 16px;
-}
-.icon-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-}
-.icon-btn img {
-    width: 24px;
-    height: 24px;
-}
-
-
-
-/* Profile Section */
-.profile-section {
   display: flex;
-  padding: 24px 20px 10px 20px;
-  gap: 16px;
+  justify-content: space-between;
   align-items: center;
+  padding: 16px 20px 5px;
+  border-bottom: 1px solid #eaeaea;
+  background-color: #FFFAF0;
 }
 
-/* Avatar & Edit Badge */
+.logo img {
+  display: block;
+  height: 24px;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.icon-btn img {
+  display: block;
+  width: 24px;
+  height: 24px;
+}
+
+/* =========================
+   4. Profile Layout
+========================= */
+.profile-section {
+  display: grid;
+  grid-template-columns: 210px minmax(0, 1fr);
+  align-items: start;
+  gap: 40px;
+  padding: 24px 0;
+}
+
 .avatar-container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  flex-shrink: 0;
 }
 
+/* Profile Image */
 .avatar-wrapper {
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  border: 2px solid #FFE799;
   position: relative;
+  width: clamp(120px, 20vw, 210px);
+  aspect-ratio: 1 / 1;
+  height: auto;
   overflow: hidden;
+  border: 2px solid #2e3bcf;
+  border-radius: 50%;
   background-color: #f5f5f5;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 .avatar-img {
+  display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -131,124 +116,156 @@ body {
 .edit-badge {
   position: absolute;
   bottom: 0;
+  left: 0;
+  z-index: 1;
+  display: block;
   width: 100%;
-  background-color: #FFE799;
-  color: #333333;
+  padding: 4px 0;
+  background: #2e3bcf;
+  color: #fff;
   text-align: center;
   font-size: 12px;
-  padding: 3px 0;
-  cursor: pointer;
   font-weight: 500;
-  transition: background-color 0.2s ease;
+  cursor: pointer;
 }
 
-.edit-badge:hover {
-  background-color: #ffd966;
+/* Badge */
+.badge-container {
+  width: 100%;
+  max-width: 230px;
+  margin-top: 20px;
+  text-align: center;
 }
 
-/* Info Container & Inputs */
+.badge-container h4 {
+  margin-bottom: 8px;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.badge-box {
+  width: 100%;
+  min-height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #9999ff;
+  border-radius: 9px;
+  color: #666;
+  font-size: 14px;
+}
+
+/* =========================
+   5. Profile Information
+========================= */
+
+/* Desktop / Default */
 .info-container {
-  flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 20px;
+  width: 100%;
+  min-width: 0;
 }
 
 .input-group {
   position: relative;
+  min-width: 0;
 }
 
 .input-label {
   position: absolute;
-  top: -8px;
-  left: 12px;
-  background-color: #ffffff;
-  padding: 0 4px;
-  font-size: 11px;
-  color: #000000;
-  font-weight: 600;
+  top: -15px;
+  left: 14px;
   z-index: 1;
+  padding: 0 6px;
+  background: #fff;
+  color: #000;
+  font-size: 18px !important;
+  font-weight: 600;
 }
 
 .input-box {
-  width: 100%;
-  height: 36px;
-  border: 1px solid #8e8e8e;
-  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0 10px;
-  font-size: 14px;
-  color: #000000;
-  background-color: #ffffff;
+  width: 100%;
+  min-width: 0;
+  height: 45px;
+  padding: 0 16px;
+  border: 1px solid #8e8e8e;
+  border-radius: 10px;
+  background: #fff;
+  color: #000;
+  font-size: 18px;
 }
 
-/* กล่อง Username แสดงผลปกติ */
 .username-display-box {
   justify-content: space-between;
-  padding: 0 12px;
+  padding: 0 16px;
   cursor: pointer;
   transition: border-color 0.2s ease;
 }
 
 .username-display-box:hover {
-  border-color: #4A90E2;
+  border-color: #4a90e2;
 }
 
 .username-text {
   flex: 1;
+  min-width: 0;
   text-align: center;
 }
 
 .edit-text-btn {
-  font-size: 12px;
   color: #8e8e8e;
+  font-size: 14px;
   font-weight: 400;
   white-space: nowrap;
 }
 
 .edit-text-btn:hover {
-  color: #555555;
+  color: #555;
   text-decoration: underline;
 }
 
-/* กล่องในโหมดแก้ไข */
 .input-box-wrapper {
-  width: 100%;
-  height: 36px;
-  border: 1px solid #4A90E2;
-  border-radius: 8px;
   display: flex;
   align-items: center;
-  padding: 0 8px;
-  background-color: #ffffff;
+  width: 100%;
+  height: 52px;
+  padding: 0 12px;
+  border: 1px solid #4a90e2;
+  border-radius: 10px;
+  background: #fff;
 }
 
 .input-field {
   width: 100%;
+  min-width: 0;
   border: none;
   outline: none;
   background: transparent;
-  font-size: 14px;
-  color: #000000;
+  color: #000;
+  font-size: 18px;
   text-align: center;
 }
 
 .save-icon-btn {
-  background: #FFE799;
-  border: none;
-  border-radius: 4px;
-  width: 24px;
-  height: 24px;
-  cursor: pointer;
-  font-size: 12px;
-  font-weight: bold;
-  color: #333;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-left: 4px;
+  flex-shrink: 0;
+  width: 30px;
+  height: 30px;
+  margin-left: 6px;
+  border: none;
+  border-radius: 5px;
+  background: #ffe799;
+  color: #333;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
 }
 
 .save-icon-btn:hover {
@@ -259,123 +276,187 @@ body {
   font-weight: 700;
 }
 
-/* Email Box */
 .email-box {
   justify-content: center;
   text-align: center;
-  font-size: 13px;
-  color: #000000;
+  font-size: 17px;
 }
 
-/* ========================================== */
-/* ส่วนการ์ดกิจกรรม */
-/* ========================================== */
+
+/* =========================
+   Mobile
+========================= */
+
+@media (max-width: 600px) {
+  .info-container {
+    gap: 16px;
+  }
+
+  .input-label {
+    top: -9px;
+    left: 10px;
+    padding: 0 5px;
+    font-size: 16px;
+  }
+
+  .input-box {
+    height: 40px;
+    padding: 0 8px;
+    font-size: 14px;
+  }
+
+  .username-display-box {
+    padding: 0 10px;
+  }
+
+  .edit-text-btn {
+    font-size: 12px;
+  }
+
+  .input-box-wrapper {
+    height: 44px;
+    padding: 0 8px;
+  }
+
+  .input-field {
+    font-size: 14px;
+  }
+
+  .save-icon-btn {
+    width: 26px;
+    height: 26px;
+    font-size: 13px;
+  }
+
+  .email-box {
+    font-size: 12px;
+  }
+}
+
+/* =========================
+   Label Size - Mobile
+========================= */
+
+@media (max-width: 600px) {
+  .input-label {
+    font-size: 15px !important;
+    top: -15px;
+    left: 10px;
+  }
+}
+/* =========================
+   6. Activity Sections
+========================= */
 .activity-section {
-  padding: 12px 16px 8px 16px;
+  width: 100%;
+  padding: 12px 0;
 }
 
 .section-title {
-  font-size: 16px;
-  font-weight: 700;
-  color: #000000;
-  text-align: center;
   margin-bottom: 12px;
+  color: #000;
+  font-size: 25px;
+  font-weight: 700;
+  text-align: center;
 }
 
 .event-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.event-card {
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  min-width: 0;
+  margin: 0;
+  padding: 10px 12px;
+  border: 1px solid #000;
+  border-radius: 12px;
+  background: #fff;
+  color: #000;
+  font-size: 12px;
+  font-weight: 500;
 }
 
-.event-card { 
-  display: flex; 
-  align-items: center; 
-  border: 1px solid #000; 
-  border-radius: 12px; 
-  padding: 10px 12px; 
-  margin-bottom: 12px; 
-  background-color: white;     
-  font-size: 12px; 
-  font-weight: 500; 
-}
-
-.event-logo { 
-  width: 50px; 
+.event-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 50px;
   height: 50px;
-  display: flex; 
-  align-items: center; 
-  justify-content: center; 
-  margin-right: 12px; 
-  flex-shrink: 0; 
+  margin-right: 12px;
   overflow: hidden;
 }
 
-.event-logo img { 
-  width: 100%; 
-  height: 100%; 
-  object-fit: contain; 
+.event-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
-.event-info { 
-  flex-grow: 1; 
-  display: flex; 
-  flex-direction: column; 
-  gap: 4px; 
+.event-info {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
 }
 
-.event-badge { 
-  font-size: 14px;
-  font-weight: 700;
-  color: #ffffff;
-  background-color: #2e3bcf;
+.event-badge {
+  align-self: flex-start;
   padding: 2px 8px;
   border-radius: 4px;
-  align-self: flex-start;
+  background: #2e3bcf;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
 }
 
 .event-card.expired {
   border-color: #8e8e8e;
-  color: #666666;
+  color: #666;
 }
 
 .event-card.expired .event-badge {
-  background-color: #8e8e8e;
-  color: #ffffff;
+  background: #8e8e8e;
+  color: #fff;
 }
 
-.event-time-date { 
-  display: flex; 
-  gap: 12px; 
+.event-time-date {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
   font-weight: 600;
 }
 
-.event-location { 
-  font-size: 12px;
+.event-location {
   color: #333;
+  font-size: 12px;
 }
 
 .detail-icon {
-  width: 14px; 
+  width: 14px;
   height: 14px;
-  vertical-align: middle;
   margin-right: 4px;
+  vertical-align: middle;
 }
 
-/* Action Area ฝั่งขวาของการ์ด */
 .event-action-right {
   display: flex;
   align-items: center;
+  flex-shrink: 0;
   gap: 8px;
   margin-left: 8px;
-  flex-shrink: 0;
 }
 
-/* ปุ่มดูรายละเอียด */
 .detail-link-btn {
-  font-size: 13px;
   color: #2e3bcf;
-  text-decoration: none;
+  font-size: 13px;
   font-weight: 600;
+  text-decoration: none;
   white-space: nowrap;
 }
 
@@ -383,27 +464,26 @@ body {
   text-decoration: underline;
 }
 
-/* สถานะเข้าร่วมแล้ว + กากบาทแดง */
 .joined-action {
   gap: 6px;
 }
 
 .joined-status-text {
+  color: #333;
   font-size: 12px;
-  color: #333333;
   font-weight: 500;
   white-space: nowrap;
 }
 
 .cancel-event-btn {
-  background: transparent;
+  padding: 0 4px;
   border: none;
+  background: transparent;
   color: #e53935;
   font-size: 20px;
   font-weight: bold;
-  cursor: pointer;
-  padding: 0 4px;
   line-height: 1;
+  cursor: pointer;
   transition: opacity 0.2s ease;
 }
 
@@ -411,47 +491,60 @@ body {
   opacity: 0.7;
 }
 
-/* Modal Popup ยืนยันการยกเลิก */
+/* Empty Activity Message */
+.empty-message {
+  grid-column: 1 / -1;
+  width: 100%;
+  min-height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: #888;
+  font-size: 18px;
+  padding: 16px;
+}
+
+/* =========================
+   7. Cancel Confirmation Modal
+========================= */
 .modal-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.6);
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  inset: 0;
   z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.6);
 }
 
 .modal-box {
-  background-color: #ffffff;
   width: 85%;
   max-width: 320px;
-  border-radius: 16px;
   padding: 24px 20px;
+  border-radius: 16px;
+  background: #fff;
   text-align: center;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
 .modal-title {
+  margin-bottom: 8px;
+  color: #000;
   font-size: 16px;
   font-weight: 700;
-  color: #000000;
-  margin-bottom: 8px;
 }
 
 .modal-desc {
-  font-size: 13px;
-  color: #666666;
   margin-bottom: 20px;
+  color: #666;
+  font-size: 13px;
 }
 
 .modal-actions {
   display: flex;
-  gap: 12px;
   justify-content: center;
+  gap: 12px;
 }
 
 .modal-btn {
@@ -465,19 +558,174 @@ body {
 }
 
 .dismiss-btn {
-  background-color: #d9d9d9;
-  color: #333333;
+  background: #d9d9d9;
+  color: #333;
 }
 
 .dismiss-btn:hover {
-  background-color: #cccccc;
+  background: #ccc;
 }
 
 .confirm-btn {
-  background-color: #e53935;
-  color: #ffffff;
+  background: #e53935;
+  color: #fff;
 }
 
 .confirm-btn:hover {
-  background-color: #c62828;
+  background: #c62828;
+}
+
+/* =========================
+   8. Mobile
+========================= */
+@media (max-width: 600px) {
+  .main-content {
+    padding: 16px 12px;
+    gap: 12px;
+  }
+
+  .profile-section {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+    align-items: center;
+    gap: 16px;
+    padding: 16px 0 24px;
+    border-bottom: 3px solid #f38484;
+    margin-bottom: 4px;
+  }
+
+  .avatar-wrapper {
+    width: min(100%, clamp(120px, 28vw, 190px));
+  }
+
+  .badge-container {
+    display: none;
+  }
+
+  .info-container {
+    padding-right: 0;
+  }
+
+  /* ลดความกว้างเฉพาะช่อง Username */
+  .info-container .input-group:first-child {
+    width: calc(100% - 42px);
+  }
+
+  /* ช่องอื่นยังเต็มความกว้าง */
+  .info-container .input-group:not(:first-child) {
+    width: 100%;
+  }
+
+  .input-box {
+    padding: 0 6px;
+    font-size: 13px;
+  }
+
+  .email-box {
+    font-size: 12px;
+  }
+
+  .section-title {
+    margin-bottom: 10px;
+    font-size: 20px;
+  }
+
+  .event-list {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .event-card {
+    padding: 8px 10px;
+  }
+
+  .event-logo {
+    width: 42px;
+    height: 42px;
+    margin-right: 8px;
+  }
+
+  .event-badge {
+    font-size: 13px;
+  }
+
+  .event-time-date {
+    gap: 4px 8px;
+    font-size: 13px;
+  }
+
+  .event-action-right {
+    gap: 4px;
+    margin-left: 4px;
+  }
+}
+
+/* =========================
+   9. Tablet and Desktop
+========================= */
+
+@media (min-width: 768px) {
+  .main-content {
+    display: grid;
+    grid-template-columns: 320px minmax(0, 1fr);
+    grid-template-rows: auto auto auto;
+    column-gap: 48px;
+    row-gap: 20px;
+    align-items: start;
+    max-width: 1200px;
+    padding: 32px 48px;
+  }
+
+  /* กระจายลูกของ Profile Section ลงใน Grid หลัก */
+  .profile-section {
+    display: contents;
+  }
+
+  /* รูปโปรไฟล์และ Badge อยู่คอลัมน์ซ้าย */
+  .avatar-container {
+    grid-column: 1;
+    grid-row: 1 / 4;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+  }
+
+  .avatar-wrapper {
+    width: 220px;
+    height: 220px;
+  }
+
+  .badge-container {
+    width: 230px;
+    max-width: 100%;
+    margin-top: 20px;
+  }
+
+  /* ข้อมูลผู้ใช้อยู่ด้านบนของคอลัมน์ขวา */
+  .info-container {
+    grid-column: 2;
+    grid-row: 1;
+    width: 100%;
+    padding-right: 0;
+  }
+
+  /* กิจกรรมปัจจุบัน */
+  .activity-section:nth-of-type(2) {
+    grid-column: 2;
+    grid-row: 2;
+    width: 100%;
+    padding: 16px 0;
+  }
+
+  /* กิจกรรมในอดีต */
+  .activity-section:nth-of-type(3) {
+    grid-column: 2;
+    grid-row: 3;
+    width: 100%;
+    padding: 16px 0;
+  }
+  .event-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
 }
