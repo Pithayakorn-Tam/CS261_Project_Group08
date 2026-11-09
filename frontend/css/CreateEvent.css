@@ -1,6 +1,6 @@
 @font-face {
   font-family: 'Mitr';
-  src: url(../Font/Mitr-Regular.ttf);
+  src: url(../Font/Mitr/Mitr-Regular.ttf);
 }
 
 * {
@@ -11,7 +11,7 @@
 }
 
 body {
-  background-color: #f0f0f0;
+  background-color: #ffffff;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -19,7 +19,7 @@ body {
   margin: 0;
 }
 
-/* ปรับให้กรอบหลักยืดหยุ่นตามหน้าจอ (Responsive) */
+
 .app-container {
   width: 100%;
   max-width: 430px;           
@@ -40,8 +40,10 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 16px 20px;
+    padding: 16px 20px 5px;
     border-bottom: 1px solid #eaeaea;
+    background-color: #FFFAF0;
+
 }
 .logo img {
     height: 24px;
@@ -134,7 +136,7 @@ select,
 textarea {
   width: 100%;
   height: 38px;
-  padding: 0 10px;
+  padding:  10px;
   border: 1px solid #333333;
   border-radius: 6px;
   font-family: "Mitr", sans-serif !important; /* เพิ่ม !important เพื่อบังคับใช้ฟอนต์ Mitr */
@@ -358,114 +360,106 @@ input[type="time"] {
   display: none;
 }
 
-@media (min-width: 900px) {
-  body {
-    display: block;
-    background-color: #fff;
-  }
+/* Responsive layout: ยืดหยุ่นตามความกว้าง */
+.app-container {
+  width: 100%;
+  max-width: none;
+  min-height: 100vh;
+  height: auto;
+  max-height: none;
+  overflow-y: visible;
+}
 
-  .app-container {
-    width: 100%;
-    max-width: none;
-    height: auto;
-    min-height: 100vh;
-    max-height: none;
-    overflow-y: auto;
-  }
+/* จอใหญ่: แบ่งพื้นที่เป็น banner และฟอร์ม */
+.main-content {
+  width: 100%;
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: clamp(20px, 4vw, 64px);
+  align-items: center;
+  padding: clamp(20px, 4vw, 56px);
+}
 
-  .app-header {
-    height: 52px;
-    flex-shrink: 0;
-    padding: 8px 24px 8px 32px;
-  }
+.banner {
+  min-width: 0;
+  margin: 0;
+}
 
-  .logo img {
-    height: 26px;
-  }
+.logo-banner {
+  width: min(100%, 420px);
+  height: auto;
+}
 
+.event-panel {
+  width: 100%;
+  max-width: 650px;
+  min-width: 0;
+}
+
+/* จอขนาดกลาง: ลดช่องว่างและขนาดโลโก้แบบค่อยเป็นค่อยไป */
+@media (max-width: 900px) {
   .main-content {
-    min-height: calc(100vh - 52px);
-    padding: 0;
-    display: grid;
-    grid-template-columns: 42.65% minmax(0, 1fr);
-  }
-
-  .banner {
-    min-height: 100%;
-    margin: 0;
-    background:
-      radial-gradient(ellipse at 18% 24%, rgba(255, 255, 255, 0.8), transparent 38%),
-      radial-gradient(ellipse at 78% 72%, rgba(255, 255, 255, 0.65), transparent 42%),
-      linear-gradient(135deg, #dcecf6, #edf7fc 48%, #d9eaf4);
+    grid-template-columns: minmax(0, 0.75fr) minmax(0, 1.25fr);
+    gap: clamp(16px, 3vw, 32px);
+    padding: clamp(16px, 3vw, 28px);
   }
 
   .logo-banner {
-    width: 74%;
-  }
-
-  .event-panel {
-    width: min(570px, calc(100% - 72px));
-    justify-self: center;
-    align-self: center;
-  }
-
-  .event-panel h1 {
-    margin-bottom: 4px;
-    font-size: 34px;
-    line-height: 1.2;
-    font-weight: 700;
+    width: min(100%, 300px);
   }
 
   .event-form {
-    display: grid;
-    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.3fr);
-    gap: 6px 24px;
-  }
-
-  .event-form > .error-box,
-  .location-group,
-  .description-group,
-  .form-row,
-  .form-actions {
-    grid-column: 1 / -1;
-  }
-
-  .event-type-group {
-    grid-column: 1;
-    flex-direction: column;
-    align-items: stretch;
-    gap: 4px;
-  }
-
-  .event-name-group {
-    grid-column: 2;
-  }
-
-  .location-group input {
-    height: 70px;
-  }
-
-  .description-group textarea {
-    height: 70px;
-    min-height: 70px;
+    gap: 8px;
   }
 
   .form-row {
-    gap: 24px;
+    gap: 8px;
+  }
+}
+
+/* เมื่อพื้นที่สองคอลัมน์เริ่มไม่พอ ค่อยวางฟอร์มไว้ใต้โลโก้ */
+@media (max-width: 680px) {
+  .main-content {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+    padding: 20px;
+  }
+
+  .banner {
+    min-height: 120px;
+  }
+
+  .logo-banner {
+    width: min(80%, 400px);
+  }
+
+  .event-panel {
+    max-width: 650px;
+    justify-self: center;
+  }
+}
+
+/* มือถือเล็ก: จัดช่อง Size / Date / Time ให้ไม่เบียดกัน */
+@media (max-width: 420px) {
+  .app-header {
+    padding: 12px 16px 5px;
+  }
+
+  .main-content {
+    padding: 16px;
+  }
+
+  .form-row {
+    flex-wrap: wrap;
   }
 
   .size-group {
-    width: 94px;
-    flex: 0 0 94px;
+    flex: 0 0 65px;
   }
 
   .date-group,
   .time-group {
-    flex: 1;
+    flex: 1 1 120px;
     min-width: 0;
-  }
-
-  .form-actions {
-    margin-top: 12px;
   }
 }
