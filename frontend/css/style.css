@@ -61,7 +61,16 @@ body {
   justify-content: center;
   width: 30px;
   height: 30px;
+  padding: 0;
+  border: none;
+  outline: none;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
   text-decoration: none;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
 }
 
 .icon-btn img {
