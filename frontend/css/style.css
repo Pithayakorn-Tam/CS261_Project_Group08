@@ -54,18 +54,6 @@ body {
   gap: 16px;
 }
 
-.icon-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 30px;
-  height: 30px;
-  padding: 0;
-  background: none;
-  border: none;
-  cursor: pointer;
-}
-
 .icon-btn a {
   display: flex;
   align-items: center;
@@ -78,4 +66,15 @@ body {
   display: block;
   width: 30px;
   height: 30px;
+}
+.icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
 }
