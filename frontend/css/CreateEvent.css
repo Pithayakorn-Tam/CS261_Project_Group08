@@ -1,70 +1,11 @@
-@font-face {
-  font-family: 'Mitr';
-  src: url(../Font/Mitr/Mitr-Regular.ttf);
-}
+/* ==========================================
+   CreateEvent Page Style
+========================================== */
 
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  font-family: "Mitr", sans-serif;
-}
-
-body {
-  background-color: #ffffff;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  margin: 0;
-}
-
-
-.app-container {
-  width: 100%;
-  max-width: 430px;           
-  height: 100vh;               
-  max-height: 850px;           
-  background-color: #ffffff;
-  border: none;
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  overflow-y: auto;
-  box-shadow: none;
-}
-
-
-/*Header*/
-.app-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 16px 20px 5px;
-    border-bottom: 1px solid #eaeaea;
-    background-color: #FFFAF0;
-
-}
-.logo img {
-    height: 24px;
-}
-.header-actions {
-    display: flex;
-    gap: 16px;
-}
-.icon-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-}
-.icon-btn img {
-    width: 30px;
-    height: 30px;
-}
-
-
+/* Main Content Layout (ปลดล็อกขอบขาวฝั่งซ้าย) */
 .main-content {
-  padding: 20px;
+  width: 100%;
+  padding: 0;
   display: flex;
   flex-direction: column;
 }
@@ -82,6 +23,10 @@ body {
   height: auto;
 }
 
+.event-panel {
+  padding: 20px;
+}
+
 .event-form {
   display: flex;
   flex-direction: column;
@@ -94,7 +39,7 @@ body {
   gap: 4px;
 }
 
-/* ปรับ Event Type ให้อยู่แนวนอน ชิดซ้ายและสมดุล */
+/* Event Type Layout */
 .form-group-row {
   flex-direction: row;
   justify-content: flex-start;
@@ -109,7 +54,7 @@ body {
   white-space: nowrap;
 }
 
-/* เพิ่มสไตล์สำหรับ textarea ของ Description */
+/* Inputs, Select & Textarea */
 textarea {
   width: 100%;
   padding: 8px 10px;
@@ -119,34 +64,29 @@ textarea {
   font-size: 14px;
   background-color: #fff;
   outline: none;
-  resize: vertical; /* อนุญาตให้ผู้ใช้ปรับความสูงกล่องได้เฉพาะแนวตั้ง */
+  resize: vertical;
   min-height: 70px;
 }
 
-textarea::placeholder {
+textarea::placeholder,
+input::placeholder {
   color: #a0a0a0;
 }
 
-/* Style Inputs & Select */
 input[type="text"],
 input[type="number"],
 input[type="date"],
 input[type="time"],
-select,
-textarea {
+select {
   width: 100%;
   height: 38px;
   padding:  10px;
   border: 1px solid #333333;
   border-radius: 6px;
-  font-family: "Mitr", sans-serif !important; /* เพิ่ม !important เพื่อบังคับใช้ฟอนต์ Mitr */
+  font-family: "Mitr", sans-serif !important;
   font-size: 14px;
   background-color: #fff;
   outline: none;
-}
-
-input::placeholder {
-  color: #a0a0a0;
 }
 
 .form-group-row .select-wrapper {
@@ -166,7 +106,6 @@ input::placeholder {
   color: #757575;
 }
 
-/* ลูกศรสีน้ำเงินเข้มขวาช่อง Select */
 .select-wrapper::after {
   content: '';
   position: absolute;
@@ -181,7 +120,7 @@ input::placeholder {
   pointer-events: none;
 }
 
-/* Row Size, Date, Time */
+/* Form Row (Size, Date, Time) */
 .form-row {
   display: flex;
   gap: 9px;
@@ -189,7 +128,7 @@ input::placeholder {
 }
 
 .size-group {
-  width: 55px;
+  width: 65px;
 }
 
 .date-group {
@@ -211,7 +150,84 @@ input[type="time"] {
   color: #555555;
 }
 
-/* ปุ่ม CREATE ชิดขวา */
+/* Size Custom Dropdown */
+.size-group select {
+  text-align: center;
+  padding-left: 6px;
+  padding-right: 20px;
+  color: #333;
+}
+
+.size-native-select {
+  display: none !important;
+}
+
+.size-dropdown-btn {
+  width: 100%;
+  height: 38px;
+  padding: 0 8px;
+  border: 1px solid #333;
+  border-radius: 6px;
+  background: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  font-family: "Mitr", sans-serif;
+  font-size: 14px;
+  color: #333;
+}
+
+.size-arrow {
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 6px solid #2333cf;
+}
+
+.size-dropdown-menu {
+  position: absolute;
+  top: 42px;
+  left: 0;
+  width: 100%;
+  max-height: 99px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+  z-index: 100;
+}
+
+.size-option {
+  width: 100%;
+  height: 33px;
+  border: none;
+  background: white;
+  cursor: pointer;
+  font-family: "Mitr", sans-serif;
+  font-size: 14px;
+  text-align: center;
+  color: #333;
+}
+
+.size-option:hover {
+  background: #eef0ff;
+  color: #2333cf;
+}
+
+.size-option.selected {
+  background: #e9ecff;
+  color: #2333cf;
+  font-weight: bold;
+}
+
+.size-select-wrapper::after {
+  display: none;
+}
+
+/* Submit Button */
 .form-actions {
   display: flex;
   justify-content: flex-end;
@@ -245,13 +261,7 @@ input[type="time"] {
   background-color: #141d82;
 }
 
-.error-message {
-    color: #dc3545;
-    font-size: 12px;
-    margin-top: 0;
-    display: block;
-}
- /* เพิ่มต่อท้ายไฟล์ CSS เดิม */
+/* Messages & Alerts */
 .hidden {
   display: none !important;
 }
@@ -267,145 +277,51 @@ input[type="time"] {
 }
 
 .error-message {
-    color: #dc3545;
-    font-size: 11px;
-    margin-top: 0px;
-    display: block;
-}
-/* ปรับความกว้างของ Size group ให้พอดี */
-.size-group {
-  width: 65px;
+  color: #dc3545;
+  font-size: 11px;
+  margin-top: 0px;
+  display: block;
 }
 
-/* จัดตัวหนังสือใน select ของ Size ให้อยู่ตรงกลาง */
-.size-group select {
-  text-align: center;
-  padding-left: 6px;
-  padding-right: 20px;
-  color: #333;
-}
-
-/* ซ่อน Select เดิม */
-.size-native-select {
-  display: none !important;
-}
-
-/* ปุ่ม Dropdown */
-.size-dropdown-btn {
-  width: 100%;
-  height: 38px;
-  padding: 0 8px;
-  border: 1px solid #333;
-  border-radius: 6px;
-  background: white;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  cursor: pointer;
-  font-family: "Mitr", sans-serif;
-  font-size: 14px;
-  color: #333;
-}
-
-/* ลูกศร */
-.size-arrow {
-  width: 0;
-  height: 0;
-  border-left: 5px solid transparent;
-  border-right: 5px solid transparent;
-  border-top: 6px solid #2333cf;
-}
-
-/* กล่องรายการ */
-.size-dropdown-menu {
-  position: absolute;
-  top: 42px;
-  left: 0;
-  width: 100%;
-  max-height: 99px;
-  overflow-y: auto;
-  background: white;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  box-shadow: 0 3px 8px rgba(0,0,0,0.15);
-  z-index: 100;
-}
-
-/* ตัวเลือกแต่ละรายการ */
-.size-option {
-  width: 100%;
-  height: 33px;
-  border: none;
-  background: white;
-  cursor: pointer;
-  font-family: "Mitr", sans-serif;
-  font-size: 14px;
-  text-align: center;
-  color: #333;
-}
-
-.size-option:hover {
-  background: #eef0ff;
-  color: #2333cf;
-}
-
-.size-option.selected {
-  background: #e9ecff;
-  color: #2333cf;
-  font-weight: bold;
-}
-
-/* ซ่อนลูกศรเดิมของ Select Wrapper */
-.size-select-wrapper::after {
-  display: none;
-}
-
-/* Responsive layout: ยืดหยุ่นตามความกว้าง */
-.app-container {
-  width: 100%;
-  max-width: none;
-  min-height: 100vh;
-  height: auto;
-  max-height: none;
-  overflow-y: visible;
-}
-
-/* จอใหญ่: แบ่งพื้นที่เป็น banner และฟอร์ม */
-.main-content {
-  width: 100%;
-  display: grid;
-  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
-  gap: clamp(20px, 4vw, 64px);
-  align-items: center;
-  padding: clamp(20px, 4vw, 56px);
-}
-
-.banner {
-  min-width: 0;
-  margin: 0;
-}
-
-.logo-banner {
-  width: min(100%, 420px);
-  height: auto;
-}
-
-.event-panel {
-  width: 100%;
-  max-width: 650px;
-  min-width: 0;
-}
-
-/* จอขนาดกลาง: ลดช่องว่างและขนาดโลโก้แบบค่อยเป็นค่อยไป */
-@media (max-width: 900px) {
+/* ==========================================
+   Desktop Responsive (768px ขึ้นไป)
+========================================== */
+@media (min-width: 768px) {
   .main-content {
-    grid-template-columns: minmax(0, 0.75fr) minmax(0, 1.25fr);
-    gap: clamp(16px, 3vw, 32px);
-    padding: clamp(16px, 3vw, 28px);
+    width: 100%;
+    max-width: none;
+    min-height: calc(100vh - 52px);
+    padding: 0;
+    display: grid;
+    grid-template-columns: 42.65% minmax(0, 1fr);
+  }
+
+  .banner {
+    min-height: 100%;
+    margin: 0;
+    border-radius: 0; /* ตัดตรงชิดขอบ */
+    background:
+      radial-gradient(ellipse at 18% 24%, rgba(255, 255, 255, 0.8), transparent 38%),
+      radial-gradient(ellipse at 78% 72%, rgba(255, 255, 255, 0.65), transparent 42%),
+      linear-gradient(135deg, #dcecf6, #edf7fc 48%, #d9eaf4);
   }
 
   .logo-banner {
-    width: min(100%, 300px);
+    width: 74%;
+  }
+
+  .event-panel {
+    width: min(570px, calc(100% - 72px));
+    justify-self: center;
+    align-self: center;
+    padding: 0;
+  }
+
+  .event-panel h1 {
+    margin-bottom: 4px;
+    font-size: 34px;
+    line-height: 1.2;
+    font-weight: 700;
   }
 
   .event-form {
@@ -461,5 +377,9 @@ input[type="time"] {
   .time-group {
     flex: 1 1 120px;
     min-width: 0;
+  }
+
+  .form-actions {
+    margin-top: 12px;
   }
 }
