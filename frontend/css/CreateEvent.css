@@ -1,7 +1,10 @@
 /* ==========================================
    CreateEvent Page Style
 ========================================== */
-
+@font-face {
+  font-family: 'Mitr';
+  src: url(../Font/Mitr/Mitr-Regular.ttf);
+}
 /* Main Content Layout (ปลดล็อกขอบขาวฝั่งซ้าย) */
 .main-content {
   width: 100%;
