@@ -1,0 +1,92 @@
+
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TU Meet - Chat</title>
+
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/Chat.css">
+</head>
+
+<body>
+<div class="app-container">
+
+    <!-- Header -->
+    <header class="app-header">
+        <div class="logo">
+            <a href="./Homepage.html">
+                <img src="../Picture/LogoTUmeet.svg" alt="TU Meet">
+            </a>
+        </div>
+
+        <div class="header-actions">
+            <button class="icon-btn" type="button">
+                <img src="../Picture/NotificationIcon.svg" alt="Notifications">
+            </button>
+
+            <a href="Profile.html" class="icon-btn">
+                <img src="../Picture/profile.svg" alt="Profile">
+            </a>
+        </div>
+    </header>
+
+    <main class="chat-page">
+
+        <!-- หน้าแสดงรายชื่อแชท -->
+        <section id="chatListPage">
+
+            <h1 class="page-title">CHAT NOW</h1>
+
+            <div id="chatList">
+
+                <button class="chat-item" data-room="room1"
+                    data-name="ชื่อกิจกรรม">
+                    <img src="../Picture/profile.svg" alt="Profile">
+                    <span>ชื่อกิจกรรม</span>
+                </button>
+
+                <button class="chat-item" data-room="room2"
+                    data-name="ชื่อกิจกรรม">
+                    <img src="../Picture/profile.svg" alt="Profile">
+                    <span>ชื่อกิจกรรม</span>
+                </button>
+
+            </div>
+        </section>
+
+        <!-- หน้าแชท -->
+        <section id="chatRoomPage" hidden>
+
+            <div class="chat-room-header">
+                <button id="backBtn" type="button">←</button>
+                <img src="../Picture/profile.svg" alt="Profile">
+                <h2 id="chatName">ชื่อกิจกรรม</h2>
+            </div>
+
+            <!-- ข้อความ -->
+            <div id="messageArea" class="message-area">
+            </div>
+
+            <!-- ช่องพิมพ์ข้อความ -->
+            <form id="messageForm" class="message-form">
+                <input
+                    type="text"
+                    id="messageInput"
+                    placeholder="พิมพ์ข้อความ..."
+                    autocomplete="off"
+                    maxlength="2000"
+                >
+
+                <button type="submit">ส่ง</button>
+            </form>
+
+        </section>
+
+    </main>
+</div>
+
+<script src="../js/Chat.js"></script>
+</body>
+</html>
