@@ -1,0 +1,150 @@
+
+/* Main */
+
+.chat-page {
+    width: 100%;
+    max-width: 1200px;
+    flex: 1;
+    margin: 0 auto;
+    padding: 16px;
+}
+
+/* Chat List Page */
+
+.page-title {
+    text-align: center;
+    font-size: 32px;
+    margin: 12px 0 20px;
+}
+
+.chat-item {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    width: 100%;
+    min-height: 65px;
+    padding: 10px;
+    border: none;
+    border-bottom: 2px solid #ddd;
+    background: white;
+    text-align: left;
+    cursor: pointer;
+}
+
+.chat-item img {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+}
+
+.chat-item span {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+/* Chat Room */
+
+.chat-room-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 55px;
+    border-bottom: 1px solid #ddd;
+}
+
+.chat-room-header button {
+    border: none;
+    background: transparent;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.chat-room-header img {
+    width: 32px;
+    height: 32px;
+}
+
+.chat-room-header h2 {
+    font-size: 18px;
+}
+
+/* Message Area */
+
+.message-area {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    height: calc(100vh - 210px);
+    min-height: 200px;
+    padding: 16px 8px;
+    overflow-y: auto;
+}
+
+/* Message */
+
+.message {
+    max-width: 75%;
+    padding: 10px 14px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    overflow-wrap: anywhere;
+}
+
+.message.sent {
+    align-self: flex-end;
+}
+
+.message.received {
+    align-self: flex-start;
+}
+
+/* Input */
+
+.message-form {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 0;
+    border-top: 1px solid #ddd;
+}
+
+.message-form input {
+    flex: 1;
+    min-width: 0;
+    height: 42px;
+    padding: 0 12px;
+    border: 1px solid #aaa;
+    border-radius: 6px;
+    outline: none;
+    font-size: 14px;
+}
+
+.message-form button {
+    height: 42px;
+    padding: 0 18px;
+    border: 1px solid #aaa;
+    border-radius: 6px;
+    background: white;
+    cursor: pointer;
+}
+
+/* Mobile */
+
+@media (max-width: 600px) {
+    .chat-page {
+        padding: 12px 15px;
+    }
+
+    .page-title {
+        font-size: 30px;
+    }
+
+    .chat-item {
+        gap: 30px;
+        min-height: 48px;
+    }
+
+    .message-area {
+        height: calc(100dvh - 190px);
+    }
+}
