@@ -1,32 +1,8 @@
-@font-face {
-  font-family: "Mitr";
-  src: url("../Font/Mitr/Mitr-Regular.ttf");
-}
+/* ==========================================
+   Profile Page Style
+========================================== */
 
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  font-family: "Mitr", sans-serif;
-}
-
-body {
-  min-height: 100vh;
-  background: #f0f0f0;
-}
-
-/* =========================
-   2. Main Layout
-========================= */
-.app-container {
-  width: 100%;
-  min-height: 100vh;
-  background: #fff;
-  display: flex;
-  flex-direction: column;
-  overflow-x: hidden;
-}
-
+/* Main Layout */
 .main-content {
   width: 100%;
   max-width: 1200px;
@@ -39,45 +15,7 @@ body {
 }
 
 /* =========================
-   3. Header
-========================= */
-.app-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px 20px 5px;
-  border-bottom: 1px solid #eaeaea;
-  background-color: #FFFAF0;
-}
-
-.logo img {
-  display: block;
-  height: 24px;
-}
-
-.header-actions {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-.icon-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: none;
-  border: none;
-  cursor: pointer;
-}
-
-.icon-btn img {
-  display: block;
-  width: 24px;
-  height: 24px;
-}
-
-/* =========================
-   4. Profile Layout
+   Profile Layout
 ========================= */
 .profile-section {
   display: grid;
@@ -94,7 +32,6 @@ body {
   flex-shrink: 0;
 }
 
-/* Profile Image */
 .avatar-wrapper {
   position: relative;
   width: clamp(120px, 20vw, 210px);
@@ -129,7 +66,6 @@ body {
   cursor: pointer;
 }
 
-/* Badge */
 .badge-container {
   width: 100%;
   max-width: 230px;
@@ -150,16 +86,12 @@ body {
   align-items: center;
   justify-content: center;
   border: 1px solid #9999ff;
-  border-radius: 9px;
+  border-radius: 99px;
   color: #666;
   font-size: 14px;
 }
 
-/* =========================
-   5. Profile Information
-========================= */
-
-/* Desktop / Default */
+/* Profile Information */
 .info-container {
   display: flex;
   flex-direction: column;
@@ -170,6 +102,7 @@ body {
 
 .input-group {
   position: relative;
+  width: 100%;
   min-width: 0;
 }
 
@@ -185,12 +118,12 @@ body {
   font-weight: 600;
 }
 
-.input-box {
+/* ล็อกความสูงทุกประเภทกล่องให้อยู่ที่ 45px เท่ากันเป๊ะ */
+.input-box,
+.input-box-wrapper {
   display: flex;
   align-items: center;
-  justify-content: center;
   width: 100%;
-  min-width: 0;
   height: 45px;
   padding: 0 16px;
   border: 1px solid #8e8e8e;
@@ -202,7 +135,6 @@ body {
 
 .username-display-box {
   justify-content: space-between;
-  padding: 0 16px;
   cursor: pointer;
   transition: border-color 0.2s ease;
 }
@@ -230,14 +162,8 @@ body {
 }
 
 .input-box-wrapper {
-  display: flex;
-  align-items: center;
-  width: 100%;
-  height: 52px;
+  border-color: #4a90e2;
   padding: 0 12px;
-  border: 1px solid #4a90e2;
-  border-radius: 10px;
-  background: #fff;
 }
 
 .input-field {
@@ -256,8 +182,8 @@ body {
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  width: 30px;
-  height: 30px;
+  width: 28px;
+  height: 28px;
   margin-left: 6px;
   border: none;
   border-radius: 5px;
@@ -282,71 +208,7 @@ body {
   font-size: 17px;
 }
 
-
-/* =========================
-   Mobile
-========================= */
-
-@media (max-width: 600px) {
-  .info-container {
-    gap: 16px;
-  }
-
-  .input-label {
-    top: -9px;
-    left: 10px;
-    padding: 0 5px;
-    font-size: 16px;
-  }
-
-  .input-box {
-    height: 40px;
-    padding: 0 8px;
-    font-size: 14px;
-  }
-
-  .username-display-box {
-    padding: 0 10px;
-  }
-
-  .edit-text-btn {
-    font-size: 12px;
-  }
-
-  .input-box-wrapper {
-    height: 44px;
-    padding: 0 8px;
-  }
-
-  .input-field {
-    font-size: 14px;
-  }
-
-  .save-icon-btn {
-    width: 26px;
-    height: 26px;
-    font-size: 13px;
-  }
-
-  .email-box {
-    font-size: 12px;
-  }
-}
-
-/* =========================
-   Label Size - Mobile
-========================= */
-
-@media (max-width: 600px) {
-  .input-label {
-    font-size: 15px !important;
-    top: -15px;
-    left: 10px;
-  }
-}
-/* =========================
-   6. Activity Sections
-========================= */
+/* Activity Sections */
 .activity-section {
   width: 100%;
   padding: 12px 0;
@@ -491,7 +353,6 @@ body {
   opacity: 0.7;
 }
 
-/* Empty Activity Message */
 .empty-message {
   grid-column: 1 / -1;
   width: 100%;
@@ -505,9 +366,7 @@ body {
   padding: 16px;
 }
 
-/* =========================
-   7. Cancel Confirmation Modal
-========================= */
+/* Modal */
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -575,9 +434,7 @@ body {
   background: #c62828;
 }
 
-/* =========================
-   8. Mobile
-========================= */
+/* Mobile Rules */
 @media (max-width: 600px) {
   .main-content {
     padding: 16px 12px;
@@ -605,18 +462,15 @@ body {
     padding-right: 0;
   }
 
-  /* ลดความกว้างเฉพาะช่อง Username */
-  .info-container .input-group:first-child {
-    width: calc(100% - 42px);
+  /* ปรับให้ทุกช่องกว้างเต็ม 100% เท่ากันทั้งหมด */
+  .info-container .input-group {
+    width: 100% !important;
   }
 
-  /* ช่องอื่นยังเต็มความกว้าง */
-  .info-container .input-group:not(:first-child) {
-    width: 100%;
-  }
-
-  .input-box {
-    padding: 0 6px;
+  .input-box,
+  .input-box-wrapper {
+    height: 40px;
+    padding: 0 8px;
     font-size: 13px;
   }
 
@@ -657,12 +511,15 @@ body {
     gap: 4px;
     margin-left: 4px;
   }
+
+  .input-label {
+    font-size: 15px !important;
+    top: -15px;
+    left: 10px;
+  }
 }
 
-/* =========================
-   9. Tablet and Desktop
-========================= */
-
+/* Tablet & Desktop Rules */
 @media (min-width: 768px) {
   .main-content {
     display: grid;
@@ -675,12 +532,10 @@ body {
     padding: 32px 48px;
   }
 
-  /* กระจายลูกของ Profile Section ลงใน Grid หลัก */
   .profile-section {
     display: contents;
   }
 
-  /* รูปโปรไฟล์และ Badge อยู่คอลัมน์ซ้าย */
   .avatar-container {
     grid-column: 1;
     grid-row: 1 / 4;
@@ -701,7 +556,6 @@ body {
     margin-top: 20px;
   }
 
-  /* ข้อมูลผู้ใช้อยู่ด้านบนของคอลัมน์ขวา */
   .info-container {
     grid-column: 2;
     grid-row: 1;
@@ -709,7 +563,6 @@ body {
     padding-right: 0;
   }
 
-  /* กิจกรรมปัจจุบัน */
   .activity-section:nth-of-type(2) {
     grid-column: 2;
     grid-row: 2;
@@ -717,13 +570,13 @@ body {
     padding: 16px 0;
   }
 
-  /* กิจกรรมในอดีต */
   .activity-section:nth-of-type(3) {
     grid-column: 2;
     grid-row: 3;
     width: 100%;
     padding: 16px 0;
   }
+
   .event-list {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 16px;
