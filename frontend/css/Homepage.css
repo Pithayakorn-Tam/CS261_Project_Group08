@@ -686,3 +686,44 @@ body {
         min-height: 110px;
     }
 }
+/* Sticky Chat Button */
+.sticky-chat-btn {
+    position: fixed;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+
+    width: 110px;
+    height: 90px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #fff;
+    border-radius: 50px 0 0 50px;
+
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.25);
+
+    z-index: 999;
+    text-decoration: none;
+}
+
+.sticky-chat-btn img {
+    width: 55px;
+    height: 55px;
+    object-fit: contain;
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+    .sticky-chat-btn {
+        width: 75px;
+        height: 65px;
+    }
+
+    .sticky-chat-btn img {
+        width: 40px;
+        height: 40px;
+    }
+}
