@@ -4,13 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Create Your Event</title>
+  <link rel="stylesheet" href="../css/style.css">
   <link rel="stylesheet" href="../css/CreateEvent.css">
 </head>
 <body>
 
   <div class="app-container">
 
-    <!-- Header -->
+<!-- Header -->
     <header class="app-header">
       <div class="logo">
         <a href="./Homepage.html" aria-label="กลับไปหน้า Home">
@@ -23,7 +24,7 @@
         </button>
         <button class="icon-btn">
           <a href="Profile.html" aria-label="ไปหน้า Profile">
-            <img src="../Picture/ProfileIcon.svg" alt="Profile">
+            <img src="../Picture/ProfileIcon-ver-2.svg" alt="Profile">
           </a>  
         </button>
       </div>
@@ -35,7 +36,6 @@
       </div>
 
       <section class="event-panel" aria-labelledby="event-details-title">
-        <h1 id="event-details-title">Event details</h1>
         <form class="event-form" novalidate>
         <!-- กล่องแจ้งเตือนรวมด้านบน (ถ้ามี) -->
         <div id="errorBox" class="error-box hidden"></div>
@@ -45,12 +45,10 @@
           <div class="select-wrapper">
             <select name="eventType" id="eventType">
               <option value="" disabled selected hidden>หมวดหมู่</option>
-              <option value="bordgame">บอร์ดเกม</option>
-              <option value="study">ติวหนังสือ</option>
+              <option value="academic">วิชาการ</option>
               <option value="sport">กีฬา</option>
-              <option value="E-sport">อีสปอร์ต</option>
-              <option value="food">อาหาร/เครื่องดื่ม</option>
-              <option value="concert">คอนเสิร์ต</option>
+              <option value="entertainment">บันเทิง</option>
+              <option value="life-style">ไลฟ์สไตล์</option>
               <option value="other">อื่นๆ</option>            
             </select>
           </div>
