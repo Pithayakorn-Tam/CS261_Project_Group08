@@ -1,3 +1,11 @@
+
+/* =========================
+   1. Global
+========================= */
+@font-face {
+  font-family: 'Mitr';
+  src: url(../Font/Mitr/Mitr-Regular.ttf);
+}
 * {
     margin: 0;
     padding: 0;
@@ -14,274 +22,378 @@ body {
     margin: 0;
 }
 
-/* ปรับจำลองหน้าจอมือถือให้ Responsive และยืดหยุ่นขึ้น */
+/* =========================
+   2. Main Container
+========================= */
 .mobile-container {
-    width: 100%;                  
-    max-width: 430px;             
-    height: 100vh;                
-    max-height: 880px;            
+    width: 100%;
+    max-width: 430px;
+    height: 100vh;
+    max-height: 880px;
     background-color: #ffffff;
-    overflow-y: auto;            
-    border-radius: 0px;          
+    overflow-y: auto;
+    border-radius: 0;
 }
 
-
-/*Header*/
+/* =========================
+   3. Header
+========================= */
 .app-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 16px 20px;
     border-bottom: 1px solid #eaeaea;
+    background-color: #FFFAF0;
 }
+
 .logo img {
     height: 24px;
 }
+
 .header-actions {
     display: flex;
+    align-items: center;
     gap: 16px;
 }
+
 .icon-btn {
     background: none;
     border: none;
     cursor: pointer;
 }
+
 .icon-btn img {
-    width: 24px;
-    height: 24px;
+    width: 35px;
+    height: 35px;
 }
 
-
-/* แบนเนอร์ */
-.recommend-section { 
-    padding: 16px; 
+/* =========================
+   4. Recommend Banner
+========================= */
+.recommend-section {
+    padding: 16px;
+    padding-top: 0px;
 }
-.recommend-title { 
+
+.recommend-title {
     font-size: 24px;
-    color: #2e3bcf; 
-    text-align: center; 
-    margin-bottom: 8px; 
-    font-weight: 800;
+    color: #2e3bcf;
+    text-align: center;
+    margin: 0px;
+
+    font-weight: 500;
 }
-.recommend-title .highlight { 
+
+.recommend-title .highlight {
     font-size: 40px;
-    color: #f2bc57; 
+    color: #f2bc57;
 }
-.carousel-container { 
-    width: 100%; 
-    border-radius: 12px; 
+
+.carousel-container {
+    width: 100%;
+    border-radius: 12px;
     border: 1px solid #2e3bcf;
-    overflow: hidden; 
+    overflow: hidden;
     position: relative;
 }
-.carousel-slide { 
-    display: flex; 
-    transition: transform 0.5s ease-in-out; 
+
+.carousel-slide {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
 }
-.carousel-item { 
-    min-width: 100%; 
-    height: 120px; 
-    display: flex; 
-    align-items: center; 
+
+.carousel-item {
+    min-width: 100%;
+    height: 120px;
+    display: flex;
+    align-items: center;
     justify-content: center;
 }
-.carousel-dots { 
-    text-align: center; 
+
+.banner-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.carousel-dots {
+    text-align: center;
     margin-top: 12px;
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 6px; 
+    gap: 6px;
 }
-/* จุดสถานะปกติ (สั้น) */
-.dot { 
-    height: 6px; 
-    width: 14px; 
-    background-color: #ccc; 
-    border-radius: 4px; 
-    display: inline-block; 
-    transition: width 0.3s ease, background-color 0.3s ease; 
+
+.dot {
+    height: 6px;
+    width: 14px;
+    background-color: #ccc;
+    border-radius: 4px;
+    display: inline-block;
+    transition: width 0.3s ease, background-color 0.3s ease;
 }
-/* จุดสถานะที่ถูกเลือก (ยาว) */
-.dot.active { 
+
+.dot.active {
     width: 24px;
     background-color: #2e3bcf;
 }
 
+/* =========================
+   5. Create Event Button
+========================= */
+.create-event-section {
+    padding: 16px;
+}
 
-/* ส่วนปุ่มสร้างกิจกรรม */
-.create-event-section { 
-    padding: 16px; 
-}
-.create-btn { 
-    width: 100%; 
-    background-color: #3b42d0;
-    color: white; 
-    border: none; 
-    border-radius: 8px; 
-    display: flex; 
-    justify-content: space-between; 
-    align-items: center; 
+.create-btn {
+    width: 100%;
+    background-color: #2131DA;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     padding: 6px 12px;
-    cursor: pointer; 
+    cursor: pointer;
 }
-.create-text { 
-    display: flex; 
-    flex-direction: column; 
-    text-align: left; 
+
+.create-text {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
     font-size: 16px;
-    font-weight: 500; 
-    margin-left: 8px; /* ขยับข้อความทั้งหมดออกห่างจากขอบซ้ายนิดนึง */
+    font-weight: 500;
+    margin-left: 8px;
 }
+
 .create-text .eng {
     letter-spacing: 0.5px;
 }
-.create-text .th { 
-    margin-left: 22px; /*ดันข้อความ*/
+
+.create-text .th {
+    margin-left: 22px;
 }
-.create-icon { 
-    background-color: white; 
-    color: #3b42d0; 
+
+.create-icon {
+    background-color: white;
+    color: #3b42d0;
     font-size: 36px;
-    font-weight: bold; 
+    font-weight: bold;
     width: 48px;
     height: 40px;
-    border-radius: 8px; 
-    display: flex; 
-    align-items: center; 
-    justify-content: center; 
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     line-height: 1;
 }
 
-/* ส่วน Feed Header */
-.feed-header-section { 
-    padding: 16px 16px 8px 16px; 
+/* =========================
+   6. Feed Header
+========================= */
+.feed-header-section {
+    padding: 16px 16px 8px 16px;
     margin-bottom: 12px;
 }
+
 .feed-title-container {
-    text-align: center; 
+    text-align: center;
     border-bottom: 3px solid #f2bc57;
-    padding-bottom: 8px;
+    padding-bottom: 0px;
     margin-bottom: 12px;
-    font-size: 20px; 
-    font-weight: 800; 
+    font-size: 20px;
+    font-weight: 800;
     display: flex;
     flex-direction: column;
+    line-height: 1.1;
 }
-.feed-title-th { align-self: flex-start;}
-.feed-title-en { align-self: flex-end;}
-.exclaim-red { 
-    color: #ff6b6b; 
-    font-size: 40px;
+
+.feed-title-th {
+    align-self: flex-start;
+    
 }
-.exclaim-blue { 
-    color: #2e3bcf; 
+
+.feed-title-en {
+    align-self: flex-end;
+     margin-top: -15px;
+}
+
+.exclaim-red {
+    color: #ff6b6b;
     font-size: 40px;
 }
 
-/* ส่วนตัวกรอง (Dropdown) */
-.filter-container { 
-    display: flex; 
-    justify-content: flex-end; 
-    align-items: center; 
-    gap: 8px; 
+.exclaim-blue {
+    color: #2e3bcf;
+    font-size: 40px;
 }
 
-.filter-label { 
-    font-size: 16px; 
-    text-align: right; 
+/* =========================
+   7. Filter Dropdown
+========================= */
+.filter-container {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 8px;
+}
+
+.filter-label {
+    font-size: 16px;
+    text-align: right;
     line-height: 1;
     font-weight: 600;
 }
 
-.filter-dropdown { 
-    border: 1px solid #2e3bcf; 
-    color: #2e3bcf; 
-    border-radius: 8px; 
-    padding: 4px 12px; 
-    font-size: 16px; 
-    font-weight: medium;
-    outline: none; 
+.filter-dropdown {
+    border: 1px solid #2e3bcf;
+    color: #2e3bcf;
+    border-radius: 8px;
+    padding: 4px 12px;
+    font-size: 16px;
+    font-weight: 500;
+    outline: none;
     background-color: white;
 }
-/* ส่วนการ์ดกิจกรรม */
-.event-feed { padding: 0 16px 20px 16px; }
-.event-card { 
-    display: flex; 
-    align-items: center; 
-    border: 1px solid #000; 
-    border-radius: 5px; 
-    padding: 8px; 
-    margin-bottom: 12px; 
-    background-color: white;    
-    font-size: 12px; 
-    font-weight: medium; }
-.event-logo { 
-    width: 50px; 
+
+/* =========================
+   8. Event Feed
+========================= */
+.event-feed {
+    padding: 0 16px 20px 16px;
+}
+
+.event-list {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0;
+}
+.empty-message {
+    grid-column: 1 / -1;
+    width: 100%;
+    min-height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #888;
+    font-size: 20px;
+    padding: 20px;
+}
+
+@media (max-width: 600px) {
+    .empty-message {
+        min-height: 150px;
+        font-size: 16px;
+    }
+}
+.event-card {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+    border: 1px solid #000;
+    border-radius: 5px;
+    padding: 8px;
+    margin-bottom: 12px;
+    background-color: white;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.event-logo {
+    width: 50px;
     height: 50px;
-    display: flex; 
-    align-items: center; 
-    justify-content: center; 
-    margin-right: 12px; 
-    flex-shrink: 0; 
-    overflow: hidden;}
-.event-logo img { 
-    width: 100%; 
-    height: 100%; 
-    object-fit: contain; }
-.event-info { 
-    flex-grow: 1; 
-    display: flex; 
-    flex-direction: column; 
-    gap: 4px; }
-.event-badge { 
-    background-color: #2e3bcf; 
-    color: white; 
-    padding: 2px 8px; 
-    border-radius: 4px; 
-    align-self: flex-start; }
-/* สไตล์สำหรับกิจกรรมที่หมดเวลาแล้ว (เปลี่ยนสีฟ้าเป็นสีเทา) */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 12px;
+    flex-shrink: 0;
+    overflow: hidden;
+}
+
+.event-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.event-info {
+    flex-grow: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.event-badge {
+    background-color: #2e3bcf;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 4px;
+    align-self: flex-start;
+}
+
+/* Expired Event */
 .event-card.expired {
     border-color: #8e8e8e;
     color: #666666;
 }
+
 .event-card.expired .event-badge {
     background-color: #8e8e8e;
     color: #ffffff;
 }
-.event-time-date { 
-    display: flex; 
-    gap: 8px; }
-.event-location { 
-    font-size: 12px;}
-.event-action { 
-    display: flex; 
-    flex-direction: column; 
-    align-items: center; 
-    gap: 4px; 
-    margin-left: 8px;}
-.join-btn { 
-    background-color: #2e3bcf; 
-    color: white; 
-    border: none; 
-    border-radius: 8px; 
-    width: 40px; 
-    height: 40px; 
-    font-size: 24px; 
-    font-weight: bold; 
-    cursor: pointer; 
-    line-height: 1;}
-.capacity { 
-    font-size: 10px; 
-    font-weight: medium;}
+
+.event-time-date {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.event-location {
+    font-size: 12px;
+}
+
+.event-action {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    margin-left: 8px;
+    flex-shrink: 0;
+}
+
+.join-btn {
+    background-color: #2e3bcf;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    width: 40px;
+    height: 40px;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.capacity {
+    font-size: 10px;
+    font-weight: 500;
+}
+
 .detail-icon {
-    width: 14px; 
+    width: 14px;
     height: 14px;
     vertical-align: middle;
     margin-right: 4px;
 }
 
-/* ปุ่มแสดงเพิ่มเติม */
+/* =========================
+   9. Load More Button
+========================= */
 .load-more-btn {
     width: 100%;
     padding: 2px;
@@ -295,43 +407,35 @@ body {
     width: 95%;
     min-height: 1px;
     padding: 2px 16px;
-
     background-color: #ffffff;
     color: #000000;
-
     border: 1px solid #111111;
     border-radius: 8px;
-
     font-family: 'Mitr', sans-serif;
     font-size: 22px;
     font-weight: 400;
     line-height: 1.4;
-
     text-align: center;
     cursor: pointer;
-
-    transition: background-color 0.2s ease,
-                transform 0.2s ease;
+    transition: background-color 0.2s ease, transform 0.2s ease;
 }
 
-/* เมื่อเอาเมาส์ชี้ */
 #loadMoreBtn:hover {
     background-color: #f5f5f5;
 }
 
-/* เมื่อกดปุ่ม */
 #loadMoreBtn:active {
     transform: scale(0.98);
 }
 
-/* แสดงสถานะเมื่อใช้คีย์บอร์ด */
 #loadMoreBtn:focus-visible {
     outline: 2px solid #555555;
     outline-offset: 3px;
 }
 
-/* Responsive สำหรับมือถือ */
-
+/* =========================
+   10. Mobile
+========================= */
 @media (max-width: 480px) {
     .load-more-btn {
         padding: 2px 10px;
@@ -348,4 +452,268 @@ body {
     }
 }
 
+/* =========================
+   11. Tablet
+========================= */
+@media (min-width: 481px) and (max-width: 767px) {
+    .mobile-container {
+        max-width: 100%;
+        height: auto;
+        max-height: none;
+        min-height: 100vh;
+    }
 
+    .event-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+    }
+
+    .event-card {
+        margin-bottom: 0;
+    }
+}
+
+/* =========================
+   12. Desktop
+========================= */
+@media (min-width: 768px) {
+    body {
+        align-items: flex-start;
+    }
+
+    .mobile-container {
+        width: 100%;
+        max-width: none;
+        height: auto;
+        max-height: none;
+        min-height: 100vh;
+        overflow-y: visible;
+    }
+
+    .app-header {
+        padding: 16px 40px;
+    }
+
+    .logo img {
+        height: 30px;
+    }
+
+    .header-actions {
+        gap: 24px;
+    }
+
+    .icon-btn img {
+        width: 28px;
+        height: 28px;
+    }
+
+    .content {
+        width: 100%;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    /* Recommend Banner */
+    .recommend-section {
+        padding: 5px 32px 12px;
+    }
+
+    .recommend-title {
+        font-size: 44px;
+        margin-bottom: 16px;
+    }
+
+    .recommend-title .highlight {
+        font-size: 60px;
+    }
+
+    .carousel-container {
+        border-radius: 12px;
+    }
+
+    .carousel-item {
+        height: clamp(220px, 25vw, 320px);
+    }
+
+    .carousel-dots {
+        margin-top: 16px;
+    }
+
+    .dot {
+        height: 7px;
+        width: 16px;
+    }
+
+    .dot.active {
+        width: 28px;
+    }
+
+    /* Create Event */
+    .create-event-section {
+        display: flex;
+        justify-content: center;
+        padding: 16px 32px 24px;
+    }
+
+    .create-btn {
+        width: 60%;
+        min-height: 54px;
+        padding: 7px 12px;
+    }
+
+    .create-text {
+        font-size: 18px;
+    }
+
+    .create-icon {
+        width: 48px;
+        height: 42px;
+        font-size: 38px;
+    }
+
+    /* Feed Header */
+    .feed-header-section {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        gap: 24px;
+        padding: 20px 32px 12px;
+        margin-bottom: 16px;
+    }
+
+    .feed-title-container {
+        flex: 1;
+        max-width: 500px;
+        margin-bottom: 0;
+        font-size: 26px;
+    }
+
+    .exclaim-red,
+    .exclaim-blue {
+        font-size: 44px;
+    }
+
+    .filter-container {
+        flex-shrink: 0;
+        padding-bottom: 8px;
+    }
+
+    .filter-label {
+        font-size: 14px;
+    }
+
+    .filter-dropdown {
+        font-size: 16px;
+        padding: 6px 14px;
+    }
+
+    /* Event Cards */
+    .event-feed {
+        padding: 0 32px 24px;
+    }
+
+    .event-list {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 16px;
+    }
+
+    .event-card {
+        min-height: 100px;
+        padding: 12px;
+        margin-bottom: 0;
+        border-radius: 10px;
+        font-size: 14px;
+    }
+
+    .event-logo {
+        width: 58px;
+        height: 58px;
+        margin-right: 14px;
+    }
+
+    .event-info {
+        gap: 6px;
+    }
+
+    .event-badge {
+        font-size: 15px;
+        padding: 3px 10px;
+    }
+
+    .event-time-date {
+        gap: 6px 12px;
+        font-size: 13px;
+    }
+
+    .event-location {
+        font-size: 13px;
+    }
+
+    .event-action {
+        gap: 6px;
+        margin-left: 12px;
+    }
+
+    .join-btn {
+        width: 44px;
+        height: 44px;
+        font-size: 28px;
+    }
+
+    .capacity {
+        font-size: 12px;
+    }
+
+    .detail-icon {
+        width: 16px;
+        height: 16px;
+    }
+
+    /* Load More */
+    .load-more-btn {
+        max-width: 600px;
+        padding: 8px 32px;
+        margin: 0 auto 32px;
+    }
+
+    #loadMoreBtn {
+        width: 100%;
+        min-height: 44px;
+        padding: 6px 16px;
+        font-size: 18px;
+    }
+}
+
+/* =========================
+   13. Large Desktop
+========================= */
+@media (min-width: 1200px) {
+    .content {
+        max-width: 1200px;
+    }
+
+    .recommend-section {
+        padding-left: 48px;
+        padding-right: 48px;
+    }
+
+    .feed-header-section {
+        padding-left: 48px;
+        padding-right: 48px;
+    }
+
+    .event-feed {
+        padding-left: 48px;
+        padding-right: 48px;
+    }
+
+    .event-list {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 20px;
+    }
+
+    .event-card {
+        min-height: 110px;
+    }
+}

@@ -263,7 +263,11 @@ function renderEventsOnHome(eventsToRender) {
     eventList.innerHTML = '';
 
     if (eventsToRender.length === 0) {
-        eventList.innerHTML = '<div style="text-align:center; color:#888; padding: 16px 0; font-size: 14px;">ไม่พบข้อมูลกิจกรรมในหมวดหมู่นี้</div>';
+        eventList.innerHTML = `
+            <div class="empty-message">
+                ไม่พบข้อมูลกิจกรรมในหมวดหมู่นี้
+            </div>
+        `;
         return;
     }
 
