@@ -91,3 +91,80 @@ body {
     gap: 24px;
   }
 }
+/* =====================================
+   Profile Dropdown
+===================================== */
+
+.profile-dropdown {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.profile-trigger {
+    cursor: pointer;
+}
+
+/* Dropdown Box */
+.dropdown-menu {
+    position: absolute;
+    top: calc(100% + 12px);
+    right: 0;
+    z-index: 1000;
+
+    width: 180px;
+    padding: 6px 10px;
+
+    background: #FFFAF0;
+    border-radius: 8px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Dropdown Items */
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    width: 100%;
+    min-height: 42px;
+    padding: 6px 4px;
+
+    border: none;
+    border-bottom: 1px solid #222;
+    background: transparent;
+
+    color: #000;
+    font-size: 15px;
+    font-weight: 600;
+    text-decoration: none;
+    text-align: left;
+
+    cursor: pointer;
+}
+
+.dropdown-item:last-child {
+    border-bottom: none;
+}
+
+.dropdown-item img {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+}
+
+.dropdown-item:hover {
+    background: #f3eadb;
+    border-radius: 5px;
+}
+
+/* ซ่อนเมนู */
+.dropdown-menu[hidden] {
+    display: none;
+}
+.profile-trigger {
+    border: none;
+    background: transparent;
+    padding: 0;
+    cursor: pointer;
+}
