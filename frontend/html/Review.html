@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Review Activity</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/review.css?v=1">
+  <script src="../js/Header.js"></script>
+</head>
+
+<body>
+  <div class="app-container">
+    <header class="app-header">
+      <div class="logo">
+        <a href="./Homepage.html" aria-label="กลับไปหน้า Home">
+          <img src="../Picture/LogoTUmeet.svg" alt="TU Meet Logo">
+        </a>
+      </div>
+      <div class="header-actions">
+        <a href="#" class="icon-btn" aria-label="Notifications">
+          <img src="../Picture/NotificationIcon.svg" alt="Notifications">
+        </a>
+        <div class="profile-dropdown">
+          <button class="icon-btn profile-trigger" id="profileBtn" type="button" aria-label="Profile"
+            aria-expanded="false">
+            <img src="../Picture/profile.svg" alt="Profile">
+          </button>
+          <div class="dropdown-menu" id="loggedInMenu" hidden>
+            <a href="./Profile.html" class="dropdown-item">
+              <img src="../Picture/profile-menu.svg" alt="">
+              <span>โปรไฟล์</span>
+            </a>
+            <button type="button" class="dropdown-item" id="logoutBtn">
+              <img src="../Picture/logout.svg" alt="">
+              <span>ออกจากระบบ</span>
+            </button>
+          </div>
+          <div class="dropdown-menu" id="guestMenu" hidden>
+            <a href="./Login.html" class="dropdown-item">
+              <img src="../Picture/ProfileIcon.svg" alt="">
+              <span>เข้าสู่ระบบ</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="review-main">
+      <section class="review-card" aria-labelledby="review-title">
+        <div class="review-heading">
+          <img id="review-title" class="review-title-image" src="../Picture/review-Icon.svg"
+            alt="What's the story?">
+          <p>ประเมินเพื่อสะท้อนความคิดเห็นต่อกิจกรรม</p>
+        </div>
+
+        <form id="reviewForm" class="review-form" novalidate>
+          <input type="hidden" id="reviewEventId" name="eventId">
+          <input type="hidden" id="reviewRole" name="role">
+
+          <fieldset class="rating-group">
+            <legend>ความตรงปกของกิจกรรม</legend>
+            <div class="rating-control">
+              <span class="rating-label">น้อย</span>
+              <div class="stars" role="radiogroup" aria-label="ความตรงปกของกิจกรรม">
+                <button type="button" class="star" data-rating="1" role="radio" aria-label="1 ดาว">☆</button>
+                <button type="button" class="star" data-rating="2" role="radio" aria-label="2 ดาว">☆</button>
+                <button type="button" class="star" data-rating="3" role="radio" aria-label="3 ดาว">☆</button>
+                <button type="button" class="star" data-rating="4" role="radio" aria-label="4 ดาว">☆</button>
+                <button type="button" class="star" data-rating="5" role="radio" aria-label="5 ดาว">☆</button>
+              </div>
+              <span class="rating-label">มาก</span>
+            </div>
+          </fieldset>
+
+          <fieldset class="rating-group">
+            <legend>ความตรงปกของกิจกรรม</legend>
+            <div class="rating-control">
+              <span class="rating-label">น้อย</span>
+              <div class="stars" role="radiogroup" aria-label="ความตรงปกของกิจกรรม">
+                <button type="button" class="star" data-rating="1" role="radio" aria-label="1 ดาว">☆</button>
+                <button type="button" class="star" data-rating="2" role="radio" aria-label="2 ดาว">☆</button>
+                <button type="button" class="star" data-rating="3" role="radio" aria-label="3 ดาว">☆</button>
+                <button type="button" class="star" data-rating="4" role="radio" aria-label="4 ดาว">☆</button>
+                <button type="button" class="star" data-rating="5" role="radio" aria-label="5 ดาว">☆</button>
+              </div>
+              <span class="rating-label">มาก</span>
+            </div>
+          </fieldset>
+
+          <fieldset class="rating-group">
+            <legend>ความตรงปกของกิจกรรม</legend>
+            <div class="rating-control">
+              <span class="rating-label">น้อย</span>
+              <div class="stars" role="radiogroup" aria-label="ความตรงปกของกิจกรรม">
+                <button type="button" class="star" data-rating="1" role="radio" aria-label="1 ดาว">☆</button>
+                <button type="button" class="star" data-rating="2" role="radio" aria-label="2 ดาว">☆</button>
+                <button type="button" class="star" data-rating="3" role="radio" aria-label="3 ดาว">☆</button>
+                <button type="button" class="star" data-rating="4" role="radio" aria-label="4 ดาว">☆</button>
+                <button type="button" class="star" data-rating="5" role="radio" aria-label="5 ดาว">☆</button>
+              </div>
+              <span class="rating-label">มาก</span>
+            </div>
+          </fieldset>
+
+          <div class="comment-group">
+            <label for="reviewComment">ความคิดเห็นเพิ่มเติม</label>
+            <textarea id="reviewComment" name="comment" maxlength="200" placeholder=""></textarea>
+            <span id="commentCount" class="comment-count">0/200</span>
+          </div>
+
+          <p id="reviewError" class="review-error" role="alert" aria-live="polite"></p>
+          <div class="review-actions">
+            <button type="submit" class="review-submit">ยืนยัน</button>
+          </div>
+        </form>
+      </section>
+    </main>
+  </div>
+
+  <script src="../js/review.js?v=1"></script>
+</body>
+
+</html>

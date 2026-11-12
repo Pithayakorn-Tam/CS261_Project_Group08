@@ -1,0 +1,224 @@
+@import url('./style.css');
+
+.review-main {
+  width: 100%;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 38px 24px 56px;
+  box-sizing: border-box;
+}
+
+.review-card {
+  width: 100%;
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.review-heading {
+  padding-bottom: 18px;
+  border-bottom: 2px solid #d8d8d8;
+  text-align: center;
+}
+
+.review-heading h1 {
+  margin: 0;
+  color: #111;
+  font-family: Arial, sans-serif;
+  font-size: clamp(40px, 6vw, 68px);
+  font-weight: 900;
+  line-height: .8;
+  letter-spacing: -3px;
+}
+
+.review-title-image {
+  display: block;
+  width: clamp(166px, 24vw, 250px);
+  height: auto;
+  margin: 0 auto;
+}
+
+.review-heading h1 span {
+  color: #f2c75c;
+  text-shadow: 2px 2px #111;
+}
+
+.review-heading h1 em {
+  color: #ef6b79;
+  font-family: cursive;
+  font-size: .72em;
+  letter-spacing: 0;
+}
+
+.review-heading p {
+  margin: 18px 0 0;
+  color: #111;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.review-form { padding-top: 20px; }
+
+.rating-group {
+  min-width: 0;
+  margin: 0 0 24px;
+  padding: 0;
+  border: 0;
+}
+
+.rating-group legend {
+  width: 100%;
+  margin-bottom: 10px;
+  color: #111;
+  font-size: 18px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.rating-control {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(12px, 4vw, 34px);
+}
+
+.rating-label {
+  min-width: 28px;
+  color: #111;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: center;
+}
+
+.stars {
+  display: flex;
+  align-items: center;
+  gap: clamp(8px, 2vw, 18px);
+}
+
+.star {
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #111;
+  font-family: Arial, sans-serif;
+  font-size: 44px;
+  line-height: 42px;
+  cursor: pointer;
+  transition: color .15s ease, transform .15s ease;
+}
+
+.star:hover,
+.star:focus-visible {
+  color: #f2c75c;
+  outline: none;
+  transform: scale(1.08);
+}
+
+.star.is-selected,
+.star.is-preview {
+  color: #f2c75c;
+  text-shadow: 0 0 1px #111;
+}
+
+.comment-group {
+  position: relative;
+  margin-top: 8px;
+}
+
+.comment-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: #111;
+  font-size: 18px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.comment-group textarea {
+  display: block;
+  width: 100%;
+  min-height: 150px;
+  padding: 14px;
+  border: 1.5px solid #111;
+  border-radius: 12px;
+  resize: vertical;
+  box-sizing: border-box;
+  color: #111;
+  font: inherit;
+  font-size: 16px;
+  outline: none;
+}
+
+.comment-group textarea:focus { border-color: #293bd6; box-shadow: 0 0 0 2px rgba(41, 59, 214, .12); }
+
+.comment-count {
+  position: absolute;
+  right: 12px;
+  bottom: 8px;
+  color: #888;
+  font-size: 16px;
+}
+
+.review-error {
+  min-height: 20px;
+  margin: 10px 0 0;
+  color: #d32f2f;
+  font-size: 14px;
+  text-align: center;
+}
+
+.review-success {
+  min-height: 20px;
+  margin: 10px 0 0;
+  color: #218838;
+  font-size: 14px;
+  text-align: center;
+}
+
+.review-actions { display: flex; justify-content: flex-end; margin-top: 4px; }
+
+.review-submit {
+  min-width: 120px;
+  height: 42px;
+  padding: 0 22px;
+  border: 0;
+  border-radius: 6px;
+  background: #293bd6;
+  color: #fff;
+  font: inherit;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.review-submit:hover { background: #1e2eb9; }
+.review-submit:disabled { opacity: .6; cursor: wait; }
+
+@media (max-width: 600px) {
+  .review-main { padding: 48px 15px 40px; }
+  .review-heading { padding-bottom: 14px; }
+  .review-title-image { width: min(166px, 55vw); }
+  .review-heading p { margin-top: 14px; font-size: 12px; }
+  .review-form { padding-top: 17px; }
+  .rating-group { margin-bottom: 22px; }
+  .rating-group legend { margin-bottom: 8px; font-size: 13px; }
+  .rating-control { gap: 9px; }
+  .rating-label { font-size: 12px; }
+  .stars { gap: 2px; }
+  .star { width: 38px; height: 38px; font-size: 39px; line-height: 38px; }
+  .comment-group { margin-top: 6px; }
+  .comment-group label { margin-bottom: 8px; font-size: 13px; }
+  .comment-group textarea { min-height: 114px; border-radius: 11px; font-size: 14px; }
+  .comment-count { right: 10px; bottom: 7px; font-size: 16px; }
+  .review-error { font-size: 12px; }
+  .review-success { font-size: 12px; }
+  .review-actions { margin-top: 2px; }
+  .review-submit { min-width: 90px; height: 37px; padding: 0 18px; font-size: 13px; }
+}
+
+@media (min-width: 768px) {
+  .rating-group { margin-bottom: 30px; }
+  .review-form { padding: 28px 42px 0; }
+}
