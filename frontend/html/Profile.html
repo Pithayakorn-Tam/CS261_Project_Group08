@@ -15,43 +15,43 @@
   <div class="app-container">
     <!-- Header -->
     <header class="app-header">
-            <div class="logo">
-                <a href="./Homepage.html" aria-label="กลับไปหน้า Home">
-                    <img src="../Picture/LogoTUmeet.svg" alt="TU Meet Logo">
-                </a>
-            </div>
-            <div class="header-actions">
-                <!-- Notification -->
-                <a href="#" class="icon-btn" aria-label="Notifications">
-                    <img src="../Picture/NotificationIcon.svg" alt="Notifications">
-                </a>
-                <!-- Profile Dropdown -->
-                <div class="profile-dropdown">
-                    <button class="icon-btn profile-trigger" id="profileBtn" type="button" aria-label="Profile"
-                        aria-expanded="false">
-                        <img src="../Picture/ProfileIcon.svg" alt="Profile">
-                    </button>
-                    <!-- กรณี Login แล้ว -->
-                    <div class="dropdown-menu" id="loggedInMenu" hidden>
-                        <a href="./Profile.html" class="dropdown-item">
-                            <img src="../Picture/ProfileIcon.svg" alt="">
-                            <span>โปรไฟล์</span>
-                        </a>
-                        <button type="button" class="dropdown-item" id="logoutBtn">
-                            <img src="../Picture/logout.svg" alt="">
-                            <span>ออกจากระบบ</span>
-                        </button>
-                    </div>
-                    <!-- กรณียังไม่ได้ Login -->
-                    <div class="dropdown-menu" id="guestMenu" hidden>
-                        <a href="./Login.html" class="dropdown-item">
-                            <img src="../Picture/ProfileIcon.svg" alt="">
-                            <span>เข้าสู่ระบบ</span>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </header>
+      <div class="logo">
+        <a href="./Homepage.html" aria-label="กลับไปหน้า Home">
+          <img src="../Picture/LogoTUmeet.svg" alt="TU Meet Logo">
+        </a>
+      </div>
+      <div class="header-actions">
+        <!-- Notification -->
+        <a href="#" class="icon-btn" aria-label="Notifications">
+          <img src="../Picture/NotificationIcon.svg" alt="Notifications">
+        </a>
+        <!-- Profile Dropdown -->
+        <div class="profile-dropdown">
+          <button class="icon-btn profile-trigger" id="profileBtn" type="button" aria-label="Profile"
+            aria-expanded="false">
+            <img src="../Picture/ProfileIcon.svg" alt="Profile">
+          </button>
+          <!-- กรณี Login แล้ว -->
+          <div class="dropdown-menu" id="loggedInMenu" hidden>
+            <a href="./Profile.html" class="dropdown-item">
+              <img src="../Picture/ProfileIcon.svg" alt="">
+              <span>โปรไฟล์</span>
+            </a>
+            <button type="button" class="dropdown-item" id="logoutBtn">
+              <img src="../Picture/logout.svg" alt="">
+              <span>ออกจากระบบ</span>
+            </button>
+          </div>
+          <!-- กรณียังไม่ได้ Login -->
+          <div class="dropdown-menu" id="guestMenu" hidden>
+            <a href="./Login.html" class="dropdown-item">
+              <img src="../Picture/ProfileIcon.svg" alt="">
+              <span>เข้าสู่ระบบ</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </header>
     <!-- พื้นที่เนื้อหาหลัก -->
     <main class="main-content">
 
@@ -84,12 +84,17 @@
 
           <div class="input-group">
             <label class="input-label">Student ID</label>
-            <div class="input-box bold-text" id="studentIdDisplay">6800000000</div>
+            <div class="input-box bold-text student-id-box" id="studentIdDisplay">
+              6800000000
+            </div>
           </div>
 
           <div class="input-group">
             <label class="input-label">Student E-mail</label>
-            <div class="input-box bold-text email-box" id="emailDisplay">abcd@dome.tu.ac.th</div>
+            <div class="input-box email-box" id="emailDisplay">
+              <span class="email-name">abcd</span>
+              <span class="email-domain">@dome.tu.ac.th</span>
+            </div>
           </div>
         </form>
       </div>
