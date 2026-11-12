@@ -143,6 +143,21 @@
   border-color: #4a90e2;
 }
 
+.username-row {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.username-row .username-display-box {
+  flex: 1;
+  min-width: 0;
+}
+
+.username-side-icon {
+  display: none;
+}
+
 .username-text {
   flex: 1;
   min-width: 0;
@@ -524,6 +539,16 @@
   /* ปรับให้ทุกช่องกว้างเต็ม 100% เท่ากันทั้งหมด */
   .info-container .input-group {
     width: 100% !important;
+  }
+
+  .username-side-icon {
+    display: block;
+    flex: 0 0 40px;
+    width: 40px;
+    height: 40px;
+    margin-left: 6px;
+    opacity: 0.25;
+    object-fit: contain;
   }
 
   .input-box,

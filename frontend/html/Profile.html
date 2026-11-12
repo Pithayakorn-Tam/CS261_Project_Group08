@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Profile</title>
   <link rel="stylesheet" href="../css/style.css">
-  <link rel="stylesheet" href="../css/Profile.css?v=4">
+  <link rel="stylesheet" href="../css/Profile.css?v=5">
   <script src="../js/Header.js"></script>
 </head>
 
@@ -72,9 +72,12 @@
         <form class="info-container" id="profileForm" onsubmit="return false;">
           <div class="input-group">
             <label class="input-label">Username</label>
-            <div class="input-box username-display-box" id="usernameDisplayBox">
+            <div class="username-row">
+              <div class="input-box username-display-box" id="usernameDisplayBox">
               <span class="bold-text username-text" id="usernameDisplay">มะหมาสี่ขา</span>
               <span class="edit-text-btn" id="editUsernameBtn">แก้ไข</span>
+              </div>
+              <img src="../Picture/" class="username-side-icon" alt="">
             </div>
             <div class="input-box-wrapper edit-mode" id="usernameEditWrapper" style="display: none;">
               <input type="text" id="usernameInput" class="input-field bold-text" placeholder="ระบุชื่อผู้ใช้">
