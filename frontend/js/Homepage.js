@@ -50,7 +50,7 @@ if (slides.length > 0) {
 // 2. Mock Data
 // ==========================================
 
-const USE_MOCK_DATA = true;
+const USE_MOCK_DATA = false;
 
 
 const mockEvents = [
