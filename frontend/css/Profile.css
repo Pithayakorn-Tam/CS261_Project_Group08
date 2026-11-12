@@ -582,3 +582,48 @@
     gap: 16px;
   }
 }
+/* Student ID */
+.student-id-box {
+    justify-content: center;
+    text-align: center;
+}
+
+/* Student Email */
+.email-box {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    text-align: center;
+    padding: 0 16px;
+}
+.email-name {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #000;
+    font-size: 20px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.email-domain {
+    position: absolute;
+    right: 16px;
+    color: #888;
+    font-weight: 400;
+    white-space: nowrap;
+}
+@media (max-width: 600px) {
+    .email-box {
+        gap: 5px;
+        font-size: 13px;
+    }
+
+    .email-name {
+        font-size: 15px;
+    }
+
+    .email-domain {
+        font-size: 10px;
+    }
+}
