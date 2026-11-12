@@ -1,31 +1,57 @@
 <!DOCTYPE html>
 <html lang="th">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Create Your Event</title>
   <link rel="stylesheet" href="../css/style.css">
   <link rel="stylesheet" href="../css/CreateEvent.css">
+  <script src="../js/Header.js"></script>
 </head>
+
 <body>
 
   <div class="app-container">
 
-<header class="app-header">
-  <div class="logo">
-    <a href="./Homepage.html" aria-label="กลับไปหน้า Home">
-      <img src="../Picture/LogoTUmeet.svg" alt="TU Meet Logo">
-    </a>
-  </div>
-  <div class="header-actions">
-    <a href="#" class="icon-btn" aria-label="Notifications">
-      <img src="../Picture/NotificationIcon.svg" alt="Notifications">
-    </a>
-    <a href="./Profile.html" class="icon-btn" aria-label="Profile">
-      <img src="../Picture/ProfileIcon.svg" alt="Profile">
-    </a>
-  </div>
-</header>
+    <header class="app-header">
+      <div class="logo">
+        <a href="./Homepage.html" aria-label="กลับไปหน้า Home">
+          <img src="../Picture/LogoTUmeet.svg" alt="TU Meet Logo">
+        </a>
+      </div>
+      <div class="header-actions">
+        <!-- Notification -->
+        <a href="#" class="icon-btn" aria-label="Notifications">
+          <img src="../Picture/NotificationIcon.svg" alt="Notifications">
+        </a>
+        <!-- Profile Dropdown -->
+        <div class="profile-dropdown">
+          <button class="icon-btn profile-trigger" id="profileBtn" type="button" aria-label="Profile"
+            aria-expanded="false">
+            <img src="../Picture/ProfileIcon.svg" alt="Profile">
+          </button>
+          <!-- กรณี Login แล้ว -->
+          <div class="dropdown-menu" id="loggedInMenu" hidden>
+            <a href="./Profile.html" class="dropdown-item">
+              <img src="../Picture/ProfileIcon.svg" alt="">
+              <span>โปรไฟล์</span>
+            </a>
+            <button type="button" class="dropdown-item" id="logoutBtn">
+              <img src="../Picture/logout.svg" alt="">
+              <span>ออกจากระบบ</span>
+            </button>
+          </div>
+          <!-- กรณียังไม่ได้ Login -->
+          <div class="dropdown-menu" id="guestMenu" hidden>
+            <a href="./Login.html" class="dropdown-item">
+              <img src="../Picture/ProfileIcon.svg" alt="">
+              <span>เข้าสู่ระบบ</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </header>
 
     <main class="main-content">
       <div class="banner">
@@ -34,45 +60,46 @@
 
       <section class="event-panel" aria-labelledby="event-details-title">
         <form class="event-form" novalidate>
-        <!-- กล่องแจ้งเตือนรวมด้านบน (ถ้ามี) -->
-        <div id="errorBox" class="error-box hidden"></div>
+          <!-- กล่องแจ้งเตือนรวมด้านบน (ถ้ามี) -->
+          <div id="errorBox" class="error-box hidden"></div>
 
-        <div class="form-group form-group-row event-type-group">
-          <label for="eventType">Event Type</label>
-          <div class="select-wrapper">
-            <select name="eventType" id="eventType">
-              <option value="" disabled selected hidden>หมวดหมู่</option>
-              <option value="academic">วิชาการ</option>
-              <option value="sport">กีฬา</option>
-              <option value="entertainment">บันเทิง</option>
-              <option value="life-style">ไลฟ์สไตล์</option>
-              <option value="other">อื่นๆ</option>            
-            </select>
+          <div class="form-group form-group-row event-type-group">
+            <label for="eventType">Event Type</label>
+            <div class="select-wrapper">
+              <select name="eventType" id="eventType">
+                <option value="" disabled selected hidden>หมวดหมู่</option>
+                <option value="academic">วิชาการ</option>
+                <option value="sport">กีฬา</option>
+                <option value="entertainment">บันเทิง</option>
+                <option value="life-style">ไลฟ์สไตล์</option>
+                <option value="other">อื่นๆ</option>
+              </select>
+            </div>
+            <small id="typeError" class="error-message"></small>
           </div>
-          <small id="typeError" class="error-message"></small>
-        </div>
 
-        <div class="form-group event-name-group">
-          <label for="eventName">Event Name</label>
-          <input type="text" id="eventName" name="eventName" placeholder="ตัวอย่าง ไปกินตี๋น้อย">
-          <small id="nameError" class="error-message"></small>
-        </div>
+          <div class="form-group event-name-group">
+            <label for="eventName">Event Name</label>
+            <input type="text" id="eventName" name="eventName" placeholder="ตัวอย่าง ไปกินตี๋น้อย">
+            <small id="nameError" class="error-message"></small>
+          </div>
 
-        <div class="form-group location-group">
-          <label for="eventLocation">Location</label>
-          <input type="text" id="eventLocation" name="eventLocation" placeholder="ตัวอย่าง สุกี้ตี๋น้อย สาขา...">
-          <small id="locationError" class="error-message"></small>
-        </div>
+          <div class="form-group location-group">
+            <label for="eventLocation">Location</label>
+            <input type="text" id="eventLocation" name="eventLocation" placeholder="ตัวอย่าง สุกี้ตี๋น้อย สาขา...">
+            <small id="locationError" class="error-message"></small>
+          </div>
 
-        <div class="form-group description-group">
-          <label for="eventDescription">Description</label>
-          <textarea id="eventDescription" name="eventDescription" placeholder="รายละเอียดเพิ่มเติมเกี่ยวกับกิจกรรม..." rows="3"></textarea>
-          <small id="descError" class="error-message"></small>
-        </div>
+          <div class="form-group description-group">
+            <label for="eventDescription">Description</label>
+            <textarea id="eventDescription" name="eventDescription" placeholder="รายละเอียดเพิ่มเติมเกี่ยวกับกิจกรรม..."
+              rows="3"></textarea>
+            <small id="descError" class="error-message"></small>
+          </div>
 
-        <div class="form-row">
-          <div class="form-group size-group">
-            <label for="eventSize">Size</label>
+          <div class="form-row">
+            <div class="form-group size-group">
+              <label for="eventSize">Size</label>
               <div class="select-wrapper size-select-wrapper">
 
                 <!-- Select เดิม เก็บไว้ส่งค่าให้ Backend -->
@@ -99,8 +126,7 @@
                 </select>
 
                 <!-- ปุ่ม Dropdown -->
-                <button type="button" id="sizeDropdownBtn"
-                        class="size-dropdown-btn">
+                <button type="button" id="sizeDropdownBtn" class="size-dropdown-btn">
                   <span id="sizeSelected">2</span>
                   <span class="size-arrow"></span>
                 </button>
@@ -110,29 +136,30 @@
                 </div>
 
               </div>
+            </div>
+
+            <div class="form-group date-group">
+              <label for="eventDate">Date</label>
+              <input type="date" id="eventDate" class="eventDate" name="eventDate" placeholder="dd/mm/yy">
+              <small id="dateError" class="error-message"></small>
+            </div>
+
+            <div class="form-group time-group">
+              <label for="eventTime">Time</label>
+              <input type="time" id="eventTime" class="eventTime" name="eventTime">
+              <small id="timeError" class="error-message"></small>
+            </div>
           </div>
 
-          <div class="form-group date-group">
-            <label for="eventDate">Date</label>
-            <input type="date" id="eventDate" class="eventDate" name="eventDate" placeholder="dd/mm/yy">
-            <small id="dateError" class="error-message"></small>
+          <div class="form-actions">
+            <button type="submit" class="btn-create">CREATE</button>
           </div>
-
-          <div class="form-group time-group">
-            <label for="eventTime">Time</label>
-            <input type="time" id="eventTime" class="eventTime" name="eventTime">
-            <small id="timeError" class="error-message"></small>
-          </div>
-        </div>
-
-        <div class="form-actions">
-          <button type="submit" class="btn-create">CREATE</button>
-        </div>
         </form>
       </section>
     </main>
   </div>
-<script src="../js/api.js?v=3"></script>
-<script src="../js/CreateEvent.js?v=3"></script>
+  <script src="../js/api.js?v=3"></script>
+  <script src="../js/CreateEvent.js?v=3"></script>
 </body>
+
 </html>
