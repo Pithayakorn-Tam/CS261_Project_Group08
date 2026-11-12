@@ -1,11 +1,12 @@
-
 /* =========================
    1. Global
 ========================= */
+
 @font-face {
-  font-family: 'Mitr';
-  src: url(../Font/Mitr/Mitr-Regular.ttf);
+    font-family: 'Mitr';
+    src: url(../Font/Mitr/Mitr-Regular.ttf);
 }
+
 * {
     margin: 0;
     padding: 0;
@@ -15,41 +16,52 @@
 
 body {
     background-color: #f0f0f0;
+
     display: flex;
     justify-content: center;
     align-items: center;
+
     min-height: 100vh;
+
     margin: 0;
 }
+
 
 /* =========================
    2. Main Container
 ========================= */
+
 .mobile-container {
     width: 100%;
     max-width: 430px;
+
     height: 100vh;
     max-height: 880px;
+
     background-color: #ffffff;
+
     overflow-y: auto;
+
     border-radius: 0;
 }
 
 
-
 /* =========================
-   4. Recommend Banner
+   3. Recommend
 ========================= */
+
 .recommend-section {
     padding: 16px;
-    padding-top: 0px;
+    padding-top: 0;
 }
 
 .recommend-title {
     font-size: 24px;
     color: #2e3bcf;
+
     text-align: center;
-    margin: 0px;
+
+    margin: 0;
 
     font-weight: 500;
 }
@@ -61,21 +73,30 @@ body {
 
 .carousel-container {
     width: 100%;
+
     border-radius: 12px;
+
     border: 1px solid #2e3bcf;
+
     overflow: hidden;
+
     position: relative;
 }
 
 .carousel-slide {
     display: flex;
-    transition: transform 0.5s ease-in-out;
+
+    transition:
+        transform 0.5s ease-in-out;
 }
 
 .carousel-item {
     min-width: 100%;
+
     height: 120px;
+
     display: flex;
+
     align-items: center;
     justify-content: center;
 }
@@ -83,58 +104,85 @@ body {
 .banner-img {
     width: 100%;
     height: 100%;
+
     object-fit: cover;
 }
 
 .carousel-dots {
     text-align: center;
+
     margin-top: 12px;
+
     display: flex;
+
     justify-content: center;
     align-items: center;
+
     gap: 6px;
 }
 
 .dot {
     height: 6px;
     width: 14px;
+
     background-color: #ccc;
+
     border-radius: 4px;
+
     display: inline-block;
-    transition: width 0.3s ease, background-color 0.3s ease;
+
+    transition:
+        width 0.3s ease,
+        background-color 0.3s ease;
 }
 
 .dot.active {
     width: 24px;
+
     background-color: #2e3bcf;
 }
 
+
 /* =========================
-   5. Create Event Button
+   4. Create Event
 ========================= */
+
 .create-event-section {
     padding: 16px;
 }
 
 .create-btn {
     width: 100%;
+
     background-color: #2131DA;
+
     color: white;
+
     border: none;
+
     border-radius: 8px;
+
     display: flex;
+
     justify-content: space-between;
     align-items: center;
+
     padding: 6px 12px;
+
     cursor: pointer;
 }
 
 .create-text {
     display: flex;
+
     flex-direction: column;
+
     text-align: left;
+
     font-size: 16px;
+
     font-weight: 500;
+
     margin-left: 8px;
 }
 
@@ -148,46 +196,65 @@ body {
 
 .create-icon {
     background-color: white;
+
     color: #3b42d0;
+
     font-size: 36px;
+
     font-weight: bold;
+
     width: 48px;
     height: 40px;
+
     border-radius: 8px;
+
     display: flex;
+
     align-items: center;
     justify-content: center;
+
     line-height: 1;
 }
 
+
 /* =========================
-   6. Feed Header
+   5. Feed Header
 ========================= */
+
 .feed-header-section {
     padding: 16px 16px 8px 16px;
+
     margin-bottom: 12px;
 }
 
 .feed-title-container {
     text-align: center;
+
     border-bottom: 3px solid #f2bc57;
-    padding-bottom: 0px;
+
+    padding-bottom: 0;
+
     margin-bottom: 12px;
+
     font-size: 20px;
+
     font-weight: 800;
+
     display: flex;
+
     flex-direction: column;
+
     line-height: 1.1;
 }
 
 .feed-title-th {
     align-self: flex-start;
-    
 }
 
 .feed-title-en {
     align-self: flex-end;
-     margin-top: -15px;
+
+    margin-top: -15px;
 }
 
 .exclaim-red {
@@ -200,193 +267,511 @@ body {
     font-size: 40px;
 }
 
+
 /* =========================
-   7. Filter Dropdown
+   6. Filter
 ========================= */
+
 .filter-container {
     display: flex;
+
     justify-content: flex-end;
     align-items: center;
+
     gap: 8px;
 }
 
 .filter-label {
     font-size: 16px;
+
     text-align: right;
+
     line-height: 1;
+
     font-weight: 600;
 }
 
 .filter-dropdown {
     border: 1px solid #2e3bcf;
+
     color: #2e3bcf;
+
     border-radius: 8px;
+
     padding: 4px 12px;
+
     font-size: 16px;
+
     font-weight: 500;
+
     outline: none;
+
     background-color: white;
 }
 
+
 /* =========================
-   8. Event Feed
+   7. Event Feed
 ========================= */
+
 .event-feed {
     padding: 0 16px 20px 16px;
 }
 
 .event-list {
     display: grid;
+
     grid-template-columns: 1fr;
+
     gap: 0;
 }
+
 .empty-message {
     grid-column: 1 / -1;
+
     width: 100%;
+
     min-height: 180px;
+
     display: flex;
+
     align-items: center;
     justify-content: center;
+
     text-align: center;
+
     color: #888;
+
     font-size: 20px;
+
     padding: 20px;
 }
 
-@media (max-width: 600px) {
-    .empty-message {
-        min-height: 150px;
-        font-size: 16px;
-    }
-}
+
+/* =========================
+   8. Event Card
+========================= */
+
 .event-card {
     display: flex;
+
     align-items: center;
+
+    width: 100%;
+
     min-width: 0;
-    border: 1px solid #000;
-    border-radius: 5px;
-    padding: 8px;
-    margin-bottom: 12px;
-    background-color: white;
+
+    min-height: 76px;
+
+    border: 1.5px solid #000;
+
+    border-radius: 12px;
+
+    padding: 7px 9px;
+
+    margin-bottom: 10px;
+
+    background-color: #fff;
+
     font-size: 12px;
+
     font-weight: 500;
+
+    overflow: hidden;
 }
 
+
+/* =========================
+   9. Event Logo
+========================= */
+
 .event-logo {
-    width: 50px;
-    height: 50px;
+    width: 55px;
+    height: 55px;
+
     display: flex;
+
     align-items: center;
     justify-content: center;
-    margin-right: 12px;
-    flex-shrink: 0;
+
+    margin-right: 8px;
+
+    flex: 0 0 55px;
+
     overflow: hidden;
 }
 
 .event-logo img {
     width: 100%;
     height: 100%;
+
     object-fit: contain;
 }
 
+
+/* =========================
+   10. Event Information
+========================= */
+
 .event-info {
-    flex-grow: 1;
+    flex: 1;
+
     min-width: 0;
+
     display: flex;
+
     flex-direction: column;
-    gap: 4px;
+
+    gap: 2px;
+
+    overflow: hidden;
 }
+
+
+/* =========================
+   Event Name
+========================= */
 
 .event-badge {
-    background-color: #2e3bcf;
-    color: white;
-    padding: 2px 8px;
-    border-radius: 4px;
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: flex-start;
+
     align-self: flex-start;
+
+    max-width: 100%;
+
+    background-color: #2e3bcf;
+
+    color: #fff;
+
+    padding: 2px 5px;
+
+    border-radius: 3px;
+
+    font-size: 12px;
+
+    font-weight: 500;
+
+    line-height: 1.2;
+
+    white-space: nowrap;
+
+    overflow: hidden;
 }
 
-/* Expired Event */
+
+/* ชื่อกิจกรรม */
+
+.event-title {
+    max-width: 100%;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+}
+
+
+/* =========================
+   Info Button
+========================= */
+
+.event-info-btn {
+    width: 16px;
+    height: 16px;
+
+    flex: 0 0 16px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 0;
+
+    margin-left: 2px;
+
+    border: none;
+
+    background: transparent;
+
+    cursor: pointer;
+
+    overflow: visible;
+}
+
+.event-info-btn img {
+    width: 14px;
+    height: 14px;
+
+    display: block;
+
+    object-fit: contain;
+}
+
+.event-info-btn:hover {
+    opacity: 0.8;
+}
+
+.event-info-btn:active {
+    transform: scale(0.9);
+}
+
+
+/* =========================
+   11. Time + Date
+========================= */
+
+.event-time-date {
+    display: flex;
+
+    align-items: center;
+
+    flex-wrap: nowrap;
+
+    gap: 8px;
+
+    font-size: 11px;
+
+    font-weight: 500;
+
+    white-space: nowrap;
+}
+
+.event-time-date span {
+    display: flex;
+
+    align-items: center;
+
+    min-width: 0;
+}
+
+
+/* =========================
+   12. Location
+========================= */
+
+.event-location {
+    display: flex;
+
+    align-items: center;
+
+    min-width: 0;
+
+    font-size: 11px;
+
+    font-weight: 500;
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+}
+
+
+/* =========================
+   13. Detail Icons
+========================= */
+
+.detail-icon {
+    width: 14px;
+    height: 14px;
+
+    flex: 0 0 14px;
+
+    vertical-align: middle;
+
+    margin-right: 3px;
+
+    object-fit: contain;
+}
+
+
+/* =========================
+   14. Event Action
+========================= */
+
+.event-action {
+    width: 55px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 1px;
+
+    margin-left: 6px;
+
+    flex: 0 0 55px;
+}
+
+
+/* =========================
+   15. Join Button
+========================= */
+
+.join-btn {
+    width: 42px;
+    height: 42px;
+
+    padding: 0;
+
+    margin: 0;
+
+    border: none;
+
+    background-color: transparent;
+
+    background-image:
+        url('../Picture/Rectangle 60.svg');
+
+    background-repeat: no-repeat;
+
+    background-position: center;
+
+    background-size: contain;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    cursor: pointer;
+
+    line-height: 0;
+}
+
+.join-btn img {
+    width: 22px;
+    height: 22px;
+
+    object-fit: contain;
+
+    display: block;
+}
+
+.join-btn:disabled {
+    cursor: default;
+}
+
+
+/* =========================
+   Joined Check
+========================= */
+
+.joined-check {
+    color: #fff;
+
+    font-size: 25px;
+
+    font-weight: 700;
+
+    line-height: 1;
+}
+
+
+/* =========================
+   16. Participant
+========================= */
+
+.capacity {
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 2px;
+
+    font-size: 10px;
+
+    font-weight: 500;
+
+    white-space: nowrap;
+}
+
+.people-icon {
+    width: 16px;
+    height: 16px;
+
+    object-fit: contain;
+
+    display: block;
+}
+
+
+/* =========================
+   17. Expired
+========================= */
+
 .event-card.expired {
     border-color: #8e8e8e;
+
     color: #666666;
 }
 
 .event-card.expired .event-badge {
     background-color: #8e8e8e;
+
     color: #ffffff;
 }
 
-.event-time-date {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-}
-
-.event-location {
-    font-size: 12px;
-}
-
-.event-action {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-    margin-left: 8px;
-    flex-shrink: 0;
-}
-
-.join-btn {
-    background-color: #2e3bcf;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    width: 40px;
-    height: 40px;
-    font-size: 24px;
-    font-weight: bold;
-    cursor: pointer;
-    line-height: 1;
-}
-
-.capacity {
-    font-size: 10px;
-    font-weight: 500;
-}
-
-.detail-icon {
-    width: 14px;
-    height: 14px;
-    vertical-align: middle;
-    margin-right: 4px;
-}
 
 /* =========================
-   9. Load More Button
+   18. Load More
 ========================= */
+
 .load-more-btn {
     width: 100%;
+
     padding: 2px;
+
     margin: 0 auto 10px;
+
     box-sizing: border-box;
 }
 
 #loadMoreBtn {
     display: block;
+
     margin: 0 auto;
+
     width: 95%;
+
     min-height: 1px;
+
     padding: 2px 16px;
+
     background-color: #ffffff;
+
     color: #000000;
+
     border: 1px solid #111111;
+
     border-radius: 8px;
+
     font-family: 'Mitr', sans-serif;
+
     font-size: 22px;
+
     font-weight: 400;
+
     line-height: 1.4;
+
     text-align: center;
+
     cursor: pointer;
-    transition: background-color 0.2s ease, transform 0.2s ease;
+
+    transition:
+        background-color 0.2s ease,
+        transform 0.2s ease;
 }
 
 #loadMoreBtn:hover {
@@ -397,333 +782,574 @@ body {
     transform: scale(0.98);
 }
 
-#loadMoreBtn:focus-visible {
-    outline: 2px solid #555555;
-    outline-offset: 3px;
-}
 
 /* =========================
-   10. Mobile
+   19. Mobile
 ========================= */
+
 @media (max-width: 480px) {
-    .load-more-btn {
-        padding: 2px 10px;
+
+    .event-list {
+        grid-template-columns: 1fr;
+
+        gap: 0;
     }
+
+
+    .event-card {
+        width: 100%;
+
+        min-height: 76px;
+
+        padding: 7px 8px;
+
+        margin-bottom: 10px;
+
+        border-radius: 12px;
+    }
+
+
+    .event-logo {
+        width: 55px;
+        height: 55px;
+
+        flex-basis: 55px;
+
+        margin-right: 7px;
+    }
+
+
+    .event-info {
+        gap: 2px;
+    }
+
+
+    .event-badge {
+        font-size: 12px;
+
+        padding: 2px 5px;
+    }
+
+
+    .event-info-btn {
+        width: 16px;
+        height: 16px;
+
+        flex-basis: 16px;
+    }
+
+
+    .event-info-btn img {
+        width: 14px;
+        height: 14px;
+    }
+
+
+    .event-time-date {
+        font-size: 10px;
+
+        gap: 6px;
+    }
+
+
+    .event-location {
+        font-size: 10px;
+    }
+
+
+    .event-action {
+        width: 52px;
+
+        flex-basis: 52px;
+
+        margin-left: 4px;
+    }
+
+
+    .join-btn {
+        width: 40px;
+        height: 40px;
+    }
+
+
+    .join-btn img {
+        width: 21px;
+        height: 21px;
+    }
+
+
+    .capacity {
+        font-size: 10px;
+    }
+
+
+    .people-icon {
+        width: 15px;
+        height: 15px;
+    }
+
 
     #loadMoreBtn {
         width: 90%;
+
         min-height: 35px;
+
         font-size: 20px;
+
         line-height: 1.2;
+
         border-radius: 8px;
+
         padding: 2px 4px;
+
         margin: 0 auto;
     }
+
 }
 
+
 /* =========================
-   11. Tablet
+   20. Tablet
 ========================= */
-@media (min-width: 481px) and (max-width: 767px) {
+
+@media (min-width: 481px)
+and (max-width: 767px) {
+
     .mobile-container {
         max-width: 100%;
+
         height: auto;
+
         max-height: none;
+
         min-height: 100vh;
     }
 
+
     .event-list {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 12px;
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+
+        gap: 10px;
     }
+
 
     .event-card {
         margin-bottom: 0;
+
+        min-height: 76px;
     }
+
+
+    .event-logo {
+        width: 48px;
+        height: 48px;
+
+        flex-basis: 48px;
+    }
+
+
+    .event-action {
+        width: 48px;
+
+        flex-basis: 48px;
+    }
+
+
+    .join-btn {
+        width: 38px;
+        height: 38px;
+    }
+
+
+    .join-btn img {
+        width: 20px;
+        height: 20px;
+    }
+
 }
 
+
 /* =========================
-   12. Desktop
+   21. Desktop
 ========================= */
+
 @media (min-width: 768px) {
+
     body {
         align-items: flex-start;
     }
 
+
     .mobile-container {
         width: 100%;
+
         max-width: none;
+
         height: auto;
+
         max-height: none;
+
         min-height: 100vh;
+
         overflow-y: visible;
     }
 
-    .app-header {
-        padding: 16px 40px;
-    }
-
-    .logo img {
-        height: 30px;
-    }
-
-    .header-actions {
-        gap: 24px;
-    }
-
-    .icon-btn img {
-        width: 28px;
-        height: 28px;
-    }
 
     .content {
         width: 100%;
+
         max-width: 1200px;
+
         margin: 0 auto;
     }
 
-    /* Recommend Banner */
+
+    /* Recommend */
+
     .recommend-section {
         padding: 5px 32px 12px;
     }
 
+
     .recommend-title {
         font-size: 44px;
+
         margin-bottom: 16px;
     }
+
 
     .recommend-title .highlight {
         font-size: 60px;
     }
 
-    .carousel-container {
-        border-radius: 12px;
-    }
 
     .carousel-item {
-        height: clamp(220px, 25vw, 320px);
+        height:
+            clamp(
+                220px,
+                25vw,
+                320px
+            );
     }
 
-    .carousel-dots {
-        margin-top: 16px;
-    }
-
-    .dot {
-        height: 7px;
-        width: 16px;
-    }
-
-    .dot.active {
-        width: 28px;
-    }
 
     /* Create Event */
+
     .create-event-section {
         display: flex;
+
         justify-content: center;
-        padding: 16px 32px 24px;
+
+        padding:
+            16px 32px 24px;
     }
+
 
     .create-btn {
         width: 60%;
+
         min-height: 54px;
+
         padding: 7px 12px;
     }
 
-    .create-text {
-        font-size: 18px;
-    }
-
-    .create-icon {
-        width: 48px;
-        height: 42px;
-        font-size: 38px;
-    }
 
     /* Feed Header */
+
     .feed-header-section {
         display: flex;
+
         justify-content: space-between;
+
         align-items: flex-end;
+
         gap: 24px;
-        padding: 20px 32px 12px;
+
+        padding:
+            20px 32px 12px;
+
         margin-bottom: 16px;
     }
 
+
     .feed-title-container {
         flex: 1;
+
         max-width: 500px;
+
         margin-bottom: 0;
+
         font-size: 26px;
     }
 
-    .exclaim-red,
-    .exclaim-blue {
-        font-size: 44px;
-    }
 
     .filter-container {
         flex-shrink: 0;
+
         padding-bottom: 8px;
     }
+
 
     .filter-label {
         font-size: 14px;
     }
 
+
     .filter-dropdown {
         font-size: 16px;
+
         padding: 6px 14px;
     }
 
-    /* Event Cards */
+
+    /* Event Feed */
+
     .event-feed {
-        padding: 0 32px 24px;
+        padding:
+            0 32px 24px;
     }
+
 
     .event-list {
         display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 16px;
+
+        grid-template-columns:
+            repeat(
+                3,
+                minmax(0, 1fr)
+            );
+
+        gap: 12px;
     }
+
+
+    /* Event Card */
 
     .event-card {
-        min-height: 100px;
-        padding: 12px;
+        min-height: 76px;
+
+        padding: 7px 9px;
+
         margin-bottom: 0;
+
         border-radius: 10px;
-        font-size: 14px;
     }
+
 
     .event-logo {
-        width: 58px;
-        height: 58px;
-        margin-right: 14px;
+        width: 55px;
+        height: 55px;
+
+        flex-basis: 55px;
+
+        margin-right: 8px;
     }
 
-    .event-info {
-        gap: 6px;
-    }
 
     .event-badge {
-        font-size: 15px;
-        padding: 3px 10px;
-    }
-
-    .event-time-date {
-        gap: 6px 12px;
-        font-size: 13px;
-    }
-
-    .event-location {
-        font-size: 13px;
-    }
-
-    .event-action {
-        gap: 6px;
-        margin-left: 12px;
-    }
-
-    .join-btn {
-        width: 44px;
-        height: 44px;
-        font-size: 28px;
-    }
-
-    .capacity {
         font-size: 12px;
     }
 
-    .detail-icon {
+
+    .event-info-btn {
         width: 16px;
         height: 16px;
+
+        flex-basis: 16px;
     }
 
+
+    .event-info-btn img {
+        width: 14px;
+        height: 14px;
+    }
+
+
+    .event-time-date {
+        font-size: 10px;
+
+        gap: 6px;
+    }
+
+
+    .event-location {
+        font-size: 10px;
+    }
+
+
+    .detail-icon {
+        width: 13px;
+        height: 13px;
+
+        flex-basis: 13px;
+    }
+
+
+    .event-action {
+        width: 55px;
+
+        flex-basis: 55px;
+
+        margin-left: 6px;
+    }
+
+
+    .join-btn {
+        width: 42px;
+        height: 42px;
+    }
+
+
+    .join-btn img {
+        width: 22px;
+        height: 22px;
+    }
+
+
+    .capacity {
+        font-size: 10px;
+    }
+
+
+    .people-icon {
+        width: 15px;
+        height: 15px;
+    }
+
+
     /* Load More */
+
     .load-more-btn {
         max-width: 600px;
+
         padding: 8px 32px;
+
         margin: 0 auto 32px;
     }
 
+
     #loadMoreBtn {
         width: 100%;
+
         min-height: 44px;
+
         padding: 6px 16px;
+
         font-size: 18px;
     }
+
 }
 
+
 /* =========================
-   13. Large Desktop
+   22. Large Desktop
 ========================= */
+
 @media (min-width: 1200px) {
+
     .content {
         max-width: 1200px;
     }
 
+
     .recommend-section {
         padding-left: 48px;
+
         padding-right: 48px;
     }
+
 
     .feed-header-section {
         padding-left: 48px;
+
         padding-right: 48px;
     }
+
 
     .event-feed {
         padding-left: 48px;
+
         padding-right: 48px;
     }
 
+
     .event-list {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 20px;
+        grid-template-columns:
+            repeat(
+                3,
+                minmax(0, 1fr)
+            );
+
+        gap: 16px;
     }
 
+
     .event-card {
-        min-height: 110px;
+        min-height: 76px;
     }
+
 }
-/* Sticky Chat Button */
+
+
+/* =========================
+   23. Sticky Chat
+========================= */
+
 .sticky-chat-btn {
     position: fixed;
+
     right: 0;
     top: 50%;
-    transform: translateY(-50%);
+
+    transform:
+        translateY(-50%);
 
     width: 110px;
     height: 90px;
 
     display: flex;
+
     align-items: center;
     justify-content: center;
 
     background: #fff;
-    border-radius: 50px 0 0 50px;
 
-    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.25);
+    border-radius:
+        50px 0 0 50px;
+
+    box-shadow:
+        0 2px 15px
+        rgba(0, 0, 0, 0.25);
 
     z-index: 999;
+
     text-decoration: none;
 }
 
 .sticky-chat-btn img {
     width: 55px;
     height: 55px;
+
     object-fit: contain;
 }
 
-/* Mobile */
+
+/* =========================
+   24. Mobile Sticky Chat
+========================= */
+
 @media (max-width: 600px) {
+
     .sticky-chat-btn {
         width: 75px;
         height: 65px;
     }
 
+
     .sticky-chat-btn img {
         width: 40px;
         height: 40px;
     }
+
 }
