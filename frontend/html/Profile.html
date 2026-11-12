@@ -7,6 +7,7 @@
   <title>Profile</title>
   <link rel="stylesheet" href="../css/style.css">
   <link rel="stylesheet" href="../css/Profile.css?v=5">
+  <link rel="stylesheet" href="../css/badge.css?v=1">
   <script src="../js/Header.js"></script>
 </head>
 
@@ -64,8 +65,7 @@
             <label for="avatarInput" class="edit-badge">แก้ไข</label>
           </div>
           <div class="badge-container">
-            <h4>Badge</h4>
-            <div class="badge-box">No Badge</div>
+            <div class="badge-card-host" id="desktopBadgeCard"></div>
           </div>
         </div>
 
@@ -77,7 +77,11 @@
               <span class="bold-text username-text" id="usernameDisplay">มะหมาสี่ขา</span>
               <span class="edit-text-btn" id="editUsernameBtn">แก้ไข</span>
               </div>
-              <img src="../Picture/" class="username-side-icon" alt="">
+              <button type="button" class="username-badge-trigger" id="usernameBadgeTrigger"
+                aria-label="แสดงรายละเอียด Badge" aria-expanded="false" aria-controls="mobileBadgePopup">
+                <img src="../Picture/badge/no-Badge-mobile.svg" class="username-side-icon" alt="">
+              </button>
+              <div class="badge-popup" id="mobileBadgePopup" hidden></div>
             </div>
             <div class="input-box-wrapper edit-mode" id="usernameEditWrapper" style="display: none;">
               <input type="text" id="usernameInput" class="input-field bold-text" placeholder="ระบุชื่อผู้ใช้">
@@ -135,6 +139,7 @@
   </div>
 
   <script src="../js/Profile.js?v=4"></script>
+  <script src="../js/badge.js?v=1"></script>
 </body>
 
 </html>
