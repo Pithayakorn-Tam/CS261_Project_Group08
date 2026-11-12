@@ -1,35 +1,57 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Profile</title>
   <link rel="stylesheet" href="../css/style.css">
   <link rel="stylesheet" href="../css/Profile.css?v=4">
+  <script src="../js/Header.js"></script>
 </head>
+
 <body>
 
   <div class="app-container">
-<!-- Header -->
-<header class="app-header">
-    <div class="logo">
-        <a href="./Homepage.html" aria-label="กลับไปหน้า Home">
-            <img src="../Picture/LogoTUmeet.svg" alt="TU Meet Logo">
-        </a>
-    </div>
-
-    <div class="header-actions">
-        <!-- Notification -->
-        <button class="icon-btn" type="button" aria-label="Notifications">
-            <img src="../Picture/NotificationIcon.svg" alt="">
-        </button>
-
-        <!-- Profile -->
-        <a href="Profile.html" class="icon-btn" aria-label="ไปหน้า Profile">
-            <img src="../Picture/profile.svg" alt="">
-        </a>
-    </div>
-</header>
+    <!-- Header -->
+    <header class="app-header">
+            <div class="logo">
+                <a href="./Homepage.html" aria-label="กลับไปหน้า Home">
+                    <img src="../Picture/LogoTUmeet.svg" alt="TU Meet Logo">
+                </a>
+            </div>
+            <div class="header-actions">
+                <!-- Notification -->
+                <a href="#" class="icon-btn" aria-label="Notifications">
+                    <img src="../Picture/NotificationIcon.svg" alt="Notifications">
+                </a>
+                <!-- Profile Dropdown -->
+                <div class="profile-dropdown">
+                    <button class="icon-btn profile-trigger" id="profileBtn" type="button" aria-label="Profile"
+                        aria-expanded="false">
+                        <img src="../Picture/ProfileIcon.svg" alt="Profile">
+                    </button>
+                    <!-- กรณี Login แล้ว -->
+                    <div class="dropdown-menu" id="loggedInMenu" hidden>
+                        <a href="./Profile.html" class="dropdown-item">
+                            <img src="../Picture/ProfileIcon.svg" alt="">
+                            <span>โปรไฟล์</span>
+                        </a>
+                        <button type="button" class="dropdown-item" id="logoutBtn">
+                            <img src="../Picture/logout.svg" alt="">
+                            <span>ออกจากระบบ</span>
+                        </button>
+                    </div>
+                    <!-- กรณียังไม่ได้ Login -->
+                    <div class="dropdown-menu" id="guestMenu" hidden>
+                        <a href="./Login.html" class="dropdown-item">
+                            <img src="../Picture/ProfileIcon.svg" alt="">
+                            <span>เข้าสู่ระบบ</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </header>
     <!-- พื้นที่เนื้อหาหลัก -->
     <main class="main-content">
 
@@ -42,9 +64,9 @@
             <label for="avatarInput" class="edit-badge">แก้ไข</label>
           </div>
           <div class="badge-container">
-  <h4>Badge</h4>
-  <div class="badge-box">No Badge</div>
-</div>
+            <h4>Badge</h4>
+            <div class="badge-box">No Badge</div>
+          </div>
         </div>
 
         <form class="info-container" id="profileForm" onsubmit="return false;">
@@ -106,4 +128,5 @@
 
   <script src="../js/Profile.js?v=4"></script>
 </body>
+
 </html>
