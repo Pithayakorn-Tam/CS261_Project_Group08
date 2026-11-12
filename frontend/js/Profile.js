@@ -23,24 +23,37 @@ document.addEventListener("DOMContentLoaded", () => {
   const dismissCancelBtn = document.getElementById("dismissCancelBtn");
   let selectedEventIdToCancel = null;
 
-  // ตารางจับคู่หมวดหมู่กับโลโก้
+// ตารางจับคู่หมวดหมู่กับโลโก้ (ดึงให้เหมือน Homepage)
   const categoryLogos = {
-    study: "../Picture/AcademicActivityLogo.svg",
-    วิชาการ: "../Picture/AcademicActivityLogo.svg",
-    sport: "../Picture/HealthActivityLogo.svg",
-    กีฬา: "../Picture/HealthActivityLogo.svg",
-    bordgame: "../Picture/EntertainmentAcivityLogo.svg",
-    "E-sport": "../Picture/EntertainmentAcivityLogo.svg",
-    consert: "../Picture/EntertainmentAcivityLogo.svg",
-    concert: "../Picture/EntertainmentAcivityLogo.svg",
-    บันเทิง: "../Picture/EntertainmentAcivityLogo.svg",
-    food: "../Picture/LifestyleActivityLogo.svg",
-    other: "../Picture/LifestyleActivityLogo.svg",
-    ไลฟ์สไตล์: "../Picture/LifestyleActivityLogo.svg",
-    default: "../Picture/LogoTUmeet.svg"
+    // วิชาการ
+    academic: '../Picture/book-one.svg',
+    study: '../Picture/book-one.svg',
+    วิชาการ: '../Picture/book-one.svg',
+
+    // กีฬา
+    sport: '../Picture/activity.svg',
+    กีฬา: '../Picture/activity.svg',
+
+    // บันเทิง
+    entertainment: '../Picture/gamecontroller.svg',
+    'E-sport': '../Picture/gamecontroller.svg',
+    concert: '../Picture/gamecontroller.svg',
+    bordgame: '../Picture/gamecontroller.svg',
+    บันเทิง: '../Picture/gamecontroller.svg',
+
+    // ไลฟ์สไตล์
+    'life-style': '../Picture/bowl.svg',
+    lifestyle: '../Picture/bowl.svg',
+    food: '../Picture/bowl.svg',
+    ไลฟ์สไตล์: '../Picture/bowl.svg',
+
+    // อื่นๆ
+    other: '../Picture/bowl.svg',
+
+    // รูปสำรอง (Default)
+    default: '../Picture/bowl.svg'
   };
 
-  // รายการกิจกรรมดึงจากฐานข้อมูล 100% (ไม่มี Mock ในฝั่ง Frontend)
   let activeEvents = [];
   let pastEvents = [];
 
@@ -106,7 +119,6 @@ document.addEventListener("DOMContentLoaded", () => {
     return isNaN(eventDateTime.getTime()) ? 0 : eventDateTime.getTime();
   }
 
-  // ตรวจสอบว่ากิจกรรมหมดเวลาแล้วหรือไม่
   function isEventExpired(dto) {
     if (!dto) return false;
     if (dto.status === "CLOSED" || dto.status === "CANCELLED") {
@@ -136,7 +148,6 @@ document.addEventListener("DOMContentLoaded", () => {
     };
   }
 
-  // ฟังก์ชันโหลดข้อมูลโปรไฟล์ผู้ใช้
   async function loadUserProfile() {
     const studentId = getCurrentStudentId();
     try {
@@ -180,9 +191,63 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // ฟังก์ชันดึงกิจกรรมที่ผู้ใช้สร้างและเข้าร่วมจริงจากฐานข้อมูล 100%
+  // ====================================================
+  // สวิตช์ปิด-เปิดข้อมูลจำลอง (Toggle Mock Data)
+  // ====================================================
+  // - ใส่ true เพื่อดู Mock Data 10 อัน
+  // - ใส่ false เพื่อดึงข้อมูลจริงจาก Backend API
+  const USE_MOCK_DATA = false;
+
   async function loadUserEvents() {
     const studentId = getCurrentStudentId();
+
+    if (USE_MOCK_DATA) {
+      const mockJoinedDtos = [
+        { id: 101, eventName: 'เตะบอลหญ้าเทียม', eventType: 'sport', eventTime: '17:00', eventDate: '2026-11-20', location: 'สนามยิม 7', status: 'OPEN' },
+        { id: 103, eventName: 'ดูหนังรอบดึก', eventType: 'entertainment', eventTime: '20:00', eventDate: '2026-11-18', location: 'Zpell', status: 'OPEN' },
+        { id: 201, eventName: 'แข่ง Valorant', eventType: 'E-sport', eventTime: '10:00', eventDate: '2026-10-15', location: 'Mingle', status: 'CLOSED' },
+        { id: 203, eventName: 'ตีแบดมินตัน', eventType: 'กีฬา', eventTime: '18:00', eventDate: '2026-11-01', location: 'ยิมเนเซียม 4', status: 'CLOSED' },
+        { id: 205, eventName: 'คอนเสิร์ตลานจอดรถ', eventType: 'concert', eventTime: '19:00', eventDate: '2026-09-05', location: 'ลานจอดรถ', status: 'CLOSED' }
+      ];
+
+      const mockCreatedDtos = [
+        { id: 102, eventName: 'ติวแคลคูลัส', eventType: 'study', eventTime: '13:00', eventDate: '2026-11-16', location: 'หอสมุดป๋วยฯ', status: 'OPEN' },
+        { id: 104, eventName: 'หาเพื่อนกินหมูกระทะ', eventType: 'food', eventTime: '18:30', eventDate: '2026-11-15', location: 'อู๊ดอู๊ด หมูกระทะ', status: 'OPEN' },
+        { id: 105, eventName: 'เล่นบอร์ดเกม Avalon', eventType: 'bordgame', eventTime: '19:00', eventDate: '2026-11-14', location: 'ร้าน Dice Cup', status: 'OPEN' },
+        { id: 202, eventName: 'เดินตลาดนัดอินเตอร์โซน', eventType: 'ไลฟ์สไตล์', eventTime: '17:00', eventDate: '2026-11-05', location: 'อินเตอร์โซน', status: 'CLOSED' },
+        { id: 204, eventName: 'ถ่ายรูปรับปริญญา', eventType: 'other', eventTime: '09:00', eventDate: '2026-10-20', location: 'คณะวิทย์ฯ', status: 'CLOSED' }
+      ];
+
+      try {
+        await new Promise(resolve => setTimeout(resolve, 300));
+        const eventMap = new Map();
+
+        mockJoinedDtos.forEach(dto => {
+          eventMap.set(dto.id, mapDtoToProfileEvent(dto, false, true));
+        });
+
+        mockCreatedDtos.forEach(dto => {
+          if (!eventMap.has(dto.id)) {
+            eventMap.set(dto.id, mapDtoToProfileEvent(dto, true, false));
+          }
+        });
+
+        const allUserEvents = Array.from(eventMap.values());
+
+        activeEvents = allUserEvents
+          .filter(ev => !ev.expired)
+          .sort((a, b) => a.timestamp - b.timestamp);
+
+        pastEvents = allUserEvents
+          .filter(ev => ev.expired)
+          .sort((a, b) => b.timestamp - a.timestamp);
+
+        renderEvents();
+      } catch (error) {
+        console.error("Error loading mock events:", error);
+      }
+      return; 
+    }
 
     try {
       const [joinedRes, createdRes] = await Promise.all([
@@ -198,14 +263,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const eventMap = new Map();
 
-      // 1. กิจกรรมที่ผู้ใช้กดเข้าร่วม
       joinedDtos.forEach(dto => {
         if (dto && dto.id != null) {
           eventMap.set(dto.id, mapDtoToProfileEvent(dto, false, true));
         }
       });
 
-      // 2. กิจกรรมที่ผู้ใช้สร้าง (ยกเว้น 4 กิจกรรมตั้งต้น id 1-4 หากไม่ได้กดเข้าร่วมเอง)
       createdDtos.forEach(dto => {
         if (dto && dto.id != null && !eventMap.has(dto.id)) {
           const isSystemDefaultSeeded = dto.id <= 5 && (studentId === "6800000000" || studentId === "6800000001" || studentId === "6800000009");
@@ -217,7 +280,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const allUserEvents = Array.from(eventMap.values());
 
-      // แยกกิจกรรมที่ยังไม่หมดเวลา (Active) และที่หมดเวลาแล้ว (Past) พร้อมเรียงลำดับ
       activeEvents = allUserEvents
         .filter(ev => !ev.expired)
         .sort((a, b) => {
@@ -324,11 +386,13 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // ฟังก์ชันแสดงผลและจัดการการ์ดกิจกรรม
+  // ====================================================
+  // ฟังก์ชันสร้างการ์ด HTML แบบเดียวกับหน้า Home 
+  // ====================================================
   function createEventCardHTML(event, isPast = false) {
     let actionHTML = "";
 
-    // กิจกรรมที่ยังไม่หมดเวลา: แสดงสถานะและปุ่มกากบาทสีแดง ✕ เพื่อให้กดยกเลิกได้
+    // ถ้ายังไม่หมดเวลา แสดงสถานะ + ปุ่มกากบาท
     if (!isPast && !event.expired) {
       const statusLabel = event.isJoined ? "เข้าร่วมแล้ว" : "สร้างโดยคุณ";
       actionHTML = `
@@ -347,13 +411,28 @@ document.addEventListener("DOMContentLoaded", () => {
           <img src="${event.logo}" alt="${event.title}">
         </div>
         <div class="event-info">
-          <div class="event-badge">${event.title}</div>
-          <div class="event-time-date">
-            <span><img src="../Picture/TimeIcon.svg" class="detail-icon" alt="Time"> ${event.time}</span>
-            <span><img src="../Picture/CalendarIcon.svg" class="detail-icon" alt="Calendar"> ${event.date}</span>
+          <!-- Event Name + Info Button -->
+          <div class="event-badge">
+            <span class="event-title">${event.title}</span>
+            <button class="event-info-btn" type="button" data-event-id="${event.id}" aria-label="ดูรายละเอียดกิจกรรม">
+              <img src="../Picture/Info.svg" alt="Info">
+            </button>
           </div>
+          <!-- Time + Date -->
+          <div class="event-time-date">
+            <span>
+              <img src="../Picture/TimeIcon.svg" class="detail-icon" alt="Time">
+              ${event.time}
+            </span>
+            <span>
+              <img src="../Picture/CalendarIcon.svg" class="detail-icon" alt="Calendar">
+              ${event.date}
+            </span>
+          </div>
+          <!-- Location -->
           <div class="event-location">
-            <img src="../Picture/LocationIcon.svg" class="detail-icon" alt="Location"> ${event.location}
+            <img src="../Picture/LocationIcon.svg" class="detail-icon" alt="Location">
+            ${event.location}
           </div>
         </div>
         ${actionHTML}
@@ -444,7 +523,6 @@ document.addEventListener("DOMContentLoaded", () => {
         if (cancelModal) cancelModal.style.display = "none";
         selectedEventIdToCancel = null;
 
-        // ดึงข้อมูลล่าสุดจากฐานข้อมูลมาแสดงผลใหม่ทันที
         await loadUserEvents();
       } catch (error) {
         console.error("Error cancelling event participation:", error);
@@ -457,7 +535,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // โหลดข้อมูลโปรไฟล์และรายการกิจกรรมจากฐานข้อมูลเมื่อเปิดหน้าเว็บ
   loadUserProfile();
   loadUserEvents();
 });

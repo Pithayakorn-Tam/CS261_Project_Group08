@@ -228,28 +228,45 @@
   gap: 12px;
 }
 
+/* =========================
+   Event Card (นำสไตล์มาจาก Homepage)
+========================= */
 .event-card {
   display: flex;
   align-items: center;
+  width: 100%;
   min-width: 0;
-  margin: 0;
-  padding: 10px 12px;
-  border: 1px solid #000;
+  min-height: 76px;
+  border: 1.5px solid #000;
   border-radius: 12px;
-  background: #fff;
+  padding: 7px 9px;
+  margin: 0;
+  background-color: #fff;
   color: #000;
   font-size: 12px;
   font-weight: 500;
+  overflow: hidden;
 }
 
+.event-card.expired {
+  border-color: #8e8e8e;
+  color: #666;
+}
+
+.event-card.expired .event-badge {
+  background-color: #8e8e8e;
+  color: #fff;
+}
+
+/* Event Logo */
 .event-logo {
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  width: 50px;
-  height: 50px;
-  margin-right: 12px;
+  width: 55px;
+  height: 55px;
+  margin-right: 8px;
   overflow: hidden;
 }
 
@@ -259,51 +276,105 @@
   object-fit: contain;
 }
 
+/* Event Info */
 .event-info {
   display: flex;
   flex: 1;
   flex-direction: column;
-  gap: 4px;
+  gap: 2px;
   min-width: 0;
+  overflow: hidden;
 }
 
 .event-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
   align-self: flex-start;
-  padding: 2px 8px;
-  border-radius: 4px;
-  background: #2e3bcf;
+  max-width: 100%;
+  background-color: #2e3bcf;
   color: #fff;
-  font-size: 14px;
-  font-weight: 700;
+  padding: 2px 5px;
+  border-radius: 3px;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
-.event-card.expired {
-  border-color: #8e8e8e;
-  color: #666;
+.event-title {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.event-card.expired .event-badge {
-  background: #8e8e8e;
-  color: #fff;
+.event-info-btn {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  margin-left: 2px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  overflow: visible;
+}
+
+.event-info-btn img {
+  width: 14px;
+  height: 14px;
+  display: block;
+  object-fit: contain;
+}
+
+.event-info-btn:hover {
+  opacity: 0.8;
+}
+
+.event-info-btn:active {
+  transform: scale(0.9);
 }
 
 .event-time-date {
   display: flex;
-  flex-wrap: wrap;
-  gap: 4px 12px;
-  font-weight: 600;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 8px;
+  font-size: 11px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.event-time-date span {
+  display: flex;
+  align-items: center;
+  min-width: 0;
 }
 
 .event-location {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  font-size: 11px;
+  font-weight: 500;
   color: #333;
-  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .detail-icon {
   width: 14px;
   height: 14px;
-  margin-right: 4px;
+  flex: 0 0 14px;
+  margin-right: 3px;
   vertical-align: middle;
+  object-fit: contain;
 }
 
 .event-action-right {
@@ -312,18 +383,6 @@
   flex-shrink: 0;
   gap: 8px;
   margin-left: 8px;
-}
-
-.detail-link-btn {
-  color: #2e3bcf;
-  font-size: 13px;
-  font-weight: 600;
-  text-decoration: none;
-  white-space: nowrap;
-}
-
-.detail-link-btn:hover {
-  text-decoration: underline;
 }
 
 .joined-action {
@@ -489,22 +548,47 @@
   }
 
   .event-card {
-    padding: 8px 10px;
+    width: 100%;
+    min-height: 76px;
+    padding: 7px 8px;
+    margin-bottom: 10px;
+    border-radius: 12px;
   }
 
   .event-logo {
-    width: 42px;
-    height: 42px;
-    margin-right: 8px;
+    width: 55px;
+    height: 55px;
+    flex-basis: 55px;
+    margin-right: 7px;
+  }
+
+  .event-info {
+    gap: 2px;
   }
 
   .event-badge {
-    font-size: 13px;
+    font-size: 12px;
+    padding: 2px 5px;
+  }
+
+  .event-info-btn {
+    width: 16px;
+    height: 16px;
+    flex-basis: 16px;
+  }
+
+  .event-info-btn img {
+    width: 14px;
+    height: 14px;
   }
 
   .event-time-date {
-    gap: 4px 8px;
-    font-size: 13px;
+    font-size: 10px;
+    gap: 6px;
+  }
+
+  .event-location {
+    font-size: 10px;
   }
 
   .event-action-right {
