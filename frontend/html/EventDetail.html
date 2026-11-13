@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TU Meet - รายละเอียดกิจกรรม</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/EventDetail.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Mitr:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="../js/EventDetail.js" defer></script>
+</head>
+
+<body>
+  <!-- แถบสลับโหมดทดสอบ (จะแสดงเฉพาะตอนเปิดไฟล์ EventDetail.html โดยตรงเท่านั้น) -->
+  <div id="eventDetailPreviewBar" class="event-detail-preview-bar" hidden>
+    <span>โหมดทดสอบ:</span>
+    <button type="button" data-preview-mode="other-not-joined" class="active">1. คนอื่นสร้าง (ยังไม่เข้าร่วม)</button>
+    <button type="button" data-preview-mode="other-joined">2. คนอื่นสร้าง (เข้าร่วมแล้ว)</button>
+    <button type="button" data-preview-mode="created-by-me">3. สร้างโดยคุณ (แก้ไขได้)</button>
+  </div>
+
+  <!-- Popup รายละเอียดกิจกรรม -->
+  <div id="eventDetailPopup" class="event-detail-overlay hidden" role="dialog" aria-modal="true"
+    aria-labelledby="eventDetailTitle">
+    <div class="event-detail-card">
+      <!-- ปุ่มกากบาทมุมขวาบน (แสดงบน PC) -->
+      <button type="button" id="eventDetailCloseBtn" class="event-detail-close-btn" aria-label="ปิดหน้าต่าง">✕</button>
+
+      <!-- ส่วนหัว: โลโก้หมวดหมู่ + ชื่อกิจกรรม -->
+      <div class="event-detail-header">
+        <div class="event-detail-logo-wrap">
+          <img id="eventDetailLogo" src="../Picture/bowl.svg" alt="Category Icon" class="event-detail-logo">
+        </div>
+        <h2 id="eventDetailTitle" class="event-detail-title">ตี๋น้อย คลายเหงา</h2>
+      </div>
+
+      <div class="event-detail-divider top-divider"></div>
+
+      <!-- ส่วนเนื้อหา -->
+      <div class="event-detail-body">
+        <!-- คอลัมน์ซ้ายบน PC (คำอธิบาย + ข้อมูลกิจกรรม 4 ช่อง) -->
+        <div class="event-detail-left">
+          <div class="event-detail-desc-box" id="eventDetailDescBox">
+            <div id="eventDetailDescText" class="event-detail-desc-text empty">กิจกรรมนี้ไม่มีคำอธิบายเพิ่มเติม</div>
+            <textarea id="eventDetailDescInput" class="event-detail-desc-input hidden" maxlength="200"
+              placeholder="กิจกรรมนี้ไม่มีคำอธิบายเพิ่มเติม"></textarea>
+            <div id="eventDetailDescFooter" class="event-detail-desc-footer hidden">
+              <span id="eventDetailCharCount" class="event-detail-char-count">0/200</span>
+              <button type="button" id="eventDetailEditBtn" class="event-detail-edit-btn" aria-label="แก้ไขคำอธิบาย">
+                <svg class="pencil-icon" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor"
+                  stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="event-detail-info-grid">
+            <div class="event-detail-info-item">
+              <img src="../Picture/TimeIcon.svg" alt="Time" class="event-detail-info-icon">
+              <span id="eventDetailTime">18.30</span>
+            </div>
+            <div class="event-detail-info-item">
+              <img src="../Picture/CalendarIcon.svg" alt="Date" class="event-detail-info-icon">
+              <span id="eventDetailDate">Sat, 28 Sep</span>
+            </div>
+            <div class="event-detail-info-item">
+              <img src="../Picture/LocationIcon.svg" alt="Location" class="event-detail-info-icon">
+              <span id="eventDetailLocation">หอสมุดป๋วย</span>
+            </div>
+            <div class="event-detail-info-item">
+              <img src="../Picture/people-outline.svg" alt="Participants" class="event-detail-info-icon people-icon-detail">
+              <span id="eventDetailCapacity">3/6</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="event-detail-divider mobile-middle-divider"></div>
+
+        <!-- คอลัมน์ขวาบน PC (รายชื่อผู้เข้าร่วม) -->
+        <div class="event-detail-right">
+          <h3 id="eventDetailParticipantHeader" class="event-detail-participant-header">ผู้เข้าร่วม ( 3 )</h3>
+          <div id="eventDetailParticipantList" class="event-detail-participant-list"></div>
+        </div>
+      </div>
+
+      <!-- ปุ่มด้านล่าง -->
+      <div class="event-detail-footer" id="eventDetailFooter">
+        <button type="button" id="eventDetailActionBtn" class="event-detail-action-btn btn-join">เข้าร่วม</button>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>
