@@ -55,6 +55,9 @@ public class EventParticipantService {
         Event event = eventOptional.get();
 
         // 3. ตรวจสอบสถานะกิจกรรม
+        if (event.getLifecycleStatus() != null && !"UPCOMING".equalsIgnoreCase(event.getLifecycleStatus())) {
+            return new ActionResponse(false, "ไม่สามารถทำรายการได้เนื่องจากกิจกรรมนี้สิ้นสุดหรือถูกยกเลิกแล้ว");
+        }
         if ("CLOSED".equalsIgnoreCase(event.getStatus())) {
             return new ActionResponse(false, "กิจกรรมนี้ปิดรับสมัครแล้ว");
         }
@@ -108,6 +111,10 @@ public class EventParticipantService {
             return new ActionResponse(false, "ไม่พบข้อมูลกิจกรรม ID: " + request.getEventId());
         }
         Event event = eventOptional.get();
+
+        if (event.getLifecycleStatus() != null && !"UPCOMING".equalsIgnoreCase(event.getLifecycleStatus())) {
+            return new ActionResponse(false, "ไม่สามารถทำรายการได้เนื่องจากกิจกรรมนี้สิ้นสุดหรือถูกยกเลิกแล้ว");
+        }
 
         // 3. ป้องกันไม่ให้ผู้สร้างกิจกรรมกดออกจากกิจกรรมตนเอง
         if (event.getCreator() != null && user.getStudentId().equals(event.getCreator().getStudentId())) {

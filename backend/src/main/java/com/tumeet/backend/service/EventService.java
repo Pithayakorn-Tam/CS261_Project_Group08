@@ -7,10 +7,12 @@ import com.tumeet.backend.model.Event;
 import com.tumeet.backend.model.User;
 import com.tumeet.backend.repository.EventRepository;
 import com.tumeet.backend.repository.UserRepository;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
 import java.util.List;
@@ -100,6 +102,7 @@ public class EventService {
         event.setEventDate(eventDate);
         event.setEventTime(request.getEventTime().trim());
         event.setStatus("OPEN");
+        event.setLifecycleStatus("UPCOMING");
         event.setCreator(creatorOpt.get());
 
         // 4. บันทึกลงฐานข้อมูล
@@ -110,8 +113,74 @@ public class EventService {
         return EventResponse.success("สร้างกิจกรรมสำเร็จ", eventDto);
     }
 
-    @Transactional(readOnly = true)
+    @Scheduled(fixedRate = 60000)
+    @Transactional
+    public void processCompletedEvents() {
+        syncAndCompleteExpiredEvents();
+    }
+
+    @Transactional
+    public void syncAndCompleteExpiredEvents() {
+        List<Event> upcomingEvents = eventRepository.findByLifecycleStatus("UPCOMING");
+        if (upcomingEvents == null || upcomingEvents.isEmpty()) {
+            return;
+        }
+        LocalDateTime now = LocalDateTime.now();
+
+        for (Event event : upcomingEvents) {
+            LocalDateTime eventEndDateTime = parseEventDateTime(event.getEventDate(), event.getEventTime());
+            if (eventEndDateTime != null && now.isAfter(eventEndDateTime)) {
+                // เปลี่ยนสถานะเป็น COMPLETED
+                event.setLifecycleStatus("COMPLETED");
+                event.setStatus("CLOSED");
+
+                // แจกแต้ม +1 เฉพาะกรณีที่มีสมาชิกตั้งแต่ 2 คนขึ้นไป (Creator + อย่างน้อย 1 Participant)
+                int participantCount = (event.getParticipants() != null ? event.getParticipants().size() : 0) + 1;
+                if (participantCount >= 2 || (event.getCurrentParticipants() != null && event.getCurrentParticipants() >= 2)) {
+                    User creator = event.getCreator();
+                    if (creator != null) {
+                        creator.setCompletedCreatedCount(
+                                (creator.getCompletedCreatedCount() != null ? creator.getCompletedCreatedCount() : 0) + 1
+                        );
+                        userRepository.save(creator);
+                    }
+                    if (event.getParticipants() != null) {
+                        for (User participant : event.getParticipants()) {
+                            participant.setCompletedJoinedCount(
+                                    (participant.getCompletedJoinedCount() != null ? participant.getCompletedJoinedCount() : 0) + 1
+                            );
+                            userRepository.save(participant);
+                        }
+                    }
+                }
+                eventRepository.save(event);
+            }
+        }
+    }
+
+    private LocalDateTime parseEventDateTime(LocalDate eventDate, String eventTime) {
+        if (eventDate == null) {
+            return null;
+        }
+        if (eventTime == null || eventTime.isBlank()) {
+            return eventDate.atTime(23, 59, 59);
+        }
+        try {
+            String normalizedTime = eventTime.trim().replace('.', ':');
+            String[] parts = normalizedTime.split(":");
+            if (parts.length == 2 && parts[0].length() == 1) {
+                normalizedTime = "0" + normalizedTime;
+            }
+            LocalTime parsedTime = LocalTime.parse(normalizedTime);
+            return LocalDateTime.of(eventDate, parsedTime);
+        } catch (DateTimeParseException e) {
+            return eventDate.atTime(23, 59, 59);
+        }
+    }
+
+    @Transactional
     public EventResponse getAllOpenEvents() {
+        syncAndCompleteExpiredEvents();
         List<Event> allEvents = eventRepository.findAllByOrderByIdAsc();
         if (allEvents.isEmpty()) {
             allEvents = eventRepository.findByStatusOrderByIdAsc("OPEN");
@@ -123,7 +192,7 @@ public class EventService {
         return EventResponse.success("ดึงรายการกิจกรรมที่เปิดรับอยู่สำเร็จ", eventDtos);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public EventResponse getEventsByCreator(String studentId) {
         if (studentId == null || studentId.isBlank()) {
             return EventResponse.error("กรุณาระบุรหัสนักศึกษา");
@@ -134,6 +203,7 @@ public class EventService {
             return EventResponse.error("ไม่พบข้อมูลผู้ใช้สำหรับรหัสนักศึกษา: " + studentId);
         }
 
+        syncAndCompleteExpiredEvents();
         List<Event> userEvents = eventRepository.findByCreator(userOpt.get());
         List<EventDto> eventDtos = userEvents.stream()
                 .map(EventDto::fromEntity)
@@ -142,7 +212,7 @@ public class EventService {
         return EventResponse.success("ดึงรายการกิจกรรมของผู้ใช้สำเร็จ", eventDtos);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public EventResponse getEventsByParticipant(String studentId) {
         if (studentId == null || studentId.isBlank()) {
             return EventResponse.error("กรุณาระบุรหัสนักศึกษา");
@@ -153,6 +223,7 @@ public class EventService {
             return EventResponse.error("ไม่พบข้อมูลผู้ใช้สำหรับรหัสนักศึกษา: " + studentId);
         }
 
+        syncAndCompleteExpiredEvents();
         List<Event> joinedEvents = eventRepository.findByParticipantsContaining(userOpt.get());
         List<EventDto> eventDtos = joinedEvents.stream()
                 .map(EventDto::fromEntity)
@@ -179,6 +250,10 @@ public class EventService {
 
         Event event = eventOpt.get();
         User user = userOpt.get();
+
+        if (event.getLifecycleStatus() != null && !"UPCOMING".equalsIgnoreCase(event.getLifecycleStatus())) {
+            return EventResponse.error("ไม่สามารถทำรายการได้เนื่องจากกิจกรรมนี้สิ้นสุดหรือถูกยกเลิกแล้ว");
+        }
 
         if (event.getCreator() != null && user.getStudentId().equals(event.getCreator().getStudentId())) {
             return EventResponse.error("ผู้สร้างกิจกรรมไม่สามารถเข้าร่วมกิจกรรมของตนเองได้");
@@ -216,11 +291,16 @@ public class EventService {
         Event event = eventOpt.get();
         User user = userOpt.get();
 
+        if (event.getLifecycleStatus() != null && !"UPCOMING".equalsIgnoreCase(event.getLifecycleStatus())) {
+            return EventResponse.error("ไม่สามารถทำรายการได้เนื่องจากกิจกรรมนี้สิ้นสุดหรือถูกยกเลิกแล้ว");
+        }
+
         if (!event.getParticipants().contains(user)) {
             if (event.getCreator() != null && user.getStudentId().equals(event.getCreator().getStudentId())) {
-                event.getParticipants().clear();
-                eventRepository.delete(event);
-                return EventResponse.success("ยกเลิกกิจกรรมสำเร็จ", EventDto.fromEntity(event));
+                event.setLifecycleStatus("CANCELLED");
+                event.setStatus("CLOSED");
+                Event saved = eventRepository.save(event);
+                return EventResponse.success("ยกเลิกกิจกรรมสำเร็จ", EventDto.fromEntity(saved));
             }
             return EventResponse.error("คุณไม่ได้อยู่ในรายชื่อผู้เข้าร่วมกิจกรรมนี้");
         }

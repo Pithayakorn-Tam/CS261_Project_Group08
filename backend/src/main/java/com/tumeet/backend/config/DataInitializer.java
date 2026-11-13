@@ -96,6 +96,7 @@ public class DataInitializer {
                 Event past1 = new Event("อ่านหนังสือ", "study", "ห้องสมุดป๋วย", 4, LocalDate.of(2026, 10, 7), "19.00", defaultCreator);
                 past1.setCurrentParticipants(4);
                 past1.setStatus("CLOSED");
+                past1.setLifecycleStatus("COMPLETED");
 
                 eventRepository.saveAll(List.of(e1, e2, e3, e4, past1));
             } else if (defaultCreator != null) {
@@ -138,6 +139,7 @@ public class DataInitializer {
                         ev.setCreator(defaultCreator);
                         ev.setCurrentParticipants(4);
                         ev.setStatus("CLOSED");
+                        ev.setLifecycleStatus("COMPLETED");
                         eventRepository.save(ev);
                         continue;
                     }
@@ -153,6 +155,7 @@ public class DataInitializer {
                     Event past1 = new Event("อ่านหนังสือ", "study", "ห้องสมุดป๋วย", 4, LocalDate.of(2026, 10, 7), "19.00", defaultCreator);
                     past1.setCurrentParticipants(4);
                     past1.setStatus("CLOSED");
+                    past1.setLifecycleStatus("COMPLETED");
                     eventRepository.save(past1);
                 }
             }

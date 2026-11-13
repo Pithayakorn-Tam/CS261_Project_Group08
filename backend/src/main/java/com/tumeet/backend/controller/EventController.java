@@ -64,7 +64,7 @@ public class EventController {
                 : ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
-    @PostMapping("/{eventId}/leave")
+    @PostMapping({"/{eventId}/leave", "/{eventId}/cancel"})
     public ResponseEntity<EventResponse> leaveEvent(@PathVariable Long eventId, @RequestBody Map<String, String> body) {
         String studentId = body != null ? body.get("studentId") : null;
         EventResponse response = eventService.leaveEvent(eventId, studentId);
