@@ -730,6 +730,12 @@ const USE_EXACT_IMAGE_MOCK = false;
       const card = e.target.closest('.event-card');
       if (!card) return;
 
+      // การ์ดกิจกรรมที่ผ่านมาใช้สำหรับแสดงผล/ประเมินเท่านั้น
+      // ไม่ต้องเปิดหน้าต่างรายละเอียดกิจกรรมเมื่อกดการ์ด
+      if (card.classList.contains('expired')) {
+        return;
+      }
+
       if (e.target.closest('.join-btn, .cancel-event-btn')) {
         return;
       }
