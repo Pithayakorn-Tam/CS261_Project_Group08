@@ -119,9 +119,14 @@ document.addEventListener("DOMContentLoaded", () => {
     return isNaN(eventDateTime.getTime()) ? 0 : eventDateTime.getTime();
   }
 
+  function isEventCancelled(dto) {
+    if (!dto) return false;
+    return dto.status === "CANCELLED" || dto.lifecycleStatus === "CANCELLED";
+  }
+
   function isEventExpired(dto) {
     if (!dto) return false;
-    if (dto.status === "CLOSED" || dto.status === "CANCELLED") {
+    if (dto.status === "CLOSED" || dto.lifecycleStatus === "COMPLETED") {
       return true;
     }
     const ts = getEventTimestamp(dto);
@@ -174,6 +179,10 @@ document.addEventListener("DOMContentLoaded", () => {
           if (emailDisplay) emailDisplay.textContent = resolvedEmail;
           if (usernameDisplay) usernameDisplay.textContent = resolvedUsername;
           if (usernameInput) usernameInput.value = resolvedUsername;
+
+          if (typeof window.renderUserBadgeFromData === "function") {
+            window.renderUserBadgeFromData(user);
+          }
 
           localStorage.setItem(
             "loginData",
@@ -264,17 +273,14 @@ document.addEventListener("DOMContentLoaded", () => {
       const eventMap = new Map();
 
       joinedDtos.forEach(dto => {
-        if (dto && dto.id != null) {
+        if (dto && dto.id != null && !isEventCancelled(dto)) {
           eventMap.set(dto.id, mapDtoToProfileEvent(dto, false, true));
         }
       });
 
       createdDtos.forEach(dto => {
-        if (dto && dto.id != null && !eventMap.has(dto.id)) {
-          const isSystemDefaultSeeded = dto.id <= 5 && (studentId === "6800000000" || studentId === "6800000001" || studentId === "6800000009");
-          if (!isSystemDefaultSeeded) {
-            eventMap.set(dto.id, mapDtoToProfileEvent(dto, true, false));
-          }
+        if (dto && dto.id != null && !isEventCancelled(dto) && !eventMap.has(dto.id)) {
+          eventMap.set(dto.id, mapDtoToProfileEvent(dto, true, false));
         }
       });
 
@@ -283,14 +289,8 @@ document.addEventListener("DOMContentLoaded", () => {
       activeEvents = allUserEvents
         .filter(ev => !ev.expired)
         .sort((a, b) => {
-          const isUserCreatedA = (Number(a.id) || 0) > 4;
-          const isUserCreatedB = (Number(b.id) || 0) > 4;
-          if (isUserCreatedA !== isUserCreatedB) {
-            return isUserCreatedA ? -1 : 1;
-          }
-          if (isUserCreatedA && isUserCreatedB) {
-            const idDiff = (Number(b.id) || 0) - (Number(a.id) || 0);
-            if (idDiff !== 0) return idDiff;
+          if (a.isOwner !== b.isOwner) {
+            return a.isOwner ? -1 : 1;
           }
           return a.timestamp - b.timestamp;
         });
@@ -300,6 +300,9 @@ document.addEventListener("DOMContentLoaded", () => {
         .sort((a, b) => b.timestamp - a.timestamp);
 
       renderEvents();
+      if (typeof window.refreshUserBadge === "function") {
+        window.refreshUserBadge();
+      }
     } catch (error) {
       console.error("ไม่สามารถดึงข้อมูลกิจกรรมจากฐานข้อมูลได้:", error);
       activeEvents = [];

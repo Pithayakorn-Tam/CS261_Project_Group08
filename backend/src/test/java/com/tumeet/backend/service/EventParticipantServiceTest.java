@@ -223,4 +223,21 @@ class EventParticipantServiceTest {
         assertEquals("OPEN", sampleEvent.getStatus());
         assertEquals(3, sampleEvent.getCurrentParticipants());
     }
+
+    @Test
+    @DisplayName("US-9: ไม่สามารถ Join หรือ Leave ผ่าน EventParticipantService หากกิจกรรมสิ้นสุดหรือถูกยกเลิกแล้ว")
+    void joinAndLeave_BlockedWhenNotUpcoming() {
+        sampleEvent.setLifecycleStatus("COMPLETED");
+        when(userRepository.findByStudentId("6800000002")).thenReturn(Optional.of(participantUser));
+        when(eventRepository.findById(10L)).thenReturn(Optional.of(sampleEvent));
+
+        ActionResponse joinRes = eventParticipantService.joinEvent(new JoinEventRequest(10L, "6800000002"));
+        assertFalse(joinRes.isStatus());
+        assertEquals("ไม่สามารถทำรายการได้เนื่องจากกิจกรรมนี้สิ้นสุดหรือถูกยกเลิกแล้ว", joinRes.getMessage());
+
+        sampleEvent.setLifecycleStatus("CANCELLED");
+        ActionResponse leaveRes = eventParticipantService.leaveEvent(new LeaveEventRequest(10L, "6800000002"));
+        assertFalse(leaveRes.isStatus());
+        assertEquals("ไม่สามารถทำรายการได้เนื่องจากกิจกรรมนี้สิ้นสุดหรือถูกยกเลิกแล้ว", leaveRes.getMessage());
+    }
 }

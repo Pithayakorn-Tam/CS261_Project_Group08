@@ -7,6 +7,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import org.hibernate.annotations.ColumnDefault;
 
 @Entity
 @Table(name = "users")
@@ -52,6 +53,15 @@ public class User {
 
     @Column(length = 100)
     private String username;
+
+    // --- [US-9] จำนวนกิจกรรมที่สร้างสำเร็จและเข้าร่วมสำเร็จ ---
+    @Column(name = "completed_created_count", nullable = false)
+    @ColumnDefault("0")
+    private Integer completedCreatedCount = 0;
+
+    @Column(name = "completed_joined_count", nullable = false)
+    @ColumnDefault("0")
+    private Integer completedJoinedCount = 0;
 
     public User() {
     }
@@ -188,5 +198,34 @@ public class User {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public Integer getCompletedCreatedCount() {
+        return completedCreatedCount;
+    }
+
+    public void setCompletedCreatedCount(Integer completedCreatedCount) {
+        this.completedCreatedCount = completedCreatedCount != null ? completedCreatedCount : 0;
+    }
+
+    public Integer getCompletedJoinedCount() {
+        return completedJoinedCount;
+    }
+
+    public void setCompletedJoinedCount(Integer completedJoinedCount) {
+        this.completedJoinedCount = completedJoinedCount != null ? completedJoinedCount : 0;
+    }
+
+    // --- [US-9] เมธอดคำนวณยศใน Java (ไม่มีคอลัมน์ badge ใน DB แต่ Jackson จะ serialize ออกไปใน JSON ชื่อ "badge" อัตโนมัติ) ---
+    public String getBadge() {
+        int created = this.completedCreatedCount != null ? this.completedCreatedCount : 0;
+        int joined = this.completedJoinedCount != null ? this.completedJoinedCount : 0;
+        int total = created + joined;
+
+        if (total >= 20) return "Super Bouquet";
+        if (total >= 10) return "Happy Blossom";
+        if (total >= 5)  return "Baby Bloom";
+        if (total >= 1)  return "Newly Bee";
+        return "No Badge";
     }
 }

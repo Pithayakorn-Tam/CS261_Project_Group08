@@ -18,5 +18,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
     List<Event> findByStatusOrderByIdAsc(String status);
 
+    List<Event> findByLifecycleStatus(String lifecycleStatus);
+
     List<Event> findAllByOrderByIdAsc();
 }

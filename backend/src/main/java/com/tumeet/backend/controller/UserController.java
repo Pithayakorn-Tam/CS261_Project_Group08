@@ -4,6 +4,8 @@ import com.tumeet.backend.dto.ActionResponse;
 import com.tumeet.backend.dto.UpdateUsernameRequest;
 import com.tumeet.backend.model.User;
 import com.tumeet.backend.repository.UserRepository;
+import com.tumeet.backend.service.EventService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,9 +16,16 @@ import java.util.Optional;
 public class UserController {
 
     private final UserRepository userRepository;
+    private final EventService eventService;
 
     public UserController(UserRepository userRepository) {
+        this(userRepository, null);
+    }
+
+    @Autowired
+    public UserController(UserRepository userRepository, EventService eventService) {
         this.userRepository = userRepository;
+        this.eventService = eventService;
     }
 
     @PutMapping("/update-username")
@@ -45,6 +54,10 @@ public class UserController {
     public ResponseEntity<ActionResponse> getUserProfile(@PathVariable String studentId) {
         if (studentId == null || studentId.isBlank()) {
             return ResponseEntity.badRequest().body(new ActionResponse(false, "กรุณาระบุรหัสนักศึกษา"));
+        }
+
+        if (eventService != null) {
+            eventService.syncAndCompleteExpiredEvents();
         }
 
         Optional<User> userOpt = userRepository.findByStudentId(studentId.trim());

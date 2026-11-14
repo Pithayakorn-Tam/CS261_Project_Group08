@@ -1,4 +1,8 @@
 document.addEventListener("DOMContentLoaded", () => {
+  const API_BASE_URL = (window.location.protocol === "file:" || window.location.port === "5500" || window.location.port === "5501")
+    ? "http://localhost:8080/api"
+    : "/api";
+
   const badges = [
     { name: "Newly Bee", image: "../Picture/badge/Newly-Bee.svg", min: 1, max: 4 },
     { name: "Baby Bloom", image: "../Picture/badge/Baby-Bloom.svg", min: 5, max: 9 },
@@ -10,8 +14,28 @@ document.addEventListener("DOMContentLoaded", () => {
   const desktopCard = document.getElementById("desktopBadgeCard");
   const mobileIcon = trigger?.querySelector(".username-side-icon");
 
+  function getCurrentStudentId() {
+    try {
+      const storedUserData = JSON.parse(localStorage.getItem("loginData") || "{}");
+      if (storedUserData.studentId) return storedUserData.studentId;
+      if (localStorage.getItem("studentId")) return localStorage.getItem("studentId");
+    } catch (e) {
+      console.warn("Cannot parse loginData:", e);
+    }
+    return "6800000000";
+  }
+
   function getBadge(count) {
     return badges.find(badge => count >= badge.min && count <= badge.max) || null;
+  }
+
+  function getBadgeByNameOrCount(badgeName, count) {
+    if (badgeName && badgeName !== "No Badge") {
+      const matched = badges.find(b => b.name.toLowerCase() === String(badgeName).trim().toLowerCase());
+      if (matched) return matched;
+    }
+    if (badgeName === "No Badge") return null;
+    return getBadge(count);
   }
 
   function createCard(badge, count) {
@@ -27,9 +51,7 @@ document.addEventListener("DOMContentLoaded", () => {
     </article>`;
   }
 
-  function renderBadge() {
-    const count = document.querySelectorAll("#activeEventsList .event-card, #pastEventsList .event-card").length;
-    const badge = getBadge(count);
+  function applyBadgeRender(badge, count) {
     const card = createCard(badge, count);
     if (desktopCard) desktopCard.innerHTML = card;
     if (mobilePopup) mobilePopup.innerHTML = card;
@@ -38,6 +60,43 @@ document.addEventListener("DOMContentLoaded", () => {
       mobileIcon.alt = badge ? `${badge.name} badge` : "No badge";
     }
   }
+
+  function renderBadgeFromUser(user) {
+    const created = Number(user?.completedCreatedCount) || 0;
+    const joined = Number(user?.completedJoinedCount) || 0;
+    const totalCount = created + joined;
+    const badge = getBadgeByNameOrCount(user?.badge, totalCount);
+    applyBadgeRender(badge, totalCount);
+  }
+
+  function renderFallbackBadgeFromDom() {
+    const count = document.querySelectorAll("#pastEventsList .event-card").length;
+    const badge = getBadge(count);
+    applyBadgeRender(badge, count);
+  }
+
+  async function fetchAndRenderBadge() {
+    const studentId = getCurrentStudentId();
+    try {
+      const res = await fetch(`${API_BASE_URL}/user/${encodeURIComponent(studentId)}`);
+      if (!res.ok) {
+        renderFallbackBadgeFromDom();
+        return;
+      }
+      const result = await res.json();
+      if (result && result.data) {
+        renderBadgeFromUser(result.data);
+      } else {
+        renderFallbackBadgeFromDom();
+      }
+    } catch (error) {
+      console.warn("ไม่สามารถโหลดข้อมูล Badge จาก Backend:", error);
+      renderFallbackBadgeFromDom();
+    }
+  }
+
+  window.renderUserBadgeFromData = renderBadgeFromUser;
+  window.refreshUserBadge = fetchAndRenderBadge;
 
   trigger?.addEventListener("click", () => {
     const isOpen = trigger.getAttribute("aria-expanded") === "true";
@@ -52,10 +111,5 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  const observer = new MutationObserver(renderBadge);
-  ["activeEventsList", "pastEventsList"].forEach(id => {
-    const container = document.getElementById(id);
-    if (container) observer.observe(container, { childList: true, subtree: true });
-  });
-  renderBadge();
+  fetchAndRenderBadge();
 });
