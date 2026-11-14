@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Review Activity</title>
   <link rel="stylesheet" href="../css/style.css">
-  <link rel="stylesheet" href="../css/review.css?v=1">
+  <link rel="stylesheet" href="../css/review.css?v=2">
   <script src="../js/Header.js"></script>
 </head>
 
@@ -134,7 +134,15 @@
     </main>
   </div>
 
-  <script src="../js/review.js?v=1"></script>
+  <div class="review-success-modal" id="reviewSuccessModal" role="dialog" aria-modal="true"
+    aria-labelledby="reviewSuccessTitle" hidden>
+    <div class="review-success-dialog">
+      <h2 id="reviewSuccessTitle">ประเมินกิจกรรมเสร็จสิ้น</h2>
+      <div class="success-check" aria-hidden="true"></div>
+    </div>
+  </div>
+
+  <script src="../js/review.js?v=2"></script>
 </body>
 
 </html>
