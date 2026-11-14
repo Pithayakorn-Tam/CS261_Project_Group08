@@ -210,17 +210,37 @@ const categoryLogos = {
     // วิชาการ
     academic:
         '../Picture/book-one.svg',
+    study:
+        '../Picture/book-one.svg',
+    วิชาการ:
+        '../Picture/book-one.svg',
 
     // กีฬา
     sport:
+        '../Picture/activity.svg',
+    กีฬา:
         '../Picture/activity.svg',
 
     // บันเทิง
     entertainment:
         '../Picture/gamecontroller.svg',
+    'E-sport':
+        '../Picture/gamecontroller.svg',
+    concert:
+        '../Picture/gamecontroller.svg',
+    bordgame:
+        '../Picture/gamecontroller.svg',
+    บันเทิง:
+        '../Picture/gamecontroller.svg',
 
     // ไลฟ์สไตล์
     'life-style':
+        '../Picture/bowl.svg',
+    lifestyle:
+        '../Picture/bowl.svg',
+    food:
+        '../Picture/bowl.svg',
+    ไลฟ์สไตล์:
         '../Picture/bowl.svg',
 
     // อื่นๆ
@@ -241,19 +261,36 @@ const categoryLogos = {
 const filterCategoryMap = {
 
     academic: [
-        'academic'
+        'academic',
+        'study',
+        'วิชาการ'
     ],
 
     sport: [
-        'sport'
+        'sport',
+        'กีฬา'
     ],
 
     entertainment: [
-        'entertainment'
+        'entertainment',
+        'bordgame',
+        'E-sport',
+        'concert',
+        'บันเทิง'
     ],
 
     'life-style': [
-        'life-style'
+        'life-style',
+        'lifestyle',
+        'food',
+        'ไลฟ์สไตล์'
+    ],
+
+    lifestyle: [
+        'life-style',
+        'lifestyle',
+        'food',
+        'ไลฟ์สไตล์'
     ],
 
     other: [
@@ -504,7 +541,9 @@ function isEventExpired(event) {
 
     if (
         event.status === 'CLOSED' ||
-        event.status === 'CANCELLED'
+        event.status === 'CANCELLED' ||
+        event.lifecycleStatus === 'COMPLETED' ||
+        event.lifecycleStatus === 'CANCELLED'
     ) {
 
         return true;
@@ -744,6 +783,26 @@ function createEventCardElement(event) {
     const isJoinedOrCreator =
         isAlreadyJoined ||
         isCreator;
+
+    newCard.dataset.capacity =
+        String(eventSize);
+    newCard.dataset.participants =
+        String(currentParticipants);
+    newCard.dataset.open =
+        String(
+            !expired &&
+            event.status !== 'CLOSED' &&
+            event.status !== 'FULL' &&
+            event.lifecycleStatus !== 'COMPLETED' &&
+            event.lifecycleStatus !== 'CANCELLED'
+        );
+    newCard.dataset.cancelled =
+        String(
+            event.status === 'CANCELLED' ||
+            event.lifecycleStatus === 'CANCELLED'
+        );
+    newCard.dataset.creator =
+        String(isCreator);
 
 
     // ======================================
@@ -1133,6 +1192,9 @@ function getFilteredAndSortedEvents() {
     const filtered =
         allFetchedEvents.filter(
             event =>
+                event &&
+                event.status !== 'CANCELLED' &&
+                event.lifecycleStatus !== 'CANCELLED' &&
                 matchesCategoryFilter(
                     event,
                     selectedCategory
