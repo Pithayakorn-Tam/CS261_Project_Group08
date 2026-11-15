@@ -117,6 +117,9 @@ public class EventService {
 
         // 4. บันทึกลงฐานข้อมูล
         Event savedEvent = eventRepository.save(event);
+        if (notificationService != null) {
+            notificationService.notifyEventCreated(savedEvent);
+        }
 
         // 5. แปลงข้อมูลส่งออกเป็น EventResponse
         EventDto eventDto = EventDto.fromEntity(savedEvent);

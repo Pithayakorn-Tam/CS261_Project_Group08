@@ -70,6 +70,22 @@ class NotificationServiceTest {
     }
 
     @Test
+    @DisplayName("notifyEventCreated สร้างแจ้งเตือนให้ผู้สร้างกิจกรรม")
+    void notifyEventCreated_NotifiesCreator() {
+        when(notificationRepository.save(any(Notification.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        notificationService.notifyEventCreated(event);
+
+        ArgumentCaptor<Notification> captor = ArgumentCaptor.forClass(Notification.class);
+        verify(notificationRepository, times(1)).save(captor.capture());
+
+        Notification saved = captor.getValue();
+        assertEquals(creator, saved.getRecipient());
+        assertEquals(NotificationService.TYPE_CREATE_SUCCESS, saved.getType());
+        assertEquals("คุณสร้างกิจกรรมสำเร็จ", saved.getMessage());
+    }
+
+    @Test
     @DisplayName("notifyUserJoined สร้างแจ้งเตือนแยกให้ผู้เข้าร่วมและผู้สร้างตามข้อความมาตรฐาน")
     void notifyUserJoined_CreatesIndividualNotifications() {
         when(notificationRepository.save(any(Notification.class))).thenAnswer(inv -> inv.getArgument(0));
@@ -110,19 +126,24 @@ class NotificationServiceTest {
     }
 
     @Test
-    @DisplayName("notifyEventCancelled สร้างแจ้งเตือนรายบุคคลให้ผู้เข้าร่วมทุกคน (ไม่ส่งให้ผู้จัด)")
+    @DisplayName("notifyEventCancelled สร้างแจ้งเตือนให้ผู้สร้าง (CANCEL_SUCCESS) และผู้เข้าร่วมทุกคน (EVENT_CANCELLED)")
     void notifyEventCancelled_CreatesSeparateRowPerParticipant() {
         when(notificationRepository.save(any(Notification.class))).thenAnswer(inv -> inv.getArgument(0));
 
         notificationService.notifyEventCancelled(event);
 
         ArgumentCaptor<Notification> captor = ArgumentCaptor.forClass(Notification.class);
-        verify(notificationRepository, times(2)).save(captor.capture());
+        verify(notificationRepository, times(3)).save(captor.capture());
 
         List<Notification> saved = captor.getAllValues();
-        assertTrue(saved.stream().allMatch(n -> NotificationService.TYPE_EVENT_CANCELLED.equals(n.getType())));
-        assertTrue(saved.stream().allMatch(n -> n.getMessage().contains("ตี๋น้อยที่ซอยห้า")));
-        assertEquals(2, saved.stream().map(n -> n.getRecipient().getId()).distinct().count());
+        assertEquals(creator, saved.get(0).getRecipient());
+        assertEquals(NotificationService.TYPE_CANCEL_SUCCESS, saved.get(0).getType());
+        assertEquals("คุณได้ยกเลิกการสร้างกิจกรรม", saved.get(0).getMessage());
+
+        List<Notification> participantNotifs = saved.subList(1, 3);
+        assertTrue(participantNotifs.stream().allMatch(n -> NotificationService.TYPE_EVENT_CANCELLED.equals(n.getType())));
+        assertTrue(participantNotifs.stream().allMatch(n -> n.getMessage().contains("ตี๋น้อยที่ซอยห้า")));
+        assertEquals(2, participantNotifs.stream().map(n -> n.getRecipient().getId()).distinct().count());
     }
 
     @Test

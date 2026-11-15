@@ -103,7 +103,7 @@ document.addEventListener("DOMContentLoaded", () => {
             return iconWrap;
         }
 
-        if (type === "LEAVE_SUCCESS" || type === "USER_LEFT" || type === "EVENT_CANCELLED") {
+        if (type === "LEAVE_SUCCESS" || type === "USER_LEFT" || type === "EVENT_CANCELLED" || type === "CANCEL_SUCCESS") {
             iconWrap.innerHTML = `<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="#A40000"/><path d="M8.2 8.2L15.8 15.8M15.8 8.2L8.2 15.8" stroke="#FFFFFF" stroke-width="2.6" stroke-linecap="round"/></svg>`;
             return iconWrap;
         }

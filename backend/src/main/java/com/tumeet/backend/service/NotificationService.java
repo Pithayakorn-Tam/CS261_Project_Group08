@@ -26,6 +26,8 @@ import java.util.Set;
 @Service
 public class NotificationService {
 
+    public static final String TYPE_CREATE_SUCCESS = "CREATE_SUCCESS";
+    public static final String TYPE_CANCEL_SUCCESS = "CANCEL_SUCCESS";
     public static final String TYPE_JOIN_SUCCESS = "JOIN_SUCCESS";
     public static final String TYPE_USER_JOINED = "USER_JOINED";
     public static final String TYPE_LEAVE_SUCCESS = "LEAVE_SUCCESS";
@@ -46,6 +48,20 @@ public class NotificationService {
         this.notificationRepository = notificationRepository;
         this.eventRepository = eventRepository;
         this.userRepository = userRepository;
+    }
+
+    @Transactional
+    public void notifyEventCreated(Event event) {
+        if (event == null || event.getCreator() == null) {
+            return;
+        }
+        saveIndividualNotification(
+                event.getCreator(),
+                event,
+                TYPE_CREATE_SUCCESS,
+                "สร้างกิจกรรมสำเร็จ",
+                "คุณสร้างกิจกรรมสำเร็จ"
+        );
     }
 
     @Transactional
@@ -100,10 +116,22 @@ public class NotificationService {
 
     @Transactional
     public void notifyEventCancelled(Event event) {
-        if (event == null || event.getParticipants() == null) {
+        if (event == null) {
             return;
         }
         User creator = event.getCreator();
+        if (creator != null) {
+            saveIndividualNotification(
+                    creator,
+                    event,
+                    TYPE_CANCEL_SUCCESS,
+                    "ยกเลิกการสร้างกิจกรรม",
+                    "คุณได้ยกเลิกการสร้างกิจกรรม"
+            );
+        }
+        if (event.getParticipants() == null) {
+            return;
+        }
         String eventName = safeEventName(event);
         String msg = "กิจกรรม “" + eventName + "” ที่คุณเข้าร่วมถูกยกเลิกโดยผู้จัดกิจกรรม";
 
