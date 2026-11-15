@@ -7,6 +7,7 @@ import com.tumeet.backend.model.Event;
 import com.tumeet.backend.model.User;
 import com.tumeet.backend.repository.EventRepository;
 import com.tumeet.backend.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,10 +24,19 @@ public class EventService {
 
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
+    private final NotificationService notificationService;
 
     public EventService(EventRepository eventRepository, UserRepository userRepository) {
+        this(eventRepository, userRepository, null);
+    }
+
+    @Autowired
+    public EventService(EventRepository eventRepository,
+                        UserRepository userRepository,
+                        NotificationService notificationService) {
         this.eventRepository = eventRepository;
         this.userRepository = userRepository;
+        this.notificationService = notificationService;
     }
 
     @Transactional
@@ -122,40 +132,67 @@ public class EventService {
     @Transactional
     public void syncAndCompleteExpiredEvents() {
         List<Event> upcomingEvents = eventRepository.findByLifecycleStatus("UPCOMING");
-        if (upcomingEvents == null || upcomingEvents.isEmpty()) {
-            return;
-        }
-        LocalDateTime now = LocalDateTime.now();
+        if (upcomingEvents != null && !upcomingEvents.isEmpty()) {
+            LocalDateTime now = LocalDateTime.now();
 
-        for (Event event : upcomingEvents) {
-            LocalDateTime eventEndDateTime = parseEventDateTime(event.getEventDate(), event.getEventTime());
-            if (eventEndDateTime != null && now.isAfter(eventEndDateTime)) {
-                // เปลี่ยนสถานะเป็น COMPLETED
-                event.setLifecycleStatus("COMPLETED");
-                event.setStatus("CLOSED");
+            for (Event event : upcomingEvents) {
+                LocalDateTime eventEndDateTime = parseEventDateTime(event.getEventDate(), event.getEventTime());
+                if (eventEndDateTime != null && now.isAfter(eventEndDateTime)) {
+                    // เปลี่ยนสถานะเป็น COMPLETED
+                    event.setLifecycleStatus("COMPLETED");
+                    event.setStatus("CLOSED");
 
-                // แจกแต้ม +1 เฉพาะกรณีที่มีสมาชิกตั้งแต่ 2 คนขึ้นไป (Creator + อย่างน้อย 1 Participant)
-                int participantCount = (event.getParticipants() != null ? event.getParticipants().size() : 0) + 1;
-                if (participantCount >= 2 || (event.getCurrentParticipants() != null && event.getCurrentParticipants() >= 2)) {
-                    User creator = event.getCreator();
-                    if (creator != null) {
-                        creator.setCompletedCreatedCount(
-                                (creator.getCompletedCreatedCount() != null ? creator.getCompletedCreatedCount() : 0) + 1
-                        );
-                        userRepository.save(creator);
-                    }
-                    if (event.getParticipants() != null) {
-                        for (User participant : event.getParticipants()) {
-                            participant.setCompletedJoinedCount(
-                                    (participant.getCompletedJoinedCount() != null ? participant.getCompletedJoinedCount() : 0) + 1
+                    // แจกแต้ม +1 เฉพาะกรณีที่มีสมาชิกตั้งแต่ 2 คนขึ้นไป (Creator + อย่างน้อย 1 Participant)
+                    int participantCount = (event.getParticipants() != null ? event.getParticipants().size() : 0) + 1;
+                    boolean awardPoints = participantCount >= 2
+                            || (event.getCurrentParticipants() != null && event.getCurrentParticipants() >= 2);
+
+                    if (awardPoints) {
+                        User creator = event.getCreator();
+                        if (creator != null) {
+                            int prevTotal = getTotalCompletedCount(creator);
+                            creator.setCompletedCreatedCount(
+                                    (creator.getCompletedCreatedCount() != null ? creator.getCompletedCreatedCount() : 0) + 1
                             );
-                            userRepository.save(participant);
+                            userRepository.save(creator);
+                            int newTotal = getTotalCompletedCount(creator);
+                            if (notificationService != null) {
+                                notificationService.notifyEventCompleted(event, creator);
+                                notificationService.notifyBadgeUpgradedIfEligible(creator, event, prevTotal, newTotal);
+                            }
+                        }
+                        if (event.getParticipants() != null) {
+                            for (User participant : event.getParticipants()) {
+                                int prevTotal = getTotalCompletedCount(participant);
+                                participant.setCompletedJoinedCount(
+                                        (participant.getCompletedJoinedCount() != null ? participant.getCompletedJoinedCount() : 0) + 1
+                                );
+                                userRepository.save(participant);
+                                int newTotal = getTotalCompletedCount(participant);
+                                if (notificationService != null) {
+                                    notificationService.notifyEventCompleted(event, participant);
+                                    notificationService.notifyBadgeUpgradedIfEligible(participant, event, prevTotal, newTotal);
+                                }
+                            }
                         }
                     }
+                    eventRepository.save(event);
                 }
-                eventRepository.save(event);
             }
         }
+
+        if (notificationService != null) {
+            notificationService.syncUpcomingEventReminders();
+        }
+    }
+
+    private int getTotalCompletedCount(User user) {
+        if (user == null) {
+            return 0;
+        }
+        int created = user.getCompletedCreatedCount() != null ? user.getCompletedCreatedCount() : 0;
+        int joined = user.getCompletedJoinedCount() != null ? user.getCompletedJoinedCount() : 0;
+        return created + joined;
     }
 
     private LocalDateTime parseEventDateTime(LocalDate eventDate, String eventTime) {
@@ -269,6 +306,9 @@ public class EventService {
 
         event.addParticipant(user);
         Event saved = eventRepository.save(event);
+        if (notificationService != null) {
+            notificationService.notifyUserJoined(saved, user);
+        }
         return EventResponse.success("เข้าร่วมกิจกรรมสำเร็จ", EventDto.fromEntity(saved));
     }
 
@@ -300,6 +340,9 @@ public class EventService {
                 event.setLifecycleStatus("CANCELLED");
                 event.setStatus("CLOSED");
                 Event saved = eventRepository.save(event);
+                if (notificationService != null) {
+                    notificationService.notifyEventCancelled(saved);
+                }
                 return EventResponse.success("ยกเลิกกิจกรรมสำเร็จ", EventDto.fromEntity(saved));
             }
             return EventResponse.error("คุณไม่ได้อยู่ในรายชื่อผู้เข้าร่วมกิจกรรมนี้");
@@ -307,6 +350,9 @@ public class EventService {
 
         event.removeParticipant(user);
         Event saved = eventRepository.save(event);
+        if (notificationService != null) {
+            notificationService.notifyUserLeft(saved, user);
+        }
         return EventResponse.success("ยกเลิกการเข้าร่วมกิจกรรมสำเร็จ", EventDto.fromEntity(saved));
     }
 }
