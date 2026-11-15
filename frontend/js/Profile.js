@@ -203,13 +203,19 @@ document.addEventListener("DOMContentLoaded", () => {
             window.renderUserBadgeFromData(user);
           }
 
+          // [US-6] โหลดรูปโปรไฟล์จากฐานข้อมูล
+          if (user.profileImage && avatarImg) {
+            avatarImg.src = user.profileImage;
+          }
+
           localStorage.setItem(
             "loginData",
             JSON.stringify({
               ...storedUserData,
               studentId: user.studentId || studentId,
               email: resolvedEmail,
-              username: resolvedUsername
+              username: resolvedUsername,
+              avatarUrl: user.profileImage || storedUserData.avatarUrl
             })
           );
         }
@@ -394,13 +400,46 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         const reader = new FileReader();
-        reader.onload = function (e) {
+        reader.onload = async function (e) {
           const base64Image = e.target.result;
-          avatarImg.src = base64Image;
+          if (base64Image.length > 7_000_000) {
+            alert("รูปโปรไฟล์มีขนาดใหญ่เกินไป กรุณาเลือกรูปที่มีขนาดไม่เกิน 5MB");
+            avatarInput.value = "";
+            return;
+          }
 
-          const storedUserData = JSON.parse(localStorage.getItem("loginData") || "{}");
-          storedUserData.avatarUrl = base64Image;
-          localStorage.setItem("loginData", JSON.stringify(storedUserData));
+          // [US-6] บันทึกรูปโปรไฟล์ลงฐานข้อมูล
+          const studentId = getCurrentStudentId();
+          try {
+            const res = await fetch(`${API_BASE_URL}/user/update-profile-image`, {
+              method: "PUT",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                studentId: studentId,
+                profileImage: base64Image
+              })
+            });
+
+            if (!res.ok) {
+              const rawText = await res.text();
+              let message = `HTTP ${res.status}`;
+              try {
+                const parsed = JSON.parse(rawText);
+                if (parsed && parsed.message) message = parsed.message;
+              } catch (_) {}
+              console.error("อัปเดตรูปโปรไฟล์ล้มเหลว:", message);
+              alert("บันทึกรูปโปรไฟล์ไม่สำเร็จ: " + message);
+              return;
+            }
+
+            avatarImg.src = base64Image;
+            const storedUserData = JSON.parse(localStorage.getItem("loginData") || "{}");
+            storedUserData.avatarUrl = base64Image;
+            localStorage.setItem("loginData", JSON.stringify(storedUserData));
+          } catch (error) {
+            console.error("เกิดข้อผิดพลาดในการบันทึกรูปโปรไฟล์:", error);
+            alert("เกิดข้อผิดพลาดในการเชื่อมต่อเพื่อบันทึกรูปโปรไฟล์");
+          }
         };
 
         reader.readAsDataURL(file);

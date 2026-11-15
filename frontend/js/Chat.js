@@ -474,6 +474,21 @@ function renderMessages() {
         avatar.className = "message-avatar";
         avatar.setAttribute("aria-hidden", "true");
 
+        let avatarSrc = message.senderAvatar;
+        if (!avatarSrc && isMine) {
+            try {
+                const stored = JSON.parse(localStorage.getItem("loginData") || "{}");
+                if (stored.avatarUrl) avatarSrc = stored.avatarUrl;
+            } catch (_) {}
+        }
+        if (avatarSrc) {
+            const avatarImg = document.createElement("img");
+            avatarImg.className = "message-avatar-img";
+            avatarImg.src = avatarSrc;
+            avatarImg.alt = "";
+            avatar.appendChild(avatarImg);
+        }
+
         const group = document.createElement("div");
         group.className = "message-group";
 

@@ -40,9 +40,11 @@ public class ChatMessageDto {
             dto.setSenderStudentId(studentId);
             dto.setSenderId(studentId);
             dto.setSenderName(resolveSenderName(sender));
+            dto.setSenderAvatar(sender.getProfileImage());
             dto.setSenderBadge(sender.getBadge());
+        } else {
+            dto.setSenderAvatar(null);
         }
-        dto.setSenderAvatar(null);
         dto.setText(message.getMessageText());
         dto.setTimestamp(message.getSentAt() != null ? message.getSentAt() : LocalDateTime.now());
         return dto;
