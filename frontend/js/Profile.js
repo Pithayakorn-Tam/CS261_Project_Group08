@@ -54,6 +54,11 @@ document.addEventListener("DOMContentLoaded", () => {
     default: '../Picture/bowl.svg'
   };
 
+  // TODO: เปลี่ยน path 2 บรรทัดนี้ให้ตรงกับชื่อไฟล์ไอคอนที่เตรียมไว้
+  const REVIEW_ICON_BACKGROUND = '../Picture/Rectangle89-blue-reviewicon.svg';
+  const REVIEW_ICON_BACKGROUND_COMPLETED = '../Picture/Rectangle89-gray-reviewIcon.svg';
+  const REVIEW_ICON_STAR = '../Picture/Star1-reviewicon.svg';
+
   let activeEvents = [];
   let pastEvents = [];
 
@@ -119,14 +124,33 @@ document.addEventListener("DOMContentLoaded", () => {
     return isNaN(eventDateTime.getTime()) ? 0 : eventDateTime.getTime();
   }
 
+  function isEventCancelled(dto) {
+    if (!dto) return false;
+    return dto.status === "CANCELLED" || dto.lifecycleStatus === "CANCELLED";
+  }
+
   function isEventExpired(dto) {
     if (!dto) return false;
-    if (dto.status === "CLOSED" || dto.status === "CANCELLED") {
+    if (dto.status === "CLOSED" || dto.lifecycleStatus === "COMPLETED") {
       return true;
     }
     const ts = getEventTimestamp(dto);
     if (ts === 0) return false;
     return ts < Date.now();
+  }
+
+  function hasSubmittedReview(event) {
+    const reviewRole = event.isOwner ? "creator" : "participant";
+    let savedReviews = [];
+    try {
+      savedReviews = JSON.parse(localStorage.getItem("tumeetReviews") || "[]");
+    } catch (error) {
+      console.warn("Cannot parse saved reviews:", error);
+    }
+
+    return savedReviews.some(review =>
+      String(review.eventId) === String(event.id) && review.role === reviewRole
+    );
   }
 
   function mapDtoToProfileEvent(dto, isOwner, isJoined) {
@@ -175,13 +199,23 @@ document.addEventListener("DOMContentLoaded", () => {
           if (usernameDisplay) usernameDisplay.textContent = resolvedUsername;
           if (usernameInput) usernameInput.value = resolvedUsername;
 
+          if (typeof window.renderUserBadgeFromData === "function") {
+            window.renderUserBadgeFromData(user);
+          }
+
+          // [US-6] โหลดรูปโปรไฟล์จากฐานข้อมูล
+          if (user.profileImage && avatarImg) {
+            avatarImg.src = user.profileImage;
+          }
+
           localStorage.setItem(
             "loginData",
             JSON.stringify({
               ...storedUserData,
               studentId: user.studentId || studentId,
               email: resolvedEmail,
-              username: resolvedUsername
+              username: resolvedUsername,
+              avatarUrl: user.profileImage || storedUserData.avatarUrl
             })
           );
         }
@@ -264,17 +298,14 @@ document.addEventListener("DOMContentLoaded", () => {
       const eventMap = new Map();
 
       joinedDtos.forEach(dto => {
-        if (dto && dto.id != null) {
+        if (dto && dto.id != null && !isEventCancelled(dto)) {
           eventMap.set(dto.id, mapDtoToProfileEvent(dto, false, true));
         }
       });
 
       createdDtos.forEach(dto => {
-        if (dto && dto.id != null && !eventMap.has(dto.id)) {
-          const isSystemDefaultSeeded = dto.id <= 5 && (studentId === "6800000000" || studentId === "6800000001" || studentId === "6800000009");
-          if (!isSystemDefaultSeeded) {
-            eventMap.set(dto.id, mapDtoToProfileEvent(dto, true, false));
-          }
+        if (dto && dto.id != null && !isEventCancelled(dto) && !eventMap.has(dto.id)) {
+          eventMap.set(dto.id, mapDtoToProfileEvent(dto, true, false));
         }
       });
 
@@ -283,14 +314,8 @@ document.addEventListener("DOMContentLoaded", () => {
       activeEvents = allUserEvents
         .filter(ev => !ev.expired)
         .sort((a, b) => {
-          const isUserCreatedA = (Number(a.id) || 0) > 4;
-          const isUserCreatedB = (Number(b.id) || 0) > 4;
-          if (isUserCreatedA !== isUserCreatedB) {
-            return isUserCreatedA ? -1 : 1;
-          }
-          if (isUserCreatedA && isUserCreatedB) {
-            const idDiff = (Number(b.id) || 0) - (Number(a.id) || 0);
-            if (idDiff !== 0) return idDiff;
+          if (a.isOwner !== b.isOwner) {
+            return a.isOwner ? -1 : 1;
           }
           return a.timestamp - b.timestamp;
         });
@@ -300,6 +325,9 @@ document.addEventListener("DOMContentLoaded", () => {
         .sort((a, b) => b.timestamp - a.timestamp);
 
       renderEvents();
+      if (typeof window.refreshUserBadge === "function") {
+        window.refreshUserBadge();
+      }
     } catch (error) {
       console.error("ไม่สามารถดึงข้อมูลกิจกรรมจากฐานข้อมูลได้:", error);
       activeEvents = [];
@@ -372,13 +400,46 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         const reader = new FileReader();
-        reader.onload = function (e) {
+        reader.onload = async function (e) {
           const base64Image = e.target.result;
-          avatarImg.src = base64Image;
+          if (base64Image.length > 7_000_000) {
+            alert("รูปโปรไฟล์มีขนาดใหญ่เกินไป กรุณาเลือกรูปที่มีขนาดไม่เกิน 5MB");
+            avatarInput.value = "";
+            return;
+          }
 
-          const storedUserData = JSON.parse(localStorage.getItem("loginData") || "{}");
-          storedUserData.avatarUrl = base64Image;
-          localStorage.setItem("loginData", JSON.stringify(storedUserData));
+          // [US-6] บันทึกรูปโปรไฟล์ลงฐานข้อมูล
+          const studentId = getCurrentStudentId();
+          try {
+            const res = await fetch(`${API_BASE_URL}/user/update-profile-image`, {
+              method: "PUT",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                studentId: studentId,
+                profileImage: base64Image
+              })
+            });
+
+            if (!res.ok) {
+              const rawText = await res.text();
+              let message = `HTTP ${res.status}`;
+              try {
+                const parsed = JSON.parse(rawText);
+                if (parsed && parsed.message) message = parsed.message;
+              } catch (_) {}
+              console.error("อัปเดตรูปโปรไฟล์ล้มเหลว:", message);
+              alert("บันทึกรูปโปรไฟล์ไม่สำเร็จ: " + message);
+              return;
+            }
+
+            avatarImg.src = base64Image;
+            const storedUserData = JSON.parse(localStorage.getItem("loginData") || "{}");
+            storedUserData.avatarUrl = base64Image;
+            localStorage.setItem("loginData", JSON.stringify(storedUserData));
+          } catch (error) {
+            console.error("เกิดข้อผิดพลาดในการบันทึกรูปโปรไฟล์:", error);
+            alert("เกิดข้อผิดพลาดในการเชื่อมต่อเพื่อบันทึกรูปโปรไฟล์");
+          }
         };
 
         reader.readAsDataURL(file);
@@ -391,6 +452,33 @@ document.addEventListener("DOMContentLoaded", () => {
   // ====================================================
   function createEventCardHTML(event, isPast = false) {
     let actionHTML = "";
+
+    if (isPast || event.expired) {
+      const reviewed = hasSubmittedReview(event);
+      const reviewRole = event.isOwner ? "creator" : "participant";
+      const reviewIcon = reviewed ? REVIEW_ICON_BACKGROUND_COMPLETED : REVIEW_ICON_BACKGROUND;
+      const reviewLabel = reviewed ? "ประเมินแล้ว" : "ประเมิน";
+
+      actionHTML = reviewed
+        ? `
+          <div class="event-action-right review-action review-completed" aria-label="${reviewLabel}">
+            <span class="review-icon-wrap">
+              <img class="review-icon-background" src="${reviewIcon}" alt="">
+              <img class="review-icon-star" src="${REVIEW_ICON_STAR}" alt="">
+            </span>
+            <span class="review-label">${reviewLabel}</span>
+          </div>
+        `
+        : `
+          <a class="event-action-right review-action" href="./Review.html?eventId=${encodeURIComponent(event.id)}&role=${encodeURIComponent(reviewRole)}" aria-label="${reviewLabel}">
+            <span class="review-icon-wrap">
+              <img class="review-icon-background" src="${reviewIcon}" alt="">
+              <img class="review-icon-star" src="${REVIEW_ICON_STAR}" alt="">
+            </span>
+            <span class="review-label">${reviewLabel}</span>
+          </a>
+        `;
+    }
 
     // ถ้ายังไม่หมดเวลา แสดงสถานะ + ปุ่มกากบาท
     if (!isPast && !event.expired) {

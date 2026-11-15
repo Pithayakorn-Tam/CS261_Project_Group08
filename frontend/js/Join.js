@@ -152,9 +152,10 @@ function initJoinPopup() {
         card.dataset.participants = String(newParticipants);
         button.dataset.joined = 'true';
         button.disabled = true;
-        button.textContent = '✓';
+        button.innerHTML = '<span class="joined-check">✓</span>';
 
-        const capacityElement = card.querySelector('.capacity');
+        const capacitySpan = card.querySelector('.capacity span');
+        const capacityElement = capacitySpan || card.querySelector('.capacity');
 
         if (capacityElement) {
             capacityElement.textContent =

@@ -1,0 +1,555 @@
+@font-face {
+  font-family: 'Mitr';
+  src: url('../Font/Mitr/Mitr-Light.ttf') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Mitr';
+  src: url('../Font/Mitr/Mitr-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Mitr';
+  src: url('../Font/Mitr/Mitr-Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Mitr';
+  src: url('../Font/Mitr/Mitr-SemiBold.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Mitr';
+  src: url('../Font/Mitr/Mitr-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+}
+
+/* ให้การ์ดกิจกรรมแสดงเมาส์เป็นรูปมือเมื่อชี้ */
+.event-card {
+  cursor: pointer;
+}
+
+/* พื้นหลังมืดด้านหลัง Popup */
+.event-detail-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  background-color: rgba(0, 0, 0, 0.65);
+  font-family: 'Mitr', sans-serif;
+}
+
+.event-detail-overlay.hidden {
+  display: none !important;
+}
+
+/* กล่องการ์ดรายละเอียด (Mobile First ตามภาพต้นแบบ) */
+.event-detail-card {
+  position: relative;
+  width: 100%;
+  max-width: 360px;
+  background-color: #ffffff;
+  border-radius: 16px;
+  padding: 18px 18px 26px;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.28);
+  color: #000000;
+  box-sizing: border-box;
+  max-height: 96vh;
+  overflow-y: auto;
+}
+
+/* ปุ่มกากบาทมุมขวาบน (ซ่อนบนมือถือ แสดงบน PC ตามภาพ) */
+.event-detail-close-btn {
+  display: none;
+  position: absolute;
+  top: 14px;
+  right: 18px;
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: transparent;
+  color: #111111;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+}
+
+.event-detail-close-btn:hover {
+  opacity: 0.7;
+}
+
+/* ส่วนหัว: ไอคอนหมวดหมู่สีน้ำเงิน + ชื่อกิจกรรมสีน้ำเงิน */
+.event-detail-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-start;
+  gap: 22px;
+  padding: 0 6px 12px;
+}
+
+.event-detail-logo-wrap {
+  width: 68px;
+  height: 68px;
+  flex: 0 0 68px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.event-detail-logo {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  /* เปลี่ยนสีไอคอน SVG สีดำให้เป็นสีน้ำเงิน #2130DA ตามภาพต้นแบบ */
+  filter: brightness(0) saturate(100%) invert(15%) sepia(95%) saturate(5830%) hue-rotate(236deg) brightness(91%) contrast(105%);
+}
+
+.event-detail-title {
+  margin: 0 0 4px;
+  color: #2130da;
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: 0.2px;
+  word-break: break-word;
+}
+
+/* เส้นคั่นสีชมพู */
+.event-detail-divider {
+  width: 100%;
+  height: 1.5px;
+  background-color: #f38484;
+}
+
+.top-divider {
+  margin-bottom: 14px;
+}
+
+.mobile-middle-divider {
+  margin: 2px 0 12px;
+}
+
+/* โครงสร้างเนื้อหา */
+.event-detail-body {
+  display: flex;
+  flex-direction: column;
+}
+
+.event-detail-left {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+/* กล่องคำอธิบายกรอบสีเหลือง #F5D88F */
+.event-detail-desc-box {
+  order: 1;
+  position: relative;
+  width: 94%;
+  margin: 0 auto;
+  min-height: 108px;
+  border: 1.5px solid #f5d88f;
+  border-radius: 6px;
+  background-color: #ffffff;
+  padding: 10px 12px 24px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+.event-detail-desc-text {
+  font-size: 13.5px;
+  font-weight: 300;
+  color: #222222;
+  line-height: 1.45;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.event-detail-desc-text.empty {
+  color: #6e6e6e;
+}
+
+.event-detail-desc-input {
+  width: 100%;
+  flex: 1;
+  min-height: 64px;
+  border: none;
+  outline: none;
+  resize: none;
+  background: transparent;
+  font-family: 'Mitr', sans-serif;
+  font-size: 13.5px;
+  font-weight: 300;
+  color: #222222;
+  line-height: 1.45;
+}
+
+.event-detail-desc-input::placeholder {
+  color: #6e6e6e;
+}
+
+.event-detail-desc-input.hidden,
+.event-detail-desc-text.hidden,
+.event-detail-desc-footer.hidden {
+  display: none !important;
+}
+
+/* มุมขวาล่างของกล่องคำอธิบาย: 0/200 + ไอคอนดินสอ */
+.event-detail-desc-footer {
+  position: absolute;
+  right: 8px;
+  bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.event-detail-char-count {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 13px;
+  font-weight: 500;
+  color: #888888;
+  letter-spacing: 0.4px;
+}
+
+.event-detail-edit-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px;
+  border: none;
+  background: transparent;
+  color: #000000;
+  cursor: pointer;
+}
+
+.event-detail-edit-btn:hover {
+  opacity: 0.7;
+}
+
+/* ข้อมูลกิจกรรม 4 ช่อง (2x2) */
+.event-detail-info-grid {
+  order: 2;
+  display: grid;
+  grid-template-columns: 1.05fr 1fr;
+  row-gap: 10px;
+  column-gap: 10px;
+  padding: 13px 8px 11px;
+}
+
+.event-detail-info-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14.5px;
+  font-weight: 600;
+  color: #000000;
+  min-width: 0;
+}
+
+.event-detail-info-item span {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.event-detail-info-icon {
+  width: 20px;
+  height: 20px;
+  flex: 0 0 20px;
+  object-fit: contain;
+}
+
+.people-icon-detail {
+  width: 22px;
+  height: 22px;
+  flex: 0 0 22px;
+}
+
+/* ส่วนรายชื่อผู้เข้าร่วม */
+.event-detail-right {
+  width: 100%;
+  padding: 0 6px;
+}
+
+.event-detail-participant-header {
+  margin: 0 0 9px;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 600;
+  color: #000000;
+}
+
+.event-detail-participant-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* การ์ดรายชื่อผู้เข้าร่วมแต่ละคน */
+.event-detail-participant-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  min-height: 41px;
+  padding: 3px 12px 3px 5px;
+  border: 1.2px solid #5963e3;
+  border-radius: 6px;
+  background-color: #ffffff;
+  box-sizing: border-box;
+}
+
+.event-detail-participant-left {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  min-width: 0;
+}
+
+/* กรอบรูปโปรไฟล์สี่เหลี่ยมมนลายตารางตามภาพต้นแบบ */
+.event-detail-participant-avatar {
+  width: 32px;
+  height: 32px;
+  flex: 0 0 32px;
+  border: 1px solid #444444;
+  border-radius: 5px;
+  overflow: hidden;
+  background-color: #ffffff;
+  background-image:
+    linear-gradient(45deg, #ececec 25%, transparent 25%),
+    linear-gradient(-45deg, #ececec 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #ececec 75%),
+    linear-gradient(-45deg, transparent 75%, #ececec 75%);
+  background-size: 6px 6px;
+  background-position: 0 0, 0 3px, 3px -3px, -3px 0;
+}
+
+.event-detail-participant-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.event-detail-participant-name-wrap {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  min-width: 0;
+}
+
+.event-detail-participant-name {
+  font-size: 13.5px;
+  font-weight: 500;
+  color: #000000;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.event-detail-rank-icon {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 18px;
+  object-fit: contain;
+  /* เปลี่ยนสีไอคอนแรงค์ให้เป็นสีดำคมชัดตามภาพต้นแบบ */
+  filter: brightness(0);
+}
+
+.event-detail-participant-role {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #000000;
+  white-space: nowrap;
+  margin-left: 8px;
+}
+
+/* ส่วนปุ่มด้านล่าง */
+.event-detail-footer {
+  display: flex;
+  justify-content: flex-end;
+  padding: 22px 6px 4px;
+}
+
+.event-detail-action-btn {
+  min-width: 112px;
+  height: 32px;
+  padding: 0 14px;
+  border: none;
+  border-radius: 6px;
+  font-family: 'Mitr', sans-serif;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: #ffffff;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: filter 0.15s ease, transform 0.1s ease;
+}
+
+.event-detail-action-btn:hover {
+  filter: brightness(0.93);
+}
+
+.event-detail-action-btn:active {
+  transform: scale(0.98);
+}
+
+.event-detail-action-btn.btn-join {
+  background-color: #2130da;
+}
+
+.event-detail-action-btn.btn-cancel-join,
+.event-detail-action-btn.btn-cancel-event {
+  background-color: #e11f1f;
+}
+
+/* =====================================================
+   Responsive สำหรับหน้าจอ PC (ตรงตามภาพ create-by-me-pc)
+   ===================================================== */
+@media (min-width: 768px) {
+  .event-detail-card {
+    max-width: 680px;
+    border-radius: 20px;
+    padding: 20px 42px 24px;
+  }
+
+  .event-detail-close-btn {
+    display: inline-flex;
+  }
+
+  .event-detail-header {
+    justify-content: center;
+    align-items: flex-end;
+    gap: 32px;
+    padding: 0 16px 12px;
+  }
+
+  .event-detail-logo-wrap {
+    width: 66px;
+    height: 66px;
+    flex: 0 0 66px;
+  }
+
+  .event-detail-title {
+    font-size: 30px;
+    margin: 0 0 2px;
+  }
+
+  .top-divider {
+    margin-bottom: 14px;
+  }
+
+  .mobile-middle-divider {
+    display: none;
+  }
+
+  .event-detail-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 38px;
+    align-items: start;
+  }
+
+  /* บน PC ข้อมูล 4 ช่องอยู่ด้านบน และกล่องคำอธิบายอยู่ด้านล่าง */
+  .event-detail-info-grid {
+    order: 1;
+    padding: 4px 10px 14px;
+    row-gap: 10px;
+  }
+
+  .event-detail-desc-box {
+    order: 2;
+    width: 100%;
+    min-height: 102px;
+  }
+
+  .event-detail-right {
+    padding: 0;
+  }
+
+  .event-detail-participant-header {
+    margin-bottom: 8px;
+    font-size: 14.5px;
+  }
+
+  .event-detail-participant-item {
+    min-height: 38px;
+  }
+
+  .event-detail-participant-avatar {
+    width: 28px;
+    height: 28px;
+    flex: 0 0 28px;
+  }
+
+  /* บน PC ปุ่มด้านล่างอยู่กึ่งกลางและกว้างขึ้นตามภาพ */
+  .event-detail-footer {
+    justify-content: center;
+    padding: 18px 0 0;
+  }
+
+  .event-detail-action-btn.btn-cancel-event,
+  .event-detail-action-btn.btn-cancel-join,
+  .event-detail-action-btn.btn-join {
+    min-width: 170px;
+    height: 30px;
+    font-size: 13px;
+  }
+}
+
+/* แถบสลับโหมดสำหรับหน้าทดสอบ EventDetail.html */
+.event-detail-preview-bar {
+  position: fixed;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10001;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  background: rgba(25, 25, 35, 0.9);
+  color: #fff;
+  border-radius: 999px;
+  font-family: 'Mitr', sans-serif;
+  font-size: 13px;
+}
+
+.event-detail-preview-bar[hidden] {
+  display: none !important;
+}
+
+.event-detail-preview-bar button {
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  background: transparent;
+  color: #fff;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-family: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.event-detail-preview-bar button.active {
+  background: #2130da;
+  border-color: #2130da;
+}

@@ -23,14 +23,23 @@ public class EventParticipantService {
     private final EventParticipantRepository eventParticipantRepository;
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
+    private final NotificationService notificationService;
+
+    public EventParticipantService(EventParticipantRepository eventParticipantRepository,
+                                   EventRepository eventRepository,
+                                   UserRepository userRepository) {
+        this(eventParticipantRepository, eventRepository, userRepository, null);
+    }
 
     @Autowired
     public EventParticipantService(EventParticipantRepository eventParticipantRepository,
                                    EventRepository eventRepository,
-                                   UserRepository userRepository) {
+                                   UserRepository userRepository,
+                                   NotificationService notificationService) {
         this.eventParticipantRepository = eventParticipantRepository;
         this.eventRepository = eventRepository;
         this.userRepository = userRepository;
+        this.notificationService = notificationService;
     }
 
     public ActionResponse joinEvent(JoinEventRequest request) {
@@ -55,6 +64,9 @@ public class EventParticipantService {
         Event event = eventOptional.get();
 
         // 3. ตรวจสอบสถานะกิจกรรม
+        if (event.getLifecycleStatus() != null && !"UPCOMING".equalsIgnoreCase(event.getLifecycleStatus())) {
+            return new ActionResponse(false, "ไม่สามารถทำรายการได้เนื่องจากกิจกรรมนี้สิ้นสุดหรือถูกยกเลิกแล้ว");
+        }
         if ("CLOSED".equalsIgnoreCase(event.getStatus())) {
             return new ActionResponse(false, "กิจกรรมนี้ปิดรับสมัครแล้ว");
         }
@@ -84,6 +96,9 @@ public class EventParticipantService {
             event.setStatus("FULL");
         }
         eventRepository.save(event);
+        if (notificationService != null) {
+            notificationService.notifyUserJoined(event, user);
+        }
 
         return new ActionResponse(true, "เข้าร่วมกิจกรรมสำเร็จ", event);
     }
@@ -109,6 +124,10 @@ public class EventParticipantService {
         }
         Event event = eventOptional.get();
 
+        if (event.getLifecycleStatus() != null && !"UPCOMING".equalsIgnoreCase(event.getLifecycleStatus())) {
+            return new ActionResponse(false, "ไม่สามารถทำรายการได้เนื่องจากกิจกรรมนี้สิ้นสุดหรือถูกยกเลิกแล้ว");
+        }
+
         // 3. ป้องกันไม่ให้ผู้สร้างกิจกรรมกดออกจากกิจกรรมตนเอง
         if (event.getCreator() != null && user.getStudentId().equals(event.getCreator().getStudentId())) {
             return new ActionResponse(false, "ผู้สร้างกิจกรรมไม่สามารถยกเลิกการเข้าร่วมได้");
@@ -132,6 +151,9 @@ public class EventParticipantService {
             event.setStatus("OPEN");
         }
         eventRepository.save(event);
+        if (notificationService != null) {
+            notificationService.notifyUserLeft(event, user);
+        }
 
         return new ActionResponse(true, "ยกเลิกการเข้าร่วมกิจกรรมสำเร็จ", event);
     }

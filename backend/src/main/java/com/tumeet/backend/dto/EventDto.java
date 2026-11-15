@@ -18,6 +18,7 @@ public class EventDto {
     private LocalDate eventDate;
     private String eventTime;
     private String status;
+    private String lifecycleStatus;
     private LocalDateTime createdAt;
     private CreatorDto creator;
     private List<CreatorDto> participants = new ArrayList<>();
@@ -40,6 +41,7 @@ public class EventDto {
         dto.setEventDate(event.getEventDate());
         dto.setEventTime(event.getEventTime());
         dto.setStatus(event.getStatus());
+        dto.setLifecycleStatus(event.getLifecycleStatus());
         dto.setCreatedAt(event.getCreatedAt());
 
         if (event.getCreator() != null) {
@@ -127,6 +129,14 @@ public class EventDto {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getLifecycleStatus() {
+        return lifecycleStatus;
+    }
+
+    public void setLifecycleStatus(String lifecycleStatus) {
+        this.lifecycleStatus = lifecycleStatus;
     }
 
     public LocalDateTime getCreatedAt() {
