@@ -61,6 +61,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let activeEvents = [];
   let pastEvents = [];
+  let reviewedEventIds = new Set();
 
   function getCurrentStudentId() {
     try {
@@ -140,6 +141,10 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function hasSubmittedReview(event) {
+    if (!USE_MOCK_DATA) {
+      return reviewedEventIds.has(String(event.id));
+    }
+
     const reviewRole = event.isOwner ? "creator" : "participant";
     let savedReviews = [];
     try {
@@ -284,13 +289,19 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     try {
-      const [joinedRes, createdRes] = await Promise.all([
+      const [joinedRes, createdRes, reviewedRes] = await Promise.all([
         fetch(`${API_BASE_URL}/events?participantStudentId=${encodeURIComponent(studentId)}`),
-        fetch(`${API_BASE_URL}/events?creatorStudentId=${encodeURIComponent(studentId)}`)
+        fetch(`${API_BASE_URL}/events?creatorStudentId=${encodeURIComponent(studentId)}`),
+        fetch(`${API_BASE_URL}/events/ratings/reviewed?studentId=${encodeURIComponent(studentId)}`)
       ]);
 
       const joinedData = joinedRes.ok ? await joinedRes.json() : { data: [] };
       const createdData = createdRes.ok ? await createdRes.json() : { data: [] };
+      const reviewedData = reviewedRes.ok ? await reviewedRes.json() : { data: { reviewedEventIds: [] } };
+      const reviewedList = reviewedData && reviewedData.data && Array.isArray(reviewedData.data.reviewedEventIds)
+        ? reviewedData.data.reviewedEventIds
+        : [];
+      reviewedEventIds = new Set(reviewedList.map(id => String(id)));
 
       const joinedDtos = Array.isArray(joinedData.data) ? joinedData.data : [];
       const createdDtos = Array.isArray(createdData.data) ? createdData.data : [];
@@ -454,30 +465,38 @@ document.addEventListener("DOMContentLoaded", () => {
     let actionHTML = "";
 
     if (isPast || event.expired) {
-      const reviewed = hasSubmittedReview(event);
-      const reviewRole = event.isOwner ? "creator" : "participant";
-      const reviewIcon = reviewed ? REVIEW_ICON_BACKGROUND_COMPLETED : REVIEW_ICON_BACKGROUND;
-      const reviewLabel = reviewed ? "ประเมินแล้ว" : "ประเมิน";
-
-      actionHTML = reviewed
-        ? `
-          <div class="event-action-right review-action review-completed" aria-label="${reviewLabel}">
-            <span class="review-icon-wrap">
-              <img class="review-icon-background" src="${reviewIcon}" alt="">
-              <img class="review-icon-star" src="${REVIEW_ICON_STAR}" alt="">
-            </span>
-            <span class="review-label">${reviewLabel}</span>
+      if (event.isOwner) {
+        actionHTML = `
+          <div class="event-action-right joined-action">
+            <span class="joined-status-text">สร้างโดยคุณ</span>
           </div>
-        `
-        : `
-          <a class="event-action-right review-action" href="./Review.html?eventId=${encodeURIComponent(event.id)}&role=${encodeURIComponent(reviewRole)}" aria-label="${reviewLabel}">
-            <span class="review-icon-wrap">
-              <img class="review-icon-background" src="${reviewIcon}" alt="">
-              <img class="review-icon-star" src="${REVIEW_ICON_STAR}" alt="">
-            </span>
-            <span class="review-label">${reviewLabel}</span>
-          </a>
         `;
+      } else {
+        const reviewed = hasSubmittedReview(event);
+        const reviewRole = "participant";
+        const reviewIcon = reviewed ? REVIEW_ICON_BACKGROUND_COMPLETED : REVIEW_ICON_BACKGROUND;
+        const reviewLabel = reviewed ? "ประเมินแล้ว" : "ประเมิน";
+
+        actionHTML = reviewed
+          ? `
+            <div class="event-action-right review-action review-completed" aria-label="${reviewLabel}">
+              <span class="review-icon-wrap">
+                <img class="review-icon-background" src="${reviewIcon}" alt="">
+                <img class="review-icon-star" src="${REVIEW_ICON_STAR}" alt="">
+              </span>
+              <span class="review-label">${reviewLabel}</span>
+            </div>
+          `
+          : `
+            <a class="event-action-right review-action" href="./Review.html?eventId=${encodeURIComponent(event.id)}&role=${encodeURIComponent(reviewRole)}" aria-label="${reviewLabel}">
+              <span class="review-icon-wrap">
+                <img class="review-icon-background" src="${reviewIcon}" alt="">
+                <img class="review-icon-star" src="${REVIEW_ICON_STAR}" alt="">
+              </span>
+              <span class="review-label">${reviewLabel}</span>
+            </a>
+          `;
+      }
     }
 
     // ถ้ายังไม่หมดเวลา แสดงสถานะ + ปุ่มกากบาท

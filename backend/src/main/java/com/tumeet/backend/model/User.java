@@ -58,6 +58,15 @@ public class User {
     @Column(name = "profile_image", columnDefinition = "NVARCHAR(MAX)")
     private String profileImage;
 
+    // --- [US-8] คะแนนประเมินเฉลี่ยและจำนวนครั้งที่ถูกประเมิน ---
+    @Column(name = "average_rating", nullable = false)
+    @ColumnDefault("0.0")
+    private Double averageRating = 0.0;
+
+    @Column(name = "rating_count", nullable = false)
+    @ColumnDefault("0")
+    private Integer ratingCount = 0;
+
     // --- [US-9] จำนวนกิจกรรมที่สร้างสำเร็จและเข้าร่วมสำเร็จ ---
     @Column(name = "completed_created_count", nullable = false)
     @ColumnDefault("0")
@@ -210,6 +219,22 @@ public class User {
 
     public void setProfileImage(String profileImage) {
         this.profileImage = profileImage;
+    }
+
+    public Double getAverageRating() {
+        return averageRating;
+    }
+
+    public void setAverageRating(Double averageRating) {
+        this.averageRating = averageRating != null ? averageRating : 0.0;
+    }
+
+    public Integer getRatingCount() {
+        return ratingCount;
+    }
+
+    public void setRatingCount(Integer ratingCount) {
+        this.ratingCount = ratingCount != null ? ratingCount : 0;
     }
 
     public Integer getCompletedCreatedCount() {

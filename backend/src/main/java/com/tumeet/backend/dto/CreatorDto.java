@@ -13,6 +13,8 @@ public class CreatorDto {
     private Integer completedCreatedCount;
     private Integer completedJoinedCount;
     private String badge;
+    private Double averageRating;
+    private Integer ratingCount;
 
     public CreatorDto() {
     }
@@ -39,6 +41,8 @@ public class CreatorDto {
         dto.setCompletedCreatedCount(user.getCompletedCreatedCount() != null ? user.getCompletedCreatedCount() : 0);
         dto.setCompletedJoinedCount(user.getCompletedJoinedCount() != null ? user.getCompletedJoinedCount() : 0);
         dto.setBadge(user.getBadge());
+        dto.setAverageRating(user.getAverageRating() != null ? user.getAverageRating() : 0.0);
+        dto.setRatingCount(user.getRatingCount() != null ? user.getRatingCount() : 0);
         return dto;
     }
 
@@ -112,5 +116,21 @@ public class CreatorDto {
 
     public void setBadge(String badge) {
         this.badge = badge;
+    }
+
+    public Double getAverageRating() {
+        return averageRating;
+    }
+
+    public void setAverageRating(Double averageRating) {
+        this.averageRating = averageRating;
+    }
+
+    public Integer getRatingCount() {
+        return ratingCount;
+    }
+
+    public void setRatingCount(Integer ratingCount) {
+        this.ratingCount = ratingCount;
     }
 }
