@@ -7,6 +7,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const commentCount = document.getElementById("commentCount");
   const error = document.getElementById("reviewError");
   const submit = form.querySelector(".review-submit");
+  const successModal = document.getElementById("reviewSuccessModal");
+  const successTitle = document.getElementById("reviewSuccessTitle");
+  successTitle.textContent = "\u0e1b\u0e23\u0e30\u0e40\u0e21\u0e34\u0e19\u0e01\u0e34\u0e08\u0e01\u0e23\u0e23\u0e21\u0e40\u0e2a\u0e23\u0e47\u0e08\u0e2a\u0e34\u0e49\u0e19";
   const params = new URLSearchParams(window.location.search);
   const eventId = params.get("eventId") || localStorage.getItem("reviewEventId") || "";
   const role = params.get("role") || localStorage.getItem("reviewRole") || "participant";
@@ -87,8 +90,9 @@ document.addEventListener("DOMContentLoaded", () => {
     submit.disabled = true;
     submit.textContent = "บันทึกแล้ว";
 
+    successModal.hidden = false;
     window.setTimeout(() => {
       window.location.href = "./Profile.html";
-    }, 800);
+    }, 1500);
   });
 });
