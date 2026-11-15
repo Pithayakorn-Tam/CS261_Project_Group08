@@ -107,6 +107,17 @@ public class EventService {
         event.setEventName(request.getEventName().trim());
         event.setEventType(request.getEventType().trim());
         event.setLocation(request.getLocation() != null ? request.getLocation().trim() : null);
+        String rawDescription = request.getDescription();
+        if (rawDescription != null) {
+            rawDescription = rawDescription.trim();
+            if (rawDescription.length() > 1000) {
+                rawDescription = rawDescription.substring(0, 1000);
+            }
+            if (rawDescription.isEmpty()) {
+                rawDescription = null;
+            }
+        }
+        event.setDescription(rawDescription);
         event.setEventSize(request.getEventSize());
         event.setCurrentParticipants(1); // เริ่มต้นที่ 1/eventSize (นับรวมผู้สร้างกิจกรรม)
         event.setEventDate(eventDate);
@@ -230,6 +241,47 @@ public class EventService {
                 .toList();
 
         return EventResponse.success("ดึงรายการกิจกรรมที่เปิดรับอยู่สำเร็จ", eventDtos);
+    }
+
+    @Transactional
+    public EventResponse getEventById(Long eventId) {
+        if (eventId == null) {
+            return EventResponse.error("กรุณาระบุรหัสกิจกรรม");
+        }
+
+        syncAndCompleteExpiredEvents();
+        Optional<Event> eventOpt = eventRepository.findById(eventId);
+        if (eventOpt.isEmpty()) {
+            return EventResponse.error("ไม่พบกิจกรรมรหัส: " + eventId);
+        }
+
+        return EventResponse.success("ดึงรายละเอียดกิจกรรมสำเร็จ", EventDto.fromEntity(eventOpt.get()));
+    }
+
+    @Transactional
+    public EventResponse updateEventDescription(Long eventId, String studentId, String description) {
+        if (eventId == null || studentId == null || studentId.isBlank()) {
+            return EventResponse.error("กรุณาระบุรหัสกิจกรรมและรหัสนักศึกษา");
+        }
+
+        Optional<Event> eventOpt = eventRepository.findById(eventId);
+        if (eventOpt.isEmpty()) {
+            return EventResponse.error("ไม่พบกิจกรรมรหัส: " + eventId);
+        }
+
+        Event event = eventOpt.get();
+        if (event.getCreator() == null || !studentId.trim().equals(event.getCreator().getStudentId())) {
+            return EventResponse.error("เฉพาะผู้สร้างกิจกรรมเท่านั้นที่สามารถแก้ไขคำอธิบายได้");
+        }
+
+        String normalized = description != null ? description.trim() : "";
+        if (normalized.length() > 1000) {
+            normalized = normalized.substring(0, 1000);
+        }
+        event.setDescription(normalized.isEmpty() ? null : normalized);
+
+        Event saved = eventRepository.save(event);
+        return EventResponse.success("อัปเดตคำอธิบายกิจกรรมสำเร็จ", EventDto.fromEntity(saved));
     }
 
     @Transactional

@@ -354,4 +354,75 @@ class EventServiceTest {
         assertFalse(leaveRes.isStatus());
         assertEquals("ไม่สามารถทำรายการได้เนื่องจากกิจกรรมนี้สิ้นสุดหรือถูกยกเลิกแล้ว", leaveRes.getMessage());
     }
+
+    @Test
+    @DisplayName("US-10: สร้าง Event พร้อมคำอธิบาย (eventDescription / description) สำเร็จและบันทึกลง EventDto")
+    void createEvent_WithDescription_Success() {
+        CreateEventRequest request = new CreateEventRequest();
+        request.setCreatorStudentId("6800000001");
+        request.setEventName("ตี๋น้อย คลายเหงา");
+        request.setEventType("food");
+        request.setLocation("Mingle");
+        request.setEventDescription("  หาตี้กินตี๋น้อย ม.กรุงเทพ หารค่าน้ำรีฟิลกัน  ");
+        request.setEventSize(6);
+        request.setEventDate(validFutureDate.toString());
+        request.setEventTime("18:30");
+
+        when(userRepository.findByStudentId("6800000001")).thenReturn(Optional.of(mockUser));
+        when(eventRepository.save(any(Event.class))).thenAnswer(invocation -> {
+            Event saved = invocation.getArgument(0);
+            saved.setId(20L);
+            return saved;
+        });
+
+        EventResponse response = eventService.createEvent(request);
+
+        assertTrue(response.isStatus());
+        EventDto dto = (EventDto) response.getData();
+        assertNotNull(dto);
+        assertEquals("หาตี้กินตี๋น้อย ม.กรุงเทพ หารค่าน้ำรีฟิลกัน", dto.getDescription());
+    }
+
+    @Test
+    @DisplayName("US-10: ดึงรายละเอียดกิจกรรมรายตัวด้วย getEventById สำเร็จและคืน Error เมื่อไม่พบ")
+    void getEventById_SuccessAndNotFound() {
+        Event event = new Event("ตี๋น้อย", "food", "Mingle", 6, validFutureDate, "18.30", mockUser);
+        event.setId(21L);
+        event.setDescription("มากินด้วยกันนะ");
+
+        when(eventRepository.findById(21L)).thenReturn(Optional.of(event));
+        when(eventRepository.findById(999L)).thenReturn(Optional.empty());
+
+        EventResponse foundRes = eventService.getEventById(21L);
+        assertTrue(foundRes.isStatus());
+        assertEquals("ดึงรายละเอียดกิจกรรมสำเร็จ", foundRes.getMessage());
+        EventDto dto = (EventDto) foundRes.getData();
+        assertEquals("มากินด้วยกันนะ", dto.getDescription());
+        assertEquals("6800000001", dto.getCreator().getStudentId());
+
+        EventResponse notFoundRes = eventService.getEventById(999L);
+        assertFalse(notFoundRes.isStatus());
+        assertTrue(notFoundRes.getMessage().contains("ไม่พบกิจกรรมรหัส: 999"));
+    }
+
+    @Test
+    @DisplayName("US-10: อัปเดตคำอธิบายกิจกรรมได้เฉพาะผู้สร้างเท่านั้น")
+    void updateEventDescription_CreatorOnly() {
+        Event event = new Event("ตี๋น้อย", "food", "Mingle", 6, validFutureDate, "18.30", mockUser);
+        event.setId(22L);
+        event.setDescription("คำอธิบายเดิม");
+
+        when(eventRepository.findById(22L)).thenReturn(Optional.of(event));
+        when(eventRepository.save(any(Event.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        EventResponse forbiddenRes = eventService.updateEventDescription(22L, "6800000002", "แก้ไขโดยคนอื่น");
+        assertFalse(forbiddenRes.isStatus());
+        assertEquals("เฉพาะผู้สร้างกิจกรรมเท่านั้นที่สามารถแก้ไขคำอธิบายได้", forbiddenRes.getMessage());
+
+        EventResponse successRes = eventService.updateEventDescription(22L, "6800000001", "  คำอธิบายใหม่  ");
+        assertTrue(successRes.isStatus());
+        assertEquals("อัปเดตคำอธิบายกิจกรรมสำเร็จ", successRes.getMessage());
+        EventDto updatedDto = (EventDto) successRes.getData();
+        assertEquals("คำอธิบายใหม่", updatedDto.getDescription());
+    }
 }

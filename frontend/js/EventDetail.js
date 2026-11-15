@@ -17,13 +17,21 @@ const USE_EXACT_IMAGE_MOCK = false;
 
   const DEFAULT_DESCRIPTION_PLACEHOLDER = 'กิจกรรมนี้ไม่มีคำอธิบายเพิ่มเติม';
 
-  // ไอคอนแรงค์ของผู้เข้าร่วมตามลำดับในภาพต้นแบบ
+  // ไอคอนแรงค์ของผู้เข้าร่วมตามลำดับในภาพต้นแบบ (กรณี Mock Standalone)
   const RANK_BADGE_ICONS = [
     '../Picture/badge/Newly-Bee.svg',
     '../Picture/badge/Baby-Bloom.svg',
     '../Picture/badge/Happy-Blossom.svg',
     '../Picture/badge/Super-Bouquet.svg'
   ];
+
+  const BADGE_ICON_MAP = {
+    'newly bee': '../Picture/badge/Newly-Bee.svg',
+    'baby bloom': '../Picture/badge/Baby-Bloom.svg',
+    'happy blossom': '../Picture/badge/Happy-Blossom.svg',
+    'super bouquet': '../Picture/badge/Super-Bouquet.svg',
+    'no badge': '../Picture/badge/no-Badge-mobile.svg'
+  };
 
   // ข้อมูลต้นแบบตรงตามภาพ (ตี๋น้อย คลายเหงา)
   const MOCK_TEMPLATE_EVENT = {
@@ -116,10 +124,27 @@ const USE_EXACT_IMAGE_MOCK = false;
     location: MOCK_TEMPLATE_EVENT.location,
     currentParticipants: 3,
     eventSize: 6,
+    creator: null,
+    participants: [],
+    isExpired: false,
     mode: 'other-not-joined', // 'other-not-joined' | 'other-joined' | 'created-by-me'
     sourceCard: null,
     isEditingDesc: false
   };
+
+  function escapeHtml(text) {
+    return String(text || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function getBadgeIcon(badgeName) {
+    const normalized = String(badgeName || '').trim().toLowerCase();
+    return BADGE_ICON_MAP[normalized] || '../Picture/badge/no-Badge-mobile.svg';
+  }
 
   function getCurrentStudentId() {
     try {
@@ -154,29 +179,108 @@ const USE_EXACT_IMAGE_MOCK = false;
     }
   }
 
-  // สร้างรายชื่อผู้เข้าร่วมพร้อมไอคอนแรงค์และสถานะตรงตามภาพทั้ง 3 โหมด
-  function buildParticipantsByMode(mode) {
+  function findMatchedEventDto(eventId) {
+    if (eventId == null) return null;
+    if (typeof allFetchedEvents !== 'undefined' && Array.isArray(allFetchedEvents)) {
+      const found = allFetchedEvents.find((ev) => ev && String(ev.id) === String(eventId));
+      if (found) return found;
+    }
+    if (window.profileEventsById && window.profileEventsById[String(eventId)]) {
+      return window.profileEventsById[String(eventId)];
+    }
+    return null;
+  }
+
+  // สร้างรายชื่อผู้เข้าร่วมพร้อมไอคอนแรงค์และสถานะ (กรณี fallback standalone preview)
+  function buildParticipantsByMode(mode, desiredCount = 3) {
+    let baseList;
     if (mode === 'created-by-me') {
-      return [
-        { name: 'มะหมาสี่ขา', badge: RANK_BADGE_ICONS[0], role: 'คุณ' },
-        { name: 'มะหมาห้าขา', badge: RANK_BADGE_ICONS[1], role: 'ผู้เข้าร่วม' },
-        { name: 'มะหมาหกขา', badge: RANK_BADGE_ICONS[2], role: 'ผู้เข้าร่วม' }
+      baseList = [
+        { name: 'มะหมาสี่ขา', badge: RANK_BADGE_ICONS[0], avatar: '', role: 'คุณ' },
+        { name: 'มะหมาห้าขา', badge: RANK_BADGE_ICONS[1], avatar: '', role: 'ผู้เข้าร่วม' },
+        { name: 'มะหมาหกขา', badge: RANK_BADGE_ICONS[2], avatar: '', role: 'ผู้เข้าร่วม' }
+      ];
+    } else if (mode === 'other-joined') {
+      baseList = [
+        { name: 'มะหมาสี่ขา', badge: RANK_BADGE_ICONS[0], avatar: '', role: 'ผู้สร้าง' },
+        { name: 'มะหมาห้าขา', badge: RANK_BADGE_ICONS[1], avatar: '', role: 'คุณ' },
+        { name: 'มะหมาหกขา', badge: RANK_BADGE_ICONS[2], avatar: '', role: 'ผู้เข้าร่วม' }
+      ];
+    } else {
+      baseList = [
+        { name: 'มะหมาสี่ขา', badge: RANK_BADGE_ICONS[0], avatar: '', role: 'ผู้สร้าง' },
+        { name: 'มะหมาห้าขา', badge: RANK_BADGE_ICONS[1], avatar: '', role: 'ผู้เข้าร่วม' },
+        { name: 'มะหมาหกขา', badge: RANK_BADGE_ICONS[2], avatar: '', role: 'ผู้เข้าร่วม' }
       ];
     }
 
-    if (mode === 'other-joined') {
-      return [
-        { name: 'มะหมาสี่ขา', badge: RANK_BADGE_ICONS[0], role: 'ผู้สร้าง' },
-        { name: 'มะหมาห้าขา', badge: RANK_BADGE_ICONS[1], role: 'คุณ' },
-        { name: 'มะหมาหกขา', badge: RANK_BADGE_ICONS[2], role: 'ผู้เข้าร่วม' }
-      ];
+    const result = [...baseList];
+    let idx = 4;
+    while (result.length < desiredCount) {
+      result.push({
+        name: `ผู้เข้าร่วม ${idx}`,
+        badge: RANK_BADGE_ICONS[(idx - 1) % RANK_BADGE_ICONS.length],
+        avatar: '',
+        role: 'ผู้เข้าร่วม'
+      });
+      idx += 1;
+    }
+    return result.slice(0, Math.max(1, desiredCount));
+  }
+
+  function buildParticipantsList(state) {
+    const currentStudentId = getCurrentStudentId();
+
+    if (state.creator) {
+      const list = [];
+      const seenIds = new Set();
+      const creatorId = state.creator.studentId != null ? String(state.creator.studentId) : '';
+      if (creatorId) seenIds.add(creatorId);
+
+      list.push({
+        studentId: creatorId,
+        name: state.creator.username || state.creator.displayname_th || creatorId || 'ผู้สร้างกิจกรรม',
+        badge: getBadgeIcon(state.creator.badge),
+        avatar: state.creator.profileImage || '',
+        role: creatorId && creatorId === currentStudentId ? 'คุณ' : 'ผู้สร้าง'
+      });
+
+      if (Array.isArray(state.participants)) {
+        state.participants.forEach((p) => {
+          if (!p) return;
+          const pid = p.studentId != null ? String(p.studentId) : '';
+          if (pid && seenIds.has(pid)) return;
+          if (pid) seenIds.add(pid);
+
+          list.push({
+            studentId: pid,
+            name: p.username || p.displayname_th || pid || 'ผู้เข้าร่วม',
+            badge: getBadgeIcon(p.badge),
+            avatar: p.profileImage || '',
+            role: pid && pid === currentStudentId ? 'คุณ' : 'ผู้เข้าร่วม'
+          });
+        });
+      }
+
+      return list;
     }
 
-    return [
-      { name: 'มะหมาสี่ขา', badge: RANK_BADGE_ICONS[0], role: 'ผู้สร้าง' },
-      { name: 'มะหมาห้าขา', badge: RANK_BADGE_ICONS[1], role: 'ผู้เข้าร่วม' },
-      { name: 'มะหมาหกขา', badge: RANK_BADGE_ICONS[2], role: 'ผู้เข้าร่วม' }
-    ];
+    return buildParticipantsByMode(state.mode, state.currentParticipants || 3);
+  }
+
+  function resolveModeFromDto(dto, fallbackMode = 'other-not-joined') {
+    if (!dto) return fallbackMode;
+    const studentId = getCurrentStudentId();
+    if (dto.creator && String(dto.creator.studentId) === studentId) {
+      return 'created-by-me';
+    }
+    if (
+      Array.isArray(dto.participants) &&
+      dto.participants.some((p) => p && String(p.studentId) === studentId)
+    ) {
+      return 'other-joined';
+    }
+    return 'other-not-joined';
   }
 
   async function ensurePopupLoaded() {
@@ -231,6 +335,7 @@ const USE_EXACT_IMAGE_MOCK = false;
     const capacityEl = document.getElementById('eventDetailCapacity');
     const participantHeaderEl = document.getElementById('eventDetailParticipantHeader');
     const participantListEl = document.getElementById('eventDetailParticipantList');
+    const footerEl = document.getElementById('eventDetailFooter');
     const actionBtnEl = document.getElementById('eventDetailActionBtn');
 
     if (logoEl) logoEl.src = currentModalState.logo || '../Picture/bowl.svg';
@@ -239,8 +344,10 @@ const USE_EXACT_IMAGE_MOCK = false;
     if (dateEl) dateEl.textContent = currentModalState.date || 'Sat, 28 Sep';
     if (locationEl) locationEl.textContent = currentModalState.location || 'หอสมุดป๋วย';
 
-    const participants = buildParticipantsByMode(currentModalState.mode);
-    const participantCount = currentModalState.currentParticipants || participants.length;
+    const participants = buildParticipantsList(currentModalState);
+    const participantCount = currentModalState.creator
+      ? Math.max(currentModalState.currentParticipants || 0, participants.length)
+      : (currentModalState.currentParticipants || participants.length);
     const maxCount = currentModalState.eventSize || 6;
 
     if (capacityEl) {
@@ -251,21 +358,21 @@ const USE_EXACT_IMAGE_MOCK = false;
       participantHeaderEl.textContent = `ผู้เข้าร่วม ( ${participants.length} )`;
     }
 
-    const isCreator = currentModalState.mode === 'created-by-me';
+    const canEditDesc = currentModalState.mode === 'created-by-me' && !currentModalState.isExpired;
     const desc = (currentModalState.description || '').trim();
 
     if (charCountEl) {
       charCountEl.textContent = `${desc.length}/200`;
     }
 
-    if (isCreator) {
+    if (canEditDesc) {
       if (descFooterEl) descFooterEl.classList.remove('hidden');
     } else {
       if (descFooterEl) descFooterEl.classList.add('hidden');
       currentModalState.isEditingDesc = false;
     }
 
-    if (currentModalState.isEditingDesc && isCreator) {
+    if (currentModalState.isEditingDesc && canEditDesc) {
       if (descTextEl) descTextEl.classList.add('hidden');
       if (descInputEl) {
         descInputEl.classList.remove('hidden');
@@ -292,26 +399,37 @@ const USE_EXACT_IMAGE_MOCK = false;
           (p) => `
           <div class="event-detail-participant-item">
             <div class="event-detail-participant-left">
-              <div class="event-detail-participant-avatar"></div>
+              <div class="event-detail-participant-avatar">${
+                p.avatar ? `<img src="${escapeHtml(p.avatar)}" alt="${escapeHtml(p.name)}">` : ''
+              }</div>
               <div class="event-detail-participant-name-wrap">
-                <span class="event-detail-participant-name">${p.name}</span>
-                <img src="${p.badge}" alt="Rank Badge" class="event-detail-rank-icon">
+                <span class="event-detail-participant-name">${escapeHtml(p.name)}</span>
+                <img src="${escapeHtml(p.badge)}" alt="Rank Badge" class="event-detail-rank-icon">
               </div>
             </div>
-            <span class="event-detail-participant-role">${p.role}</span>
+            <span class="event-detail-participant-role">${escapeHtml(p.role)}</span>
           </div>`
         )
         .join('');
     }
 
+    if (footerEl) {
+      footerEl.style.display = currentModalState.isExpired ? 'none' : '';
+    }
+
     if (actionBtnEl) {
       actionBtnEl.className = 'event-detail-action-btn';
+      actionBtnEl.disabled = false;
       if (currentModalState.mode === 'created-by-me') {
         actionBtnEl.classList.add('btn-cancel-event');
         actionBtnEl.textContent = 'ยกเลิกกิจกรรม';
       } else if (currentModalState.mode === 'other-joined') {
         actionBtnEl.classList.add('btn-cancel-join');
         actionBtnEl.textContent = 'ยกเลิกการเข้าร่วม';
+      } else if (participantCount >= maxCount) {
+        actionBtnEl.classList.add('btn-join');
+        actionBtnEl.disabled = true;
+        actionBtnEl.textContent = 'กิจกรรมเต็มแล้ว';
       } else {
         actionBtnEl.classList.add('btn-join');
         actionBtnEl.textContent = 'เข้าร่วม';
@@ -321,7 +439,8 @@ const USE_EXACT_IMAGE_MOCK = false;
 
   function extractStateFromCard(card) {
     const eventId = card?.dataset?.eventId || 'mock-teenoi';
-    const studentId = getCurrentStudentId();
+    const matched = findMatchedEventDto(eventId);
+    const isExpired = Boolean(card?.classList?.contains('expired') || matched?.expired);
 
     const cancelBtnOnProfile = card?.querySelector('.cancel-event-btn');
     const statusTextOnProfile = card?.querySelector('.joined-status-text')?.textContent?.trim() || '';
@@ -333,54 +452,61 @@ const USE_EXACT_IMAGE_MOCK = false;
       if (
         (cancelBtnOnProfile && cancelBtnOnProfile.getAttribute('data-is-owner') === 'true') ||
         statusTextOnProfile === 'สร้างโดยคุณ' ||
-        card?.dataset?.creator === 'true'
+        card?.dataset?.creator === 'true' ||
+        matched?.isOwner === true
       ) {
         mode = 'created-by-me';
       } else if (
         (cancelBtnOnProfile && cancelBtnOnProfile.getAttribute('data-is-owner') === 'false') ||
         statusTextOnProfile === 'เข้าร่วมแล้ว' ||
-        (joinBtnOnHome && (joinBtnOnHome.dataset.joined === 'true' || joinBtnOnHome.disabled))
+        (joinBtnOnHome && (joinBtnOnHome.dataset.joined === 'true' || joinBtnOnHome.disabled)) ||
+        matched?.isJoined === true
       ) {
         mode = 'other-joined';
-      } else if (typeof allFetchedEvents !== 'undefined' && Array.isArray(allFetchedEvents)) {
-        const matched = allFetchedEvents.find((ev) => String(ev.id) === String(eventId));
-        if (matched) {
-          if (matched.creator && String(matched.creator.studentId) === String(studentId)) {
-            mode = 'created-by-me';
-          } else if (
-            Array.isArray(matched.participants) &&
-            matched.participants.some((p) => p && String(p.studentId) === String(studentId))
-          ) {
-            mode = 'other-joined';
-          }
-        }
+      } else if (matched) {
+        mode = resolveModeFromDto(matched, mode);
       }
     }
 
-    const cardTitle = card?.querySelector('.event-title')?.textContent?.trim() || MOCK_TEMPLATE_EVENT.eventName;
-    const cardLogo = card?.querySelector('.event-logo img')?.getAttribute('src') || MOCK_TEMPLATE_EVENT.logo;
+    const cardTitle = card?.querySelector('.event-title')?.textContent?.trim() || matched?.eventName || matched?.title || MOCK_TEMPLATE_EVENT.eventName;
+    const cardLogo = card?.querySelector('.event-logo img')?.getAttribute('src') || matched?.logo || MOCK_TEMPLATE_EVENT.logo;
 
     const timeSpans = card?.querySelectorAll('.event-time-date span');
-    const cardTime = timeSpans?.[0]?.textContent?.trim() || MOCK_TEMPLATE_EVENT.eventTime;
-    const cardDate = timeSpans?.[1]?.textContent?.trim() || MOCK_TEMPLATE_EVENT.eventDate;
-    const cardLocation = card?.querySelector('.event-location')?.textContent?.trim() || MOCK_TEMPLATE_EVENT.location;
+    const cardTime = timeSpans?.[0]?.textContent?.trim() || matched?.eventTime || matched?.time || MOCK_TEMPLATE_EVENT.eventTime;
+    const cardDate = timeSpans?.[1]?.textContent?.trim() || matched?.date || MOCK_TEMPLATE_EVENT.eventDate;
+    const cardLocation = card?.querySelector('.event-location')?.textContent?.trim() || matched?.location || MOCK_TEMPLATE_EVENT.location;
 
-    const capText = card?.querySelector('.capacity span')?.textContent?.trim() || '3/6';
-    const [curCap, maxCap] = capText.split('/').map((n) => parseInt(n, 10));
+    const capText = card?.querySelector('.capacity span')?.textContent?.trim() || '';
+    const [capCur, capMax] = capText ? capText.split('/').map((n) => parseInt(n, 10)) : [NaN, NaN];
+    const dataCur = parseInt(card?.dataset?.participants || '', 10);
+    const dataMax = parseInt(card?.dataset?.capacity || '', 10);
 
-    const savedDesc = getSavedDescription(eventId, '');
+    const resolvedCur = !isNaN(capCur) && capCur > 0
+      ? capCur
+      : (!isNaN(dataCur) && dataCur > 0 ? dataCur : (matched?.currentParticipants || 1));
+    const resolvedMax = !isNaN(capMax) && capMax > 0
+      ? capMax
+      : (!isNaN(dataMax) && dataMax > 0 ? dataMax : (matched?.eventSize || 6));
+
+    const initialDesc =
+      (matched && matched.description != null ? matched.description : null) ??
+      (card?.dataset?.description != null && card.dataset.description !== '' ? card.dataset.description : null) ??
+      getSavedDescription(eventId, '');
 
     if (USE_EXACT_IMAGE_MOCK) {
       return {
         eventId: eventId,
         eventName: MOCK_TEMPLATE_EVENT.eventName,
         logo: MOCK_TEMPLATE_EVENT.logo,
-        description: savedDesc,
+        description: initialDesc,
         time: MOCK_TEMPLATE_EVENT.eventTime,
         date: MOCK_TEMPLATE_EVENT.eventDate,
         location: MOCK_TEMPLATE_EVENT.location,
         currentParticipants: 3,
         eventSize: 6,
+        creator: null,
+        participants: [],
+        isExpired: isExpired,
         mode: mode,
         sourceCard: card,
         isEditingDesc: false
@@ -391,16 +517,61 @@ const USE_EXACT_IMAGE_MOCK = false;
       eventId: eventId,
       eventName: cardTitle,
       logo: cardLogo,
-      description: savedDesc,
+      description: initialDesc,
       time: cardTime,
       date: cardDate,
       location: cardLocation,
-      currentParticipants: !isNaN(curCap) && curCap > 0 ? curCap : 3,
-      eventSize: !isNaN(maxCap) && maxCap > 0 ? maxCap : 6,
+      currentParticipants: resolvedCur,
+      eventSize: resolvedMax,
+      creator: matched?.creator || null,
+      participants: Array.isArray(matched?.participants) ? matched.participants : [],
+      isExpired: isExpired,
       mode: mode,
       sourceCard: card,
       isEditingDesc: false
     };
+  }
+
+  function applyEventDtoToModalState(dto) {
+    if (!dto) return;
+    currentModalState.eventName = dto.eventName || currentModalState.eventName;
+    currentModalState.description = dto.description != null ? dto.description : '';
+    currentModalState.time = dto.eventTime || currentModalState.time;
+    currentModalState.location = dto.location || currentModalState.location;
+    currentModalState.creator = dto.creator || null;
+    currentModalState.participants = Array.isArray(dto.participants) ? dto.participants : [];
+    currentModalState.currentParticipants =
+      dto.currentParticipants ?? (1 + currentModalState.participants.length);
+    currentModalState.eventSize = dto.eventSize ?? currentModalState.eventSize;
+    currentModalState.isExpired = Boolean(
+      dto.status === 'CLOSED' ||
+      dto.status === 'CANCELLED' ||
+      dto.lifecycleStatus === 'COMPLETED' ||
+      dto.lifecycleStatus === 'CANCELLED' ||
+      currentModalState.isExpired
+    );
+    currentModalState.mode = resolveModeFromDto(dto, currentModalState.mode);
+
+    saveDescription(currentModalState.eventId, currentModalState.description);
+    syncSourceCardData(dto);
+  }
+
+  function syncSourceCardData(dto) {
+    const card = currentModalState.sourceCard;
+    if (!card || !dto) return;
+    if (dto.description != null) {
+      card.dataset.description = dto.description;
+    }
+    if (dto.currentParticipants != null) {
+      card.dataset.participants = String(dto.currentParticipants);
+    }
+    if (dto.eventSize != null) {
+      card.dataset.capacity = String(dto.eventSize);
+    }
+    const capSpan = card.querySelector('.capacity span');
+    if (capSpan && dto.currentParticipants != null && dto.eventSize != null) {
+      capSpan.textContent = `${dto.currentParticipants}/${dto.eventSize}`;
+    }
   }
 
   async function openEventDetailModal(cardOrMode) {
@@ -418,6 +589,9 @@ const USE_EXACT_IMAGE_MOCK = false;
         location: MOCK_TEMPLATE_EVENT.location,
         currentParticipants: 3,
         eventSize: 6,
+        creator: null,
+        participants: [],
+        isExpired: false,
         mode: cardOrMode,
         sourceCard: null,
         isEditingDesc: false
@@ -428,6 +602,27 @@ const USE_EXACT_IMAGE_MOCK = false;
 
     renderModal();
     popup.classList.remove('hidden');
+
+    const targetEventId = currentModalState.eventId;
+    if (!USE_EXACT_IMAGE_MOCK && targetEventId && !String(targetEventId).startsWith('mock')) {
+      try {
+        const res = await fetch(`${API_BASE_URL}/events/${encodeURIComponent(targetEventId)}`);
+        if (!res.ok) return;
+        const result = await res.json();
+        if (
+          result &&
+          result.status &&
+          result.data &&
+          !popup.classList.contains('hidden') &&
+          String(currentModalState.eventId) === String(targetEventId)
+        ) {
+          applyEventDtoToModalState(result.data);
+          renderModal();
+        }
+      } catch (err) {
+        console.warn('Cannot fetch event details from backend:', err);
+      }
+    }
   }
 
   function closeEventDetailModal() {
@@ -440,15 +635,59 @@ const USE_EXACT_IMAGE_MOCK = false;
     popup.classList.add('hidden');
   }
 
-  function commitDescriptionEdit() {
+  async function commitDescriptionEdit() {
+    if (!currentModalState.isEditingDesc) return;
+
     const descInputEl = document.getElementById('eventDetailDescInput');
-    if (descInputEl && currentModalState.mode === 'created-by-me') {
-      const trimmed = descInputEl.value.slice(0, 200);
-      currentModalState.description = trimmed;
-      saveDescription(currentModalState.eventId, trimmed);
+    const eventId = currentModalState.eventId;
+    const isCreator = currentModalState.mode === 'created-by-me' && !currentModalState.isExpired;
+    let newDesc = currentModalState.description || '';
+
+    if (descInputEl && isCreator) {
+      newDesc = descInputEl.value.trim().slice(0, 200);
+      currentModalState.description = newDesc;
+      saveDescription(eventId, newDesc);
+      if (currentModalState.sourceCard) {
+        currentModalState.sourceCard.dataset.description = newDesc;
+      }
+      const matched = findMatchedEventDto(eventId);
+      if (matched) {
+        matched.description = newDesc;
+      }
     }
+
     currentModalState.isEditingDesc = false;
     renderModal();
+
+    if (isCreator && eventId && !String(eventId).startsWith('mock')) {
+      try {
+        const res = await fetch(`${API_BASE_URL}/events/${encodeURIComponent(eventId)}/description`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            studentId: getCurrentStudentId(),
+            description: newDesc
+          })
+        });
+        if (res.ok) {
+          const result = await res.json();
+          if (result && result.status && result.data) {
+            if (String(currentModalState.eventId) === String(eventId)) {
+              currentModalState.description = result.data.description || '';
+              renderModal();
+            }
+            saveDescription(eventId, result.data.description || '');
+            syncSourceCardData(result.data);
+            const matched = findMatchedEventDto(eventId);
+            if (matched) {
+              matched.description = result.data.description || '';
+            }
+          }
+        }
+      } catch (err) {
+        console.warn('Cannot update event description on backend:', err);
+      }
+    }
   }
 
   function syncSourceCardUI(joined) {
@@ -508,7 +747,7 @@ const USE_EXACT_IMAGE_MOCK = false;
     if (editBtn) {
       editBtn.addEventListener('click', (e) => {
         e.stopPropagation();
-        if (currentModalState.mode !== 'created-by-me') return;
+        if (currentModalState.mode !== 'created-by-me' || currentModalState.isExpired) return;
         if (currentModalState.isEditingDesc) {
           commitDescriptionEdit();
         } else {
@@ -520,7 +759,7 @@ const USE_EXACT_IMAGE_MOCK = false;
 
     if (descBox) {
       descBox.addEventListener('click', () => {
-        if (currentModalState.mode === 'created-by-me' && !currentModalState.isEditingDesc) {
+        if (currentModalState.mode === 'created-by-me' && !currentModalState.isExpired && !currentModalState.isEditingDesc) {
           currentModalState.isEditingDesc = true;
           renderModal();
         }
@@ -544,199 +783,115 @@ const USE_EXACT_IMAGE_MOCK = false;
 
     if (actionBtn) {
       actionBtn.addEventListener('click', async () => {
+        if (currentModalState.isExpired) return;
+
         const eventId = currentModalState.eventId;
         const studentId = getCurrentStudentId();
+        const isRealEvent = Boolean(eventId && !String(eventId).startsWith('mock'));
 
         if (currentModalState.mode === 'other-not-joined') {
-          if (eventId && !String(eventId).startsWith('mock')) {
+          if (isRealEvent) {
+            actionBtn.disabled = true;
             try {
-              await fetch(`${API_BASE_URL}/events/${encodeURIComponent(eventId)}/join`, {
+              const res = await fetch(`${API_BASE_URL}/events/${encodeURIComponent(eventId)}/join`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ studentId })
               });
+              const result = await res.json();
+              if (!res.ok || !result.status) {
+                alert((result && result.message) || 'ไม่สามารถเข้าร่วมกิจกรรมได้');
+                actionBtn.disabled = false;
+                return;
+              }
+              if (result.data) {
+                applyEventDtoToModalState(result.data);
+              }
             } catch (err) {
-              // fallback local state
+              alert('เกิดข้อผิดพลาดในการเชื่อมต่อเพื่อเข้าร่วมกิจกรรม');
+              actionBtn.disabled = false;
+              return;
             }
+          } else {
+            currentModalState.mode = 'other-joined';
           }
-          currentModalState.mode = 'other-joined';
           syncSourceCardUI(true);
           renderModal();
+          if (typeof window.refreshNotifications === 'function') window.refreshNotifications();
+          if (typeof window.refreshHomeEvents === 'function') window.refreshHomeEvents();
+          if (typeof window.refreshProfileEvents === 'function') window.refreshProfileEvents();
         } else if (currentModalState.mode === 'other-joined') {
-          if (eventId && !String(eventId).startsWith('mock')) {
+          if (isRealEvent) {
+            actionBtn.disabled = true;
             try {
-              await fetch(`${API_BASE_URL}/events/${encodeURIComponent(eventId)}/leave`, {
+              const res = await fetch(`${API_BASE_URL}/events/${encodeURIComponent(eventId)}/leave`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ studentId })
               });
+              const result = await res.json();
+              if (!res.ok || !result.status) {
+                alert((result && result.message) || 'ไม่สามารถยกเลิกการเข้าร่วมกิจกรรมได้');
+                actionBtn.disabled = false;
+                return;
+              }
+              if (result.data) {
+                applyEventDtoToModalState(result.data);
+              }
             } catch (err) {
-              // fallback local state
+              alert('เกิดข้อผิดพลาดในการเชื่อมต่อเพื่อยกเลิกการเข้าร่วมกิจกรรม');
+              actionBtn.disabled = false;
+              return;
             }
+          } else {
+            currentModalState.mode = 'other-not-joined';
           }
-          currentModalState.mode = 'other-not-joined';
           syncSourceCardUI(false);
           renderModal();
+          if (typeof window.refreshNotifications === 'function') window.refreshNotifications();
+          if (typeof window.refreshHomeEvents === 'function') window.refreshHomeEvents();
+          if (typeof window.refreshProfileEvents === 'function') window.refreshProfileEvents();
         } else if (currentModalState.mode === 'created-by-me') {
-          if (eventId && !String(eventId).startsWith('mock')) {
+          if (isRealEvent) {
+            actionBtn.disabled = true;
             try {
-              await fetch(`${API_BASE_URL}/events/${encodeURIComponent(eventId)}/leave`, {
+              const res = await fetch(`${API_BASE_URL}/events/${encodeURIComponent(eventId)}/leave`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ studentId })
               });
+              const result = await res.json();
+              if (!res.ok || !result.status) {
+                alert((result && result.message) || 'ไม่สามารถยกเลิกกิจกรรมได้');
+                actionBtn.disabled = false;
+                return;
+              }
             } catch (err) {
-              // fallback local state
+              alert('เกิดข้อผิดพลาดในการเชื่อมต่อเพื่อยกเลิกกิจกรรม');
+              actionBtn.disabled = false;
+              return;
             }
           }
           if (currentModalState.sourceCard) {
             currentModalState.sourceCard.remove();
           }
           closeEventDetailModal();
+          if (typeof window.refreshNotifications === 'function') window.refreshNotifications();
+          if (typeof window.refreshHomeEvents === 'function') window.refreshHomeEvents();
+          if (typeof window.refreshProfileEvents === 'function') window.refreshProfileEvents();
         }
       });
     }
   }
 
-  // กรณีไม่ได้เปิดเซิร์ฟเวอร์ Backend (การ์ดว่างเปล่า) ให้สร้างการ์ดตัวอย่างเพื่อให้คลิกทดสอบได้ทันที
-  function injectFallbackDemoCardsIfEmpty() {
-    const homeList = document.getElementById('eventList');
-    if (homeList && homeList.querySelectorAll('.event-card').length === 0) {
-      homeList.innerHTML = `
-        <div class="event-card" data-event-id="mock-1" data-detail-mode="other-not-joined">
-          <div class="event-logo"><img src="../Picture/bowl.svg" alt="life-style"></div>
-          <div class="event-info">
-            <div class="event-badge">
-              <span class="event-title">ตี๋น้อย คลายเหงา</span>
-              <button class="event-info-btn" type="button" data-event-id="mock-1" aria-label="ดูรายละเอียดกิจกรรม">
-                <img src="../Picture/Info.svg" alt="Info">
-              </button>
-            </div>
-            <div class="event-time-date">
-              <span><img src="../Picture/TimeIcon.svg" class="detail-icon" alt="Time">18.30</span>
-              <span><img src="../Picture/CalendarIcon.svg" class="detail-icon" alt="Calendar">Sat, 28 Sep</span>
-            </div>
-            <div class="event-location">
-              <img src="../Picture/LocationIcon.svg" class="detail-icon" alt="Location">หอสมุดป๋วย
-            </div>
-          </div>
-          <div class="event-action">
-            <button class="join-btn" aria-label="เข้าร่วมกิจกรรม"><img src="../Picture/plus-mark.svg" alt="Join"></button>
-            <div class="capacity"><img src="../Picture/people-outline.svg" class="people-icon" alt="Participants"><span>3/6</span></div>
-          </div>
-        </div>
-        <div class="event-card" data-event-id="mock-2" data-detail-mode="other-joined">
-          <div class="event-logo"><img src="../Picture/bowl.svg" alt="life-style"></div>
-          <div class="event-info">
-            <div class="event-badge">
-              <span class="event-title">ตี๋น้อย คลายเหงา (เข้าร่วมแล้ว)</span>
-              <button class="event-info-btn" type="button" data-event-id="mock-2" aria-label="ดูรายละเอียดกิจกรรม">
-                <img src="../Picture/Info.svg" alt="Info">
-              </button>
-            </div>
-            <div class="event-time-date">
-              <span><img src="../Picture/TimeIcon.svg" class="detail-icon" alt="Time">18.30</span>
-              <span><img src="../Picture/CalendarIcon.svg" class="detail-icon" alt="Calendar">Sat, 28 Sep</span>
-            </div>
-            <div class="event-location">
-              <img src="../Picture/LocationIcon.svg" class="detail-icon" alt="Location">หอสมุดป๋วย
-            </div>
-          </div>
-          <div class="event-action">
-            <button class="join-btn" disabled data-joined="true" aria-label="เข้าร่วมกิจกรรมแล้ว"><span class="joined-check">✓</span></button>
-            <div class="capacity"><img src="../Picture/people-outline.svg" class="people-icon" alt="Participants"><span>3/6</span></div>
-          </div>
-        </div>
-        <div class="event-card" data-event-id="mock-3" data-detail-mode="created-by-me" data-creator="true">
-          <div class="event-logo"><img src="../Picture/bowl.svg" alt="life-style"></div>
-          <div class="event-info">
-            <div class="event-badge">
-              <span class="event-title">ตี๋น้อย คลายเหงา (สร้างโดยคุณ)</span>
-              <button class="event-info-btn" type="button" data-event-id="mock-3" aria-label="ดูรายละเอียดกิจกรรม">
-                <img src="../Picture/Info.svg" alt="Info">
-              </button>
-            </div>
-            <div class="event-time-date">
-              <span><img src="../Picture/TimeIcon.svg" class="detail-icon" alt="Time">18.30</span>
-              <span><img src="../Picture/CalendarIcon.svg" class="detail-icon" alt="Calendar">Sat, 28 Sep</span>
-            </div>
-            <div class="event-location">
-              <img src="../Picture/LocationIcon.svg" class="detail-icon" alt="Location">หอสมุดป๋วย
-            </div>
-          </div>
-          <div class="event-action">
-            <button class="join-btn" disabled data-joined="true" aria-label="เข้าร่วมกิจกรรมแล้ว"><span class="joined-check">✓</span></button>
-            <div class="capacity"><img src="../Picture/people-outline.svg" class="people-icon" alt="Participants"><span>3/6</span></div>
-          </div>
-        </div>
-      `;
-    }
-
-    const activeProfileList = document.getElementById('activeEventsList');
-    if (activeProfileList && activeProfileList.querySelectorAll('.event-card').length === 0) {
-      activeProfileList.innerHTML = `
-        <div class="event-card" data-event-id="mock-profile-1" data-detail-mode="created-by-me">
-          <div class="event-logo"><img src="../Picture/bowl.svg" alt="ตี๋น้อย คลายเหงา"></div>
-          <div class="event-info">
-            <div class="event-badge">
-              <span class="event-title">ตี๋น้อย คลายเหงา</span>
-              <button class="event-info-btn" type="button" data-event-id="mock-profile-1" aria-label="ดูรายละเอียดกิจกรรม">
-                <img src="../Picture/Info.svg" alt="Info">
-              </button>
-            </div>
-            <div class="event-time-date">
-              <span><img src="../Picture/TimeIcon.svg" class="detail-icon" alt="Time">18.30</span>
-              <span><img src="../Picture/CalendarIcon.svg" class="detail-icon" alt="Calendar">Sat, 28 Sep</span>
-            </div>
-            <div class="event-location">
-              <img src="../Picture/LocationIcon.svg" class="detail-icon" alt="Location">หอสมุดป๋วย
-            </div>
-          </div>
-          <div class="event-action-right joined-action">
-            <span class="joined-status-text">สร้างโดยคุณ</span>
-            <button type="button" class="cancel-event-btn" data-id="mock-profile-1" data-is-owner="true" aria-label="ยกเลิกการสร้างกิจกรรม">✕</button>
-          </div>
-        </div>
-        <div class="event-card" data-event-id="mock-profile-2" data-detail-mode="other-joined">
-          <div class="event-logo"><img src="../Picture/bowl.svg" alt="ตี๋น้อย คลายเหงา"></div>
-          <div class="event-info">
-            <div class="event-badge">
-              <span class="event-title">ตี๋น้อย คลายเหงา</span>
-              <button class="event-info-btn" type="button" data-event-id="mock-profile-2" aria-label="ดูรายละเอียดกิจกรรม">
-                <img src="../Picture/Info.svg" alt="Info">
-              </button>
-            </div>
-            <div class="event-time-date">
-              <span><img src="../Picture/TimeIcon.svg" class="detail-icon" alt="Time">18.30</span>
-              <span><img src="../Picture/CalendarIcon.svg" class="detail-icon" alt="Calendar">Sat, 28 Sep</span>
-            </div>
-            <div class="event-location">
-              <img src="../Picture/LocationIcon.svg" class="detail-icon" alt="Location">หอสมุดป๋วย
-            </div>
-          </div>
-          <div class="event-action-right joined-action">
-            <span class="joined-status-text">เข้าร่วมแล้ว</span>
-            <button type="button" class="cancel-event-btn" data-id="mock-profile-2" data-is-owner="false" aria-label="ยกเลิกการเข้าร่วม">✕</button>
-          </div>
-        </div>
-      `;
-    }
-  }
-
-  // ดักจับการคลิกที่การ์ดหรือชื่อกิจกรรม (ยกเว้นปุ่ม + และปุ่ม ✕)
+  // ดักจับการคลิกที่การ์ดหรือชื่อกิจกรรม (ยกเว้นปุ่ม +, ปุ่ม ✕ และปุ่มประเมิน)
   document.addEventListener(
     'click',
     (e) => {
       const card = e.target.closest('.event-card');
       if (!card) return;
 
-      // การ์ดกิจกรรมที่ผ่านมาใช้สำหรับแสดงผล/ประเมินเท่านั้น
-      // ไม่ต้องเปิดหน้าต่างรายละเอียดกิจกรรมเมื่อกดการ์ด
-      if (card.classList.contains('expired')) {
-        return;
-      }
-
-      if (e.target.closest('.join-btn, .cancel-event-btn')) {
+      if (e.target.closest('.join-btn, .cancel-event-btn, .review-action')) {
         return;
       }
 
@@ -760,8 +915,6 @@ const USE_EXACT_IMAGE_MOCK = false;
 
   document.addEventListener('DOMContentLoaded', async () => {
     await ensurePopupLoaded();
-
-    //setTimeout(injectFallbackDemoCardsIfEmpty, 650);
 
     const isStandalonePage =
       window.location.pathname.toLowerCase().endsWith('eventdetail.html');

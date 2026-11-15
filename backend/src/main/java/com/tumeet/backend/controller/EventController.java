@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -53,6 +54,30 @@ public class EventController {
 
         EventResponse response = eventService.getAllOpenEvents();
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/{eventId}")
+    public ResponseEntity<EventResponse> getEventById(@PathVariable Long eventId) {
+        EventResponse response = eventService.getEventById(eventId);
+        if (response.isStatus()) {
+            return ResponseEntity.ok(response);
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+    }
+
+    @PutMapping("/{eventId}/description")
+    public ResponseEntity<EventResponse> updateEventDescription(
+            @PathVariable Long eventId,
+            @RequestBody Map<String, String> body
+    ) {
+        String studentId = body != null ? body.get("studentId") : null;
+        String description = body != null
+                ? (body.get("description") != null ? body.get("description") : body.get("eventDescription"))
+                : null;
+        EventResponse response = eventService.updateEventDescription(eventId, studentId, description);
+        return response.isStatus()
+                ? ResponseEntity.ok(response)
+                : ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
     @PostMapping("/{eventId}/join")

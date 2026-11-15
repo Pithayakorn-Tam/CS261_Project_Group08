@@ -20,9 +20,11 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -115,5 +117,68 @@ class EventControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value(true))
                 .andExpect(jsonPath("$.data[0].eventName").value("ไปกินตี๋น้อย"));
+    }
+
+    @Test
+    @DisplayName("US-10: GET /api/events/{eventId} ส่งกลับ 200 OK เมื่อพบและ 404 Not Found เมื่อไม่พบ")
+    void getEventById_ReturnsOkAndNotFound() throws Exception {
+        EventDto dto = new EventDto();
+        dto.setId(5L);
+        dto.setEventName("หมูกระทะ");
+        dto.setDescription("นัดกินหมูกระทะอินเตอร์โซน");
+        dto.setCreator(new CreatorDto("6800000000", "นักศึกษาจำลอง ทดสอบ00", "วท.", "mock00@dome.tu.ac.th"));
+
+        when(eventService.getEventById(5L))
+                .thenReturn(EventResponse.success("ดึงรายละเอียดกิจกรรมสำเร็จ", dto));
+        when(eventService.getEventById(999L))
+                .thenReturn(EventResponse.error("ไม่พบกิจกรรมรหัส: 999"));
+
+        mockMvc.perform(get("/api/events/5"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(true))
+                .andExpect(jsonPath("$.data.id").value(5))
+                .andExpect(jsonPath("$.data.description").value("นัดกินหมูกระทะอินเตอร์โซน"))
+                .andExpect(jsonPath("$.data.creator.studentId").value("6800000000"));
+
+        mockMvc.perform(get("/api/events/999"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.status").value(false));
+    }
+
+    @Test
+    @DisplayName("US-10: PUT /api/events/{eventId}/description ส่งกลับ 200 OK เมื่ออัปเดตสำเร็จ และ 400 เมื่อไม่ใช่ผู้สร้าง")
+    void updateEventDescription_ReturnsOkAndBadRequest() throws Exception {
+        EventDto updatedDto = new EventDto();
+        updatedDto.setId(5L);
+        updatedDto.setEventName("หมูกระทะ");
+        updatedDto.setDescription("อัปเดตเวลาเป็น 19.30 น.");
+
+        when(eventService.updateEventDescription(eq(5L), eq("6800000000"), eq("อัปเดตเวลาเป็น 19.30 น.")))
+                .thenReturn(EventResponse.success("อัปเดตคำอธิบายกิจกรรมสำเร็จ", updatedDto));
+        when(eventService.updateEventDescription(eq(5L), eq("6800000002"), eq("แก้ไขโดยคนอื่น")))
+                .thenReturn(EventResponse.error("เฉพาะผู้สร้างกิจกรรมเท่านั้นที่สามารถแก้ไขคำอธิบายได้"));
+
+        mockMvc.perform(put("/api/events/5/description")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                    "studentId": "6800000000",
+                                    "description": "อัปเดตเวลาเป็น 19.30 น."
+                                }
+                                """))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(true))
+                .andExpect(jsonPath("$.data.description").value("อัปเดตเวลาเป็น 19.30 น."));
+
+        mockMvc.perform(put("/api/events/5/description")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                    "studentId": "6800000002",
+                                    "description": "แก้ไขโดยคนอื่น"
+                                }
+                                """))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.status").value(false));
     }
 }

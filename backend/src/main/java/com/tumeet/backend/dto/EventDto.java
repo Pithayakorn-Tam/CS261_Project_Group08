@@ -13,6 +13,7 @@ public class EventDto {
     private String eventName;
     private String eventType;
     private String location;
+    private String description;
     private Integer eventSize;
     private Integer currentParticipants;
     private LocalDate eventDate;
@@ -36,6 +37,7 @@ public class EventDto {
         dto.setEventName(event.getEventName());
         dto.setEventType(event.getEventType());
         dto.setLocation(event.getLocation());
+        dto.setDescription(event.getDescription());
         dto.setEventSize(event.getEventSize());
         dto.setCurrentParticipants(event.getCurrentParticipants());
         dto.setEventDate(event.getEventDate());
@@ -89,6 +91,14 @@ public class EventDto {
 
     public void setLocation(String location) {
         this.location = location;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public Integer getEventSize() {
