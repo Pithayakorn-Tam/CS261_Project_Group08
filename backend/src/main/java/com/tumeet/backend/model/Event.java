@@ -12,6 +12,7 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDate;
@@ -51,6 +52,11 @@ public class Event {
 
     @Column(nullable = false, length = 20)
     private String status = "OPEN";
+
+    // --- [US-9] สถานะวงจรชีวิตของกิจกรรม: "UPCOMING" (ยังไม่จบ), "COMPLETED" (จบแล้ว), "CANCELLED" (ยกเลิกการสร้าง) ---
+    @Column(name = "lifecycle_status", nullable = false, length = 20)
+    @ColumnDefault("'UPCOMING'")
+    private String lifecycleStatus = "UPCOMING";
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
@@ -181,6 +187,14 @@ public class Event {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getLifecycleStatus() {
+        return lifecycleStatus;
+    }
+
+    public void setLifecycleStatus(String lifecycleStatus) {
+        this.lifecycleStatus = lifecycleStatus != null ? lifecycleStatus : "UPCOMING";
     }
 
     public LocalDateTime getCreatedAt() {
