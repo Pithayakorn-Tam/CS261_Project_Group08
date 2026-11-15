@@ -1,5 +1,6 @@
 package com.tumeet.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -21,6 +22,7 @@ import java.time.LocalDateTime;
                 @UniqueConstraint(columnNames = {"event_id", "rater_id", "ratee_id"})
         }
 )
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "event", "rater", "ratee"})
 public class EventRating {
 
     @Id
@@ -41,6 +43,21 @@ public class EventRating {
 
     @Column(nullable = false)
     private Integer score; // 1 ถึง 5
+
+    @Column(name = "q1_score")
+    private Integer q1Score;
+
+    @Column(name = "q2_score")
+    private Integer q2Score;
+
+    @Column(name = "q3_score")
+    private Integer q3Score;
+
+    @Column(name = "q4_score")
+    private Integer q4Score;
+
+    @Column(name = "comment", length = 500)
+    private String comment;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
@@ -94,6 +111,46 @@ public class EventRating {
 
     public void setScore(Integer score) {
         this.score = score;
+    }
+
+    public Integer getQ1Score() {
+        return q1Score;
+    }
+
+    public void setQ1Score(Integer q1Score) {
+        this.q1Score = q1Score;
+    }
+
+    public Integer getQ2Score() {
+        return q2Score;
+    }
+
+    public void setQ2Score(Integer q2Score) {
+        this.q2Score = q2Score;
+    }
+
+    public Integer getQ3Score() {
+        return q3Score;
+    }
+
+    public void setQ3Score(Integer q3Score) {
+        this.q3Score = q3Score;
+    }
+
+    public Integer getQ4Score() {
+        return q4Score;
+    }
+
+    public void setQ4Score(Integer q4Score) {
+        this.q4Score = q4Score;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 
     public LocalDateTime getCreatedAt() {

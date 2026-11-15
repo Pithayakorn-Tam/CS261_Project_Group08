@@ -13,7 +13,12 @@ public interface EventRatingRepository extends JpaRepository<EventRating, Long> 
 
     boolean existsByEventIdAndRaterIdAndRateeId(Long eventId, Long raterId, Long rateeId);
 
+    boolean existsByEventIdAndRaterId(Long eventId, Long raterId);
+
     List<EventRating> findByEventIdAndRaterId(Long eventId, Long raterId);
+
+    @Query("SELECT DISTINCT r.event.id FROM EventRating r WHERE r.rater.studentId = :studentId")
+    List<Long> findReviewedEventIdsByRaterStudentId(@Param("studentId") String studentId);
 
     @Query("SELECT COUNT(r) FROM EventRating r WHERE r.ratee.id = :rateeId")
     int countByRateeId(@Param("rateeId") Long rateeId);

@@ -20,6 +20,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -256,5 +257,123 @@ class RatingServiceTest {
         assertNotNull(ratedMember);
         assertTrue(ratedMember.isAlreadyRated());
         assertEquals(5, ratedMember.getGivenScore());
+    }
+
+    // ===== submitEventReview / status / reviewed Tests (Form Review.html) =====
+
+    @Test
+    @DisplayName("ประเมินแบบฟอร์ม 4 หัวข้อสำเร็จ - บันทึก 1 แถวให้ผู้สร้างและอัปเดตคะแนนของผู้สร้าง")
+    void submitEventReview_Success_FourCriteriaAndComment() {
+        RatingRequest request = new RatingRequest();
+        request.setRaterStudentId("6800000002");
+        request.setRole("participant");
+        request.setQ1Score(5);
+        request.setQ2Score(4);
+        request.setQ3Score(5);
+        request.setQ4Score(4);
+        request.setComment("  กิจกรรมสนุกมาก  ");
+
+        when(eventRepository.findById(1L)).thenReturn(Optional.of(completedEvent));
+        when(userRepository.findByStudentId("6800000002")).thenReturn(Optional.of(participant1));
+        when(eventRatingRepository.findByEventIdAndRaterId(1L, 2L)).thenReturn(List.of());
+        when(eventRatingRepository.save(any(EventRating.class))).thenAnswer(i -> i.getArgument(0));
+        when(eventRatingRepository.countByRateeId(1L)).thenReturn(1);
+        when(eventRatingRepository.getAverageScoreByRateeId(1L)).thenReturn(5.0);
+
+        ActionResponse response = ratingService.submitRating(1L, request);
+
+        assertTrue(response.isStatus());
+        assertEquals("บันทึกผลการประเมินสำเร็จ", response.getMessage());
+        verify(eventRatingRepository, times(1)).save(any(EventRating.class));
+        verify(userRepository).save(creator);
+        verify(userRepository, never()).save(participant2);
+
+        @SuppressWarnings("unchecked")
+        Map<String, Object> data = (Map<String, Object>) response.getData();
+        assertEquals(1L, data.get("eventId"));
+        assertEquals("6800000002", data.get("raterStudentId"));
+        assertEquals(5, data.get("score"));
+    }
+
+    @Test
+    @DisplayName("ประเมินแบบฟอร์มไม่ได้ - ผู้สร้างไม่สามารถประเมินกิจกรรมของตัวเองได้")
+    void submitEventReview_CreatorCannotReviewOwnEvent() {
+        RatingRequest request = new RatingRequest();
+        request.setRaterStudentId("6800000001");
+        request.setRole("creator");
+        request.setQ1Score(5);
+        request.setQ2Score(5);
+        request.setQ3Score(5);
+        request.setQ4Score(5);
+
+        when(eventRepository.findById(1L)).thenReturn(Optional.of(completedEvent));
+        when(userRepository.findByStudentId("6800000001")).thenReturn(Optional.of(creator));
+
+        ActionResponse response = ratingService.submitRating(1L, request);
+
+        assertFalse(response.isStatus());
+        assertEquals("ผู้สร้างกิจกรรมไม่สามารถประเมินกิจกรรมของตัวเองได้", response.getMessage());
+        verify(eventRatingRepository, never()).save(any());
+    }
+
+    @Test
+    @DisplayName("ประเมินแบบฟอร์มไม่ได้ - เคยประเมินกิจกรรมนี้ไปแล้ว")
+    void submitEventReview_DuplicateEventReview() {
+        EventRating existing = new EventRating(completedEvent, participant1, creator, 4);
+        RatingRequest request = new RatingRequest();
+        request.setRaterStudentId("6800000002");
+        request.setQ1Score(4);
+        request.setQ2Score(4);
+        request.setQ3Score(4);
+        request.setQ4Score(4);
+
+        when(eventRepository.findById(1L)).thenReturn(Optional.of(completedEvent));
+        when(userRepository.findByStudentId("6800000002")).thenReturn(Optional.of(participant1));
+        when(eventRatingRepository.findByEventIdAndRaterId(1L, 2L)).thenReturn(List.of(existing));
+
+        ActionResponse response = ratingService.submitRating(1L, request);
+
+        assertFalse(response.isStatus());
+        assertEquals("คุณได้ประเมินกิจกรรมนี้ไปแล้ว", response.getMessage());
+        verify(eventRatingRepository, never()).save(any());
+    }
+
+    @Test
+    @DisplayName("ดึงรายการรหัสกิจกรรมที่ประเมินแล้วสำเร็จ")
+    void getReviewedEventIds_ReturnsReviewedList() {
+        when(eventRatingRepository.findReviewedEventIdsByRaterStudentId("6800000001"))
+                .thenReturn(List.of(1L, 2L));
+
+        ActionResponse response = ratingService.getReviewedEventIds("6800000001");
+
+        assertTrue(response.isStatus());
+        @SuppressWarnings("unchecked")
+        Map<String, Object> data = (Map<String, Object>) response.getData();
+        assertEquals(List.of(1L, 2L), data.get("reviewedEventIds"));
+    }
+
+    @Test
+    @DisplayName("ตรวจสอบสถานะการประเมิน - คืนคะแนน q1-q4 และคอมเมนต์เมื่อประเมินแล้ว")
+    void getEventReviewStatus_WhenReviewed_ReturnsScoresAndComment() {
+        EventRating existing = new EventRating(completedEvent, creator, participant1, 5);
+        existing.setQ1Score(5);
+        existing.setQ2Score(4);
+        existing.setQ3Score(5);
+        existing.setQ4Score(5);
+        existing.setComment("ดีมากครับ");
+
+        when(eventRepository.findById(1L)).thenReturn(Optional.of(completedEvent));
+        when(userRepository.findByStudentId("6800000001")).thenReturn(Optional.of(creator));
+        when(eventRatingRepository.findByEventIdAndRaterId(1L, 1L)).thenReturn(List.of(existing));
+
+        ActionResponse response = ratingService.getEventReviewStatus(1L, "6800000001");
+
+        assertTrue(response.isStatus());
+        @SuppressWarnings("unchecked")
+        Map<String, Object> data = (Map<String, Object>) response.getData();
+        assertEquals(true, data.get("reviewed"));
+        assertEquals(5, data.get("q1Score"));
+        assertEquals(4, data.get("q2Score"));
+        assertEquals("ดีมากครับ", data.get("comment"));
     }
 }

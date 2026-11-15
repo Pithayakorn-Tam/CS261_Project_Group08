@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/events/{eventId}/ratings")
+@RequestMapping("/api/events")
 public class RatingController {
 
     private final RatingService ratingService;
@@ -21,7 +21,7 @@ public class RatingController {
      * ดึงรายชื่อสมาชิกคนอื่นๆ ในกิจกรรม พร้อมบอกว่าประเมินไปแล้วหรือยัง
      * GET /api/events/{eventId}/ratings/members?raterStudentId={studentId}
      */
-    @GetMapping("/members")
+    @GetMapping("/{eventId}/ratings/members")
     public ResponseEntity<ActionResponse> getRatingMembers(
             @PathVariable Long eventId,
             @RequestParam String raterStudentId) {
@@ -38,10 +38,43 @@ public class RatingController {
     }
 
     /**
+     * ตรวจสอบสถานะการประเมินกิจกรรมของผู้ใช้
+     * GET /api/events/{eventId}/ratings/status?studentId={studentId}
+     */
+    @GetMapping("/{eventId}/ratings/status")
+    public ResponseEntity<ActionResponse> getEventReviewStatus(
+            @PathVariable Long eventId,
+            @RequestParam String studentId) {
+
+        if (studentId == null || studentId.isBlank()) {
+            return ResponseEntity.badRequest()
+                    .body(new ActionResponse(false, "กรุณาระบุรหัสนักศึกษา"));
+        }
+
+        ActionResponse response = ratingService.getEventReviewStatus(eventId, studentId.trim());
+        return ResponseEntity.ok(response);
+    }
+
+    /**
+     * ดึงรายการรหัสกิจกรรมทั้งหมดที่ผู้ใช้ประเมินไปแล้ว
+     * GET /api/events/ratings/reviewed?studentId={studentId}
+     */
+    @GetMapping("/ratings/reviewed")
+    public ResponseEntity<ActionResponse> getReviewedEventIds(@RequestParam String studentId) {
+        if (studentId == null || studentId.isBlank()) {
+            return ResponseEntity.badRequest()
+                    .body(new ActionResponse(false, "กรุณาระบุรหัสนักศึกษา"));
+        }
+
+        ActionResponse response = ratingService.getReviewedEventIds(studentId.trim());
+        return ResponseEntity.ok(response);
+    }
+
+    /**
      * ส่งคะแนนประเมิน
      * POST /api/events/{eventId}/ratings
      */
-    @PostMapping
+    @PostMapping("/{eventId}/ratings")
     public ResponseEntity<ActionResponse> submitRating(
             @PathVariable Long eventId,
             @RequestBody RatingRequest request) {
@@ -56,7 +89,12 @@ public class RatingController {
                     .body(new ActionResponse(false, "กรุณาระบุรหัสนักศึกษาของผู้ประเมิน"));
         }
 
-        if (request.getRateeStudentId() == null || request.getRateeStudentId().isBlank()) {
+        boolean isFormReview = request.getQ1Score() != null
+                || request.getQ2Score() != null
+                || request.getQ3Score() != null
+                || request.getQ4Score() != null;
+
+        if (!isFormReview && (request.getRateeStudentId() == null || request.getRateeStudentId().isBlank())) {
             return ResponseEntity.badRequest()
                     .body(new ActionResponse(false, "กรุณาระบุรหัสนักศึกษาของผู้ถูกประเมิน"));
         }
