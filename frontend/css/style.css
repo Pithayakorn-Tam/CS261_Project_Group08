@@ -168,3 +168,11 @@ body {
     padding: 0;
     cursor: pointer;
 }
+
+.profile-trigger img.profile-avatar-loaded {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1.5px solid #E5989B;
+}
