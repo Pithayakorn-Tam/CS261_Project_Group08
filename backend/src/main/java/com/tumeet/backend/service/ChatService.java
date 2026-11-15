@@ -12,6 +12,7 @@ import com.tumeet.backend.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -69,6 +70,18 @@ public class ChatService {
             }
         }
 
+        List<ChatMessage> sentMessages = chatMessageRepository.findBySenderOrderBySentAtDesc(user);
+        if (sentMessages != null) {
+            for (ChatMessage msg : sentMessages) {
+                if (msg != null && msg.getEvent() != null) {
+                    Event ev = msg.getEvent();
+                    if (ev.getId() != null && !isEventCancelled(ev)) {
+                        uniqueEvents.putIfAbsent(ev.getId(), ev);
+                    }
+                }
+            }
+        }
+
         List<ChatRoomDto> rooms = new ArrayList<>();
         for (Event event : uniqueEvents.values()) {
             ChatMessage latestMessage = chatMessageRepository
@@ -76,6 +89,26 @@ public class ChatService {
                     .orElse(null);
             rooms.add(ChatRoomDto.fromEvent(event, latestMessage));
         }
+
+        rooms.sort((a, b) -> {
+            boolean aUpcoming = "UPCOMING".equalsIgnoreCase(a.getLifecycleStatus());
+            boolean bUpcoming = "UPCOMING".equalsIgnoreCase(b.getLifecycleStatus());
+            if (aUpcoming != bUpcoming) {
+                return aUpcoming ? -1 : 1;
+            }
+            LocalDateTime aTime = a.getLastMessageTime();
+            LocalDateTime bTime = b.getLastMessageTime();
+            if (aTime != null && bTime != null) {
+                return bTime.compareTo(aTime);
+            }
+            if (aTime != null) {
+                return -1;
+            }
+            if (bTime != null) {
+                return 1;
+            }
+            return 0;
+        });
 
         return new ActionResponse(true, "ดึงรายการห้องแชทสำเร็จ", rooms);
     }
@@ -170,7 +203,8 @@ public class ChatService {
                 }
             }
         }
-        return false;
+        return event.getId() != null
+                && chatMessageRepository.existsByEventIdAndSenderStudentId(event.getId(), user.getStudentId());
     }
 
     private record MemberValidationResult(Event event, User user, ActionResponse error) {

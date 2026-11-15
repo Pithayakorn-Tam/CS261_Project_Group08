@@ -231,4 +231,75 @@ class ChatServiceTest {
 
         verify(chatMessageRepository, never()).save(any());
     }
+
+    @Test
+    @DisplayName("ดึงรายการห้องแชทและเข้าถึงข้อความได้ทั้งกิจกรรม UPCOMING, COMPLETED และกิจกรรมที่เคยส่งข้อความไว้")
+    @SuppressWarnings("unchecked")
+    void getChatRoomsForUser_IncludesPastAndPreviouslyChattedEvents() {
+        Event completedEvent = new Event();
+        completedEvent.setId(20L);
+        completedEvent.setEventName("ติวสอบ (จบแล้ว)");
+        completedEvent.setEventType("study");
+        completedEvent.setEventSize(5);
+        completedEvent.setCurrentParticipants(3);
+        completedEvent.setEventDate(LocalDate.now().minusDays(2));
+        completedEvent.setEventTime("18.00");
+        completedEvent.setStatus("CLOSED");
+        completedEvent.setLifecycleStatus("COMPLETED");
+        completedEvent.setCreator(participant);
+        completedEvent.setParticipants(Set.of(creator));
+
+        Event historicalChattedEvent = new Event();
+        historicalChattedEvent.setId(21L);
+        historicalChattedEvent.setEventName("กิจกรรมที่เคยคุย");
+        historicalChattedEvent.setEventType("food");
+        historicalChattedEvent.setEventSize(4);
+        historicalChattedEvent.setCurrentParticipants(2);
+        historicalChattedEvent.setEventDate(LocalDate.now().minusDays(1));
+        historicalChattedEvent.setEventTime("19.00");
+        historicalChattedEvent.setStatus("CLOSED");
+        historicalChattedEvent.setLifecycleStatus("COMPLETED");
+        historicalChattedEvent.setCreator(participant);
+        historicalChattedEvent.setParticipants(Set.of());
+
+        ChatMessage previousMsg = new ChatMessage(historicalChattedEvent, creator, "เคยทักไว้ในห้องนี้");
+        previousMsg.setId(300L);
+        previousMsg.setSentAt(LocalDateTime.of(2026, 11, 13, 20, 0));
+
+        ChatMessage oldCompletedMsg = new ChatMessage(completedEvent, participant, "จบกิจกรรมแล้วนะ");
+        oldCompletedMsg.setId(299L);
+        oldCompletedMsg.setSentAt(LocalDateTime.of(2026, 11, 12, 18, 0));
+
+        when(userRepository.findByStudentId("6800000000")).thenReturn(Optional.of(creator));
+        when(eventRepository.findByCreator(creator)).thenReturn(List.of(activeEvent, cancelledEvent));
+        when(eventRepository.findByParticipantsContaining(creator)).thenReturn(List.of(completedEvent));
+        when(chatMessageRepository.findBySenderOrderBySentAtDesc(creator)).thenReturn(List.of(previousMsg));
+        when(chatMessageRepository.findTopByEventIdOrderBySentAtDesc(10L)).thenReturn(Optional.empty());
+        when(chatMessageRepository.findTopByEventIdOrderBySentAtDesc(20L)).thenReturn(Optional.of(oldCompletedMsg));
+        when(chatMessageRepository.findTopByEventIdOrderBySentAtDesc(21L)).thenReturn(Optional.of(previousMsg));
+
+        ActionResponse response = chatService.getChatRoomsForUser("6800000000");
+
+        assertTrue(response.isStatus());
+        List<ChatRoomDto> rooms = (List<ChatRoomDto>) response.getData();
+        assertEquals(3, rooms.size());
+        // UPCOMING ต้องมาก่อน COMPLETED และ COMPLETED เรียงตามข้อความล่าสุด
+        assertEquals(10L, rooms.get(0).getEventId());
+        assertEquals("UPCOMING", rooms.get(0).getLifecycleStatus());
+        assertEquals(21L, rooms.get(1).getEventId());
+        assertEquals("COMPLETED", rooms.get(1).getLifecycleStatus());
+        assertEquals(20L, rooms.get(2).getEventId());
+        assertEquals("COMPLETED", rooms.get(2).getLifecycleStatus());
+
+        // ตรวจสอบว่าผู้ใช้ที่เคยส่งข้อความในห้อง 21 สามารถดึงประวัติแชทได้แม้ไม่ได้อยู่ใน creator/participants แล้ว
+        when(eventRepository.findById(21L)).thenReturn(Optional.of(historicalChattedEvent));
+        when(chatMessageRepository.existsByEventIdAndSenderStudentId(21L, "6800000000")).thenReturn(true);
+        when(chatMessageRepository.findByEventIdOrderBySentAtAsc(21L)).thenReturn(List.of(previousMsg));
+
+        ActionResponse historyRes = chatService.getMessagesByEvent(21L, "6800000000");
+        assertTrue(historyRes.isStatus());
+        List<ChatMessageDto> historyDtos = (List<ChatMessageDto>) historyRes.getData();
+        assertEquals(1, historyDtos.size());
+        assertEquals("เคยทักไว้ในห้องนี้", historyDtos.get(0).getText());
+    }
 }

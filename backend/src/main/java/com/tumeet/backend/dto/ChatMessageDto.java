@@ -15,6 +15,7 @@ public class ChatMessageDto {
     private String senderId;
     private String senderName;
     private String senderAvatar;
+    private String senderBadge;
     private String text;
     private LocalDateTime timestamp;
 
@@ -39,6 +40,7 @@ public class ChatMessageDto {
             dto.setSenderStudentId(studentId);
             dto.setSenderId(studentId);
             dto.setSenderName(resolveSenderName(sender));
+            dto.setSenderBadge(sender.getBadge());
         }
         dto.setSenderAvatar(null);
         dto.setText(message.getMessageText());
@@ -81,6 +83,8 @@ public class ChatMessageDto {
         appendJsonStringField(sb, "senderName", senderName, true);
         sb.append(',');
         appendJsonStringField(sb, "senderAvatar", senderAvatar, true);
+        sb.append(',');
+        appendJsonStringField(sb, "senderBadge", senderBadge, true);
         sb.append(',');
         appendJsonStringField(sb, "text", text, true);
         sb.append(',');
@@ -192,6 +196,14 @@ public class ChatMessageDto {
 
     public void setSenderAvatar(String senderAvatar) {
         this.senderAvatar = senderAvatar;
+    }
+
+    public String getSenderBadge() {
+        return senderBadge;
+    }
+
+    public void setSenderBadge(String senderBadge) {
+        this.senderBadge = senderBadge;
     }
 
     public String getText() {

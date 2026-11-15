@@ -7,7 +7,7 @@
     <title>TU Meet - Chat</title>
 
     <link rel="stylesheet" href="../css/style.css">
-    <link rel="stylesheet" href="../css/Chat.css">
+    <link rel="stylesheet" href="../css/Chat.css?v=3">
     <script src="../js/Header.js"></script>
 </head>
 
@@ -16,10 +16,16 @@
 
     <!-- Header -->
     <header class="app-header">
-      <div class="logo">
-        <a href="./Homepage.html" aria-label="กลับไปหน้า Home">
-          <img src="../Picture/LogoTUmeet.svg" alt="TU Meet Logo">
-        </a>
+      <div class="header-left">
+        <div class="logo">
+          <a href="./Homepage.html" aria-label="กลับไปหน้า Home">
+            <img src="../Picture/LogoTUmeet.svg" alt="TU Meet Logo">
+          </a>
+        </div>
+        <nav class="header-nav" aria-label="เมนูหลัก">
+          <a href="./Homepage.html" class="header-nav-link">หน้าแรก</a>
+          <a href="./Homepage.html#eventList" class="header-nav-link">กิจกรรมทั้งหมด</a>
+        </nav>
       </div>
       <div class="header-actions">
         <!-- Notification -->
@@ -59,22 +65,12 @@
         <!-- หน้าแสดงรายชื่อแชท -->
         <section id="chatListPage">
 
-            <h1 class="page-title">CHAT NOW</h1>
+            <div class="chat-logo-banner">
+                <img src="../Picture/chat-section-logo%201.svg" alt="CHAT NOW" class="chat-section-logo">
+            </div>
 
-            <div id="chatList">
-
-                <button class="chat-item" data-room="room1"
-                    data-name="ชื่อกิจกรรม">
-                    <img src="../Picture/profile.svg" alt="Profile">
-                    <span>ชื่อกิจกรรม</span>
-                </button>
-
-                <button class="chat-item" data-room="room2"
-                    data-name="ชื่อกิจกรรม">
-                    <img src="../Picture/profile.svg" alt="Profile">
-                    <span>ชื่อกิจกรรม</span>
-                </button>
-
+            <div id="chatList" class="chat-list">
+                <p class="chat-empty-state">กำลังโหลดรายการห้องแชท...</p>
             </div>
         </section>
 
@@ -82,33 +78,49 @@
         <section id="chatRoomPage" hidden>
 
             <div class="chat-room-header">
-                <button id="backBtn" type="button">←</button>
-                <img src="../Picture/profile.svg" alt="Profile">
-                <h2 id="chatName">ชื่อกิจกรรม</h2>
+                <div class="chat-room-title-wrap">
+                    <button id="backBtn" type="button" class="back-btn" aria-label="กลับไปหน้ารายชื่อแชท">
+                        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <polyline points="15 18 9 12 15 6"></polyline>
+                        </svg>
+                    </button>
+                    <h2 id="chatName">ชื่อกิจกรรม</h2>
+                </div>
+                <div class="chat-room-meta">
+                    <img id="chatRoomIcon" src="../Picture/book-one.svg" alt="Activity Icon" class="chat-room-icon">
+                    <span id="chatRoomCapacity" class="chat-room-capacity">0/0</span>
+                </div>
             </div>
 
-            <!-- ข้อความ -->
-            <div id="messageArea" class="message-area">
+            <div class="chat-room-card">
+                <!-- ข้อความ -->
+                <div id="messageArea" class="message-area">
+                </div>
+
+                <!-- ช่องพิมพ์ข้อความ -->
+                <form id="messageForm" class="message-form">
+                    <input
+                        type="text"
+                        id="messageInput"
+                        placeholder="Message..."
+                        autocomplete="off"
+                        maxlength="2000"
+                    >
+
+                    <button type="submit" class="send-btn" aria-label="ส่งข้อความ">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <line x1="22" y1="2" x2="11" y2="13"></line>
+                            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                        </svg>
+                    </button>
+                </form>
             </div>
-
-            <!-- ช่องพิมพ์ข้อความ -->
-            <form id="messageForm" class="message-form">
-                <input
-                    type="text"
-                    id="messageInput"
-                    placeholder="พิมพ์ข้อความ..."
-                    autocomplete="off"
-                    maxlength="2000"
-                >
-
-                <button type="submit">ส่ง</button>
-            </form>
 
         </section>
 
     </main>
 </div>
 
-<script src="../js/Chat.js"></script>
+<script src="../js/Chat.js?v=3"></script>
 </body>
 </html>
