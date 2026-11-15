@@ -54,6 +54,11 @@ document.addEventListener("DOMContentLoaded", () => {
     default: '../Picture/bowl.svg'
   };
 
+  // TODO: เปลี่ยน path 2 บรรทัดนี้ให้ตรงกับชื่อไฟล์ไอคอนที่เตรียมไว้
+  const REVIEW_ICON_BACKGROUND = '../Picture/Rectangle89-blue-reviewicon.svg';
+  const REVIEW_ICON_BACKGROUND_COMPLETED = '../Picture/Rectangle89-gray-reviewIcon.svg';
+  const REVIEW_ICON_STAR = '../Picture/Star1-reviewicon.svg';
+
   let activeEvents = [];
   let pastEvents = [];
 
@@ -132,6 +137,20 @@ document.addEventListener("DOMContentLoaded", () => {
     const ts = getEventTimestamp(dto);
     if (ts === 0) return false;
     return ts < Date.now();
+  }
+
+  function hasSubmittedReview(event) {
+    const reviewRole = event.isOwner ? "creator" : "participant";
+    let savedReviews = [];
+    try {
+      savedReviews = JSON.parse(localStorage.getItem("tumeetReviews") || "[]");
+    } catch (error) {
+      console.warn("Cannot parse saved reviews:", error);
+    }
+
+    return savedReviews.some(review =>
+      String(review.eventId) === String(event.id) && review.role === reviewRole
+    );
   }
 
   function mapDtoToProfileEvent(dto, isOwner, isJoined) {
@@ -394,6 +413,33 @@ document.addEventListener("DOMContentLoaded", () => {
   // ====================================================
   function createEventCardHTML(event, isPast = false) {
     let actionHTML = "";
+
+    if (isPast || event.expired) {
+      const reviewed = hasSubmittedReview(event);
+      const reviewRole = event.isOwner ? "creator" : "participant";
+      const reviewIcon = reviewed ? REVIEW_ICON_BACKGROUND_COMPLETED : REVIEW_ICON_BACKGROUND;
+      const reviewLabel = reviewed ? "ประเมินแล้ว" : "ประเมิน";
+
+      actionHTML = reviewed
+        ? `
+          <div class="event-action-right review-action review-completed" aria-label="${reviewLabel}">
+            <span class="review-icon-wrap">
+              <img class="review-icon-background" src="${reviewIcon}" alt="">
+              <img class="review-icon-star" src="${REVIEW_ICON_STAR}" alt="">
+            </span>
+            <span class="review-label">${reviewLabel}</span>
+          </div>
+        `
+        : `
+          <a class="event-action-right review-action" href="./Review.html?eventId=${encodeURIComponent(event.id)}&role=${encodeURIComponent(reviewRole)}" aria-label="${reviewLabel}">
+            <span class="review-icon-wrap">
+              <img class="review-icon-background" src="${reviewIcon}" alt="">
+              <img class="review-icon-star" src="${REVIEW_ICON_STAR}" alt="">
+            </span>
+            <span class="review-label">${reviewLabel}</span>
+          </a>
+        `;
+    }
 
     // ถ้ายังไม่หมดเวลา แสดงสถานะ + ปุ่มกากบาท
     if (!isPast && !event.expired) {
