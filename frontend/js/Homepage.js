@@ -52,6 +52,18 @@ if (slides.length > 0) {
 
 const USE_MOCK_DATA = false;
 
+const MOCK_STUDENTS = [
+    { studentId: '6800000000', username: 'นักศึกษาจำลอง ทดสอบ00', displayname_th: 'นักศึกษาจำลอง ทดสอบ00', badge: 'Baby Bloom', profileImage: null },
+    { studentId: '6800000001', username: 'นักศึกษาจำลอง ทดสอบ01', displayname_th: 'นักศึกษาจำลอง ทดสอบ01', badge: 'Newly Bee', profileImage: null },
+    { studentId: '6800000002', username: 'นักศึกษาจำลอง ทดสอบ02', displayname_th: 'นักศึกษาจำลอง ทดสอบ02', badge: 'Newly Bee', profileImage: null },
+    { studentId: '6800000003', username: 'นักศึกษาจำลอง ทดสอบ03', displayname_th: 'นักศึกษาจำลอง ทดสอบ03', badge: 'Newly Bee', profileImage: null },
+    { studentId: '6800000004', username: 'นักศึกษาจำลอง ทดสอบ04', displayname_th: 'นักศึกษาจำลอง ทดสอบ04', badge: 'Newly Bee', profileImage: null },
+    { studentId: '6800000005', username: 'นักศึกษาจำลอง ทดสอบ05', displayname_th: 'นักศึกษาจำลอง ทดสอบ05', badge: 'Newly Bee', profileImage: null },
+    { studentId: '6800000006', username: 'นักศึกษาจำลอง ทดสอบ06', displayname_th: 'นักศึกษาจำลอง ทดสอบ06', badge: 'Newly Bee', profileImage: null },
+    { studentId: '6800000007', username: 'นักศึกษาจำลอง ทดสอบ07', displayname_th: 'นักศึกษาจำลอง ทดสอบ07', badge: 'Newly Bee', profileImage: null },
+    { studentId: '6800000008', username: 'นักศึกษาจำลอง ทดสอบ08', displayname_th: 'นักศึกษาจำลอง ทดสอบ08', badge: 'Newly Bee', profileImage: null },
+    { studentId: '6800000009', username: 'นักศึกษาจำลอง ทดสอบ09', displayname_th: 'นักศึกษาจำลอง ทดสอบ09', badge: 'No Badge', profileImage: null }
+];
 
 const mockEvents = [
 
@@ -62,9 +74,11 @@ const mockEvents = [
         eventTime: '09.00',
         eventDate: '2026-11-13',
         location: 'Mingle, ม.กรุงเทพ',
+        description: 'ชวนเพื่อนๆ มาตีแบดตอนเช้าที่คอร์ตแถว Mingle ม.กรุงเทพ มีลูกแบดเตรียมไว้ให้ครับ',
         currentParticipants: 1,
         eventSize: 6,
         status: 'OPEN',
+        creator: MOCK_STUDENTS[1],
         participants: []
     },
 
@@ -75,10 +89,12 @@ const mockEvents = [
         eventTime: '10.00',
         eventDate: '2026-11-13',
         location: 'สนามกีฬา มธ',
+        description: 'วิ่งจ็อกกิ้งเบาๆ รอบสนามกีฬา มธ.รังสิต 5 กิโลเมตร มือใหม่วิ่งชิลด้วยกันได้ครับ',
         currentParticipants: 3,
         eventSize: 10,
         status: 'OPEN',
-        participants: []
+        creator: MOCK_STUDENTS[2],
+        participants: [MOCK_STUDENTS[0], MOCK_STUDENTS[3]]
     },
 
     {
@@ -88,10 +104,12 @@ const mockEvents = [
         eventTime: '13.00',
         eventDate: '2026-11-13',
         location: 'ห้อง SC101',
+        description: 'ติวสรุปเนื้อหาและทำโจทย์ก่อนสอบวิชา Programming ที่ห้อง SC101 ใครไม่เข้าใจมาลุยด้วยกัน',
         currentParticipants: 4,
         eventSize: 8,
         status: 'OPEN',
-        participants: []
+        creator: MOCK_STUDENTS[3],
+        participants: [MOCK_STUDENTS[0], MOCK_STUDENTS[1], MOCK_STUDENTS[4]]
     },
 
     {
@@ -101,10 +119,12 @@ const mockEvents = [
         eventTime: '18.00',
         eventDate: '2026-11-13',
         location: 'ร้านเกม NVIDIA',
+        description: 'หาตี้ครบ 5 คนลงแรงค์เกม Valorant / LoL ที่ร้านเกม NVIDIA หลังเลิกเรียน',
         currentParticipants: 5,
         eventSize: 10,
         status: 'OPEN',
-        participants: []
+        creator: MOCK_STUDENTS[4],
+        participants: [MOCK_STUDENTS[0], MOCK_STUDENTS[2], MOCK_STUDENTS[5], MOCK_STUDENTS[6]]
     },
 
     {
@@ -114,10 +134,12 @@ const mockEvents = [
         eventTime: '18.30',
         eventDate: '2026-11-14',
         location: 'โรงอาหารกลาง มธ',
+        description: 'หาเพื่อนกินข้าวเย็นและนั่งคุยเล่นชิลๆ ที่โรงอาหารกลาง มธ.รังสิต',
         currentParticipants: 2,
         eventSize: 6,
         status: 'OPEN',
-        participants: []
+        creator: MOCK_STUDENTS[0],
+        participants: [MOCK_STUDENTS[1]]
     },
 
     {
@@ -127,10 +149,12 @@ const mockEvents = [
         eventTime: '19.00',
         eventDate: '2026-11-14',
         location: 'Future Park',
+        description: 'ชวนดูหนังรอบค่ำที่ Future Park รังสิต หลังดูจบแวะกินขนมต่อ',
         currentParticipants: 4,
         eventSize: 8,
         status: 'OPEN',
-        participants: []
+        creator: MOCK_STUDENTS[5],
+        participants: [MOCK_STUDENTS[2], MOCK_STUDENTS[6], MOCK_STUDENTS[7]]
     },
 
     {
@@ -140,10 +164,12 @@ const mockEvents = [
         eventTime: '20.00',
         eventDate: '2026-11-14',
         location: 'หอสมุดป๋วย',
+        description: 'นั่งอ่านหนังสือเงียบๆ เพื่อเพิ่มแรงบันดาลใจในการเตรียมสอบที่หอสมุดป๋วยฯ',
         currentParticipants: 2,
         eventSize: 5,
         status: 'OPEN',
-        participants: []
+        creator: MOCK_STUDENTS[0],
+        participants: [MOCK_STUDENTS[8]]
     },
 
     {
@@ -153,10 +179,12 @@ const mockEvents = [
         eventTime: '16.00',
         eventDate: '2026-11-15',
         location: 'สนามฟุตบอล มธ',
+        description: 'หาเพื่อนเตะบอลเย็นวันเสาร์ ขาดอีกไม่กี่คน เล่นสนุกๆ ไม่ซีเรียสครับ',
         currentParticipants: 7,
         eventSize: 10,
         status: 'OPEN',
-        participants: []
+        creator: MOCK_STUDENTS[6],
+        participants: [MOCK_STUDENTS[0], MOCK_STUDENTS[1], MOCK_STUDENTS[2], MOCK_STUDENTS[3], MOCK_STUDENTS[4], MOCK_STUDENTS[5]]
     },
 
     {
@@ -166,10 +194,12 @@ const mockEvents = [
         eventTime: '18.00',
         eventDate: '2026-11-15',
         location: 'อาคารยิมเนเซียม',
+        description: 'รวมตัวไปดูคอนเสิร์ตที่ยิมเนเซียม มธ.รังสิต ใครไม่มีเพื่อนไปมาเดินด้วยกันได้',
         currentParticipants: 6,
         eventSize: 10,
         status: 'OPEN',
-        participants: []
+        creator: MOCK_STUDENTS[7],
+        participants: [MOCK_STUDENTS[1], MOCK_STUDENTS[2], MOCK_STUDENTS[3], MOCK_STUDENTS[4], MOCK_STUDENTS[8]]
     },
 
     {
@@ -179,10 +209,12 @@ const mockEvents = [
         eventTime: '19.30',
         eventDate: '2026-11-15',
         location: 'คาเฟ่ใกล้มหาวิทยาลัย',
+        description: 'นั่งจิบเครื่องดื่ม ทำงานเบาๆ และแลกเปลี่ยนมุมมองเรื่องการเรียนที่คาเฟ่ใกล้มอ',
         currentParticipants: 3,
         eventSize: 6,
         status: 'OPEN',
-        participants: []
+        creator: MOCK_STUDENTS[8],
+        participants: [MOCK_STUDENTS[0], MOCK_STUDENTS[5]]
     },
 
     {
@@ -192,10 +224,12 @@ const mockEvents = [
         eventTime: '17.00',
         eventDate: '2026-11-15',
         location: 'มหาวิทยาลัย',
+        description: 'ชวนทำกิจกรรมอาสาและเดินเล่นถ่ายรูปบรรยากาศรอบมหาวิทยาลัยยามเย็น',
         currentParticipants: 2,
         eventSize: 5,
         status: 'OPEN',
-        participants: []
+        creator: MOCK_STUDENTS[9],
+        participants: [MOCK_STUDENTS[2]]
     }
 
 ];
@@ -788,6 +822,8 @@ function createEventCardElement(event) {
         String(eventSize);
     newCard.dataset.participants =
         String(currentParticipants);
+    newCard.dataset.description =
+        event.description || '';
     newCard.dataset.open =
         String(
             !expired &&
@@ -993,18 +1029,9 @@ function createEventCardElement(event) {
 
                 event.stopPropagation();
 
-
-                const eventId =
-                    infoButton.dataset.eventId;
-
-
-                console.log(
-                    'Info clicked. Event ID:',
-                    eventId
-                );
-
-                // ยังไม่เปิดหน้ารายละเอียด
-                // เพราะยังไม่ได้สร้างหน้ารายละเอียดกิจกรรม
+                if (typeof window.openEventDetailModal === 'function') {
+                    window.openEventDetailModal(newCard);
+                }
 
             }
         );
@@ -1285,6 +1312,10 @@ async function initHomeEvents() {
 
 }
 
+window.refreshHomeEvents = async function () {
+    await fetchEventsFromBackend();
+    updateHomeEventsView();
+};
 
 initHomeEvents();
 

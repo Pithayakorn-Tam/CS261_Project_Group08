@@ -158,9 +158,18 @@ document.addEventListener("DOMContentLoaded", () => {
     );
   }
 
+  function escapeAttr(str) {
+    return String(str || "")
+      .replace(/&/g, "&amp;")
+      .replace(/"/g, "&quot;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;");
+  }
+
   function mapDtoToProfileEvent(dto, isOwner, isJoined) {
     const typeKey = dto.eventType || "default";
     const expired = isEventExpired(dto);
+    const participants = Array.isArray(dto.participants) ? dto.participants : [];
     return {
       id: dto.id,
       title: dto.eventName || "-",
@@ -170,6 +179,11 @@ document.addEventListener("DOMContentLoaded", () => {
       rawDate: dto.eventDate,
       timestamp: getEventTimestamp(dto),
       location: dto.location || "-",
+      description: dto.description || "",
+      currentParticipants: dto.currentParticipants ?? (1 + participants.length),
+      eventSize: dto.eventSize ?? 6,
+      creator: dto.creator || null,
+      participants: participants,
       status: dto.status || "OPEN",
       expired: expired,
       isOwner: isOwner,
@@ -241,20 +255,27 @@ document.addEventListener("DOMContentLoaded", () => {
     const studentId = getCurrentStudentId();
 
     if (USE_MOCK_DATA) {
+      const mockMe = { studentId: studentId, username: 'นักศึกษาจำลอง ทดสอบ00', displayname_th: 'นักศึกษาจำลอง ทดสอบ00', badge: 'Baby Bloom' };
+      const mockMembers = [
+        { studentId: '6800000001', username: 'นักศึกษาจำลอง ทดสอบ01', displayname_th: 'นักศึกษาจำลอง ทดสอบ01', badge: 'Newly Bee' },
+        { studentId: '6800000002', username: 'นักศึกษาจำลอง ทดสอบ02', displayname_th: 'นักศึกษาจำลอง ทดสอบ02', badge: 'Newly Bee' },
+        { studentId: '6800000003', username: 'นักศึกษาจำลอง ทดสอบ03', displayname_th: 'นักศึกษาจำลอง ทดสอบ03', badge: 'Newly Bee' }
+      ];
+
       const mockJoinedDtos = [
-        { id: 101, eventName: 'เตะบอลหญ้าเทียม', eventType: 'sport', eventTime: '17:00', eventDate: '2026-11-20', location: 'สนามยิม 7', status: 'OPEN' },
-        { id: 103, eventName: 'ดูหนังรอบดึก', eventType: 'entertainment', eventTime: '20:00', eventDate: '2026-11-18', location: 'Zpell', status: 'OPEN' },
-        { id: 201, eventName: 'แข่ง Valorant', eventType: 'E-sport', eventTime: '10:00', eventDate: '2026-10-15', location: 'Mingle', status: 'CLOSED' },
-        { id: 203, eventName: 'ตีแบดมินตัน', eventType: 'กีฬา', eventTime: '18:00', eventDate: '2026-11-01', location: 'ยิมเนเซียม 4', status: 'CLOSED' },
-        { id: 205, eventName: 'คอนเสิร์ตลานจอดรถ', eventType: 'concert', eventTime: '19:00', eventDate: '2026-09-05', location: 'ลานจอดรถ', status: 'CLOSED' }
+        { id: 101, eventName: 'เตะบอลหญ้าเทียม', eventType: 'sport', eventTime: '17:00', eventDate: '2026-11-20', location: 'สนามยิม 7', description: 'เตะบอลกระชับมิตรช่วงเย็นที่สนามยิม 7', currentParticipants: 3, eventSize: 10, creator: mockMembers[0], participants: [mockMe, mockMembers[1]], status: 'OPEN' },
+        { id: 103, eventName: 'ดูหนังรอบดึก', eventType: 'entertainment', eventTime: '20:00', eventDate: '2026-11-18', location: 'Zpell', description: 'ดูหนังรอบค่ำที่ Zpell ฟิวเจอร์พาร์ค', currentParticipants: 2, eventSize: 5, creator: mockMembers[1], participants: [mockMe], status: 'OPEN' },
+        { id: 201, eventName: 'แข่ง Valorant', eventType: 'E-sport', eventTime: '10:00', eventDate: '2026-10-15', location: 'Mingle', description: 'ลงแข่งกระชับมิตรทีม 5 คน', currentParticipants: 3, eventSize: 5, creator: mockMembers[0], participants: [mockMe, mockMembers[2]], status: 'CLOSED' },
+        { id: 203, eventName: 'ตีแบดมินตัน', eventType: 'กีฬา', eventTime: '18:00', eventDate: '2026-11-01', location: 'ยิมเนเซียม 4', description: 'ตีแบดออกกำลังกายหลังเลิกเรียน', currentParticipants: 3, eventSize: 4, creator: mockMembers[2], participants: [mockMe, mockMembers[0]], status: 'CLOSED' },
+        { id: 205, eventName: 'คอนเสิร์ตลานจอดรถ', eventType: 'concert', eventTime: '19:00', eventDate: '2026-09-05', location: 'ลานจอดรถ', description: 'ชวนเพื่อนไปดูวงดนตรีสดด้วยกัน', currentParticipants: 2, eventSize: 6, creator: mockMembers[1], participants: [mockMe], status: 'CLOSED' }
       ];
 
       const mockCreatedDtos = [
-        { id: 102, eventName: 'ติวแคลคูลัส', eventType: 'study', eventTime: '13:00', eventDate: '2026-11-16', location: 'หอสมุดป๋วยฯ', status: 'OPEN' },
-        { id: 104, eventName: 'หาเพื่อนกินหมูกระทะ', eventType: 'food', eventTime: '18:30', eventDate: '2026-11-15', location: 'อู๊ดอู๊ด หมูกระทะ', status: 'OPEN' },
-        { id: 105, eventName: 'เล่นบอร์ดเกม Avalon', eventType: 'bordgame', eventTime: '19:00', eventDate: '2026-11-14', location: 'ร้าน Dice Cup', status: 'OPEN' },
-        { id: 202, eventName: 'เดินตลาดนัดอินเตอร์โซน', eventType: 'ไลฟ์สไตล์', eventTime: '17:00', eventDate: '2026-11-05', location: 'อินเตอร์โซน', status: 'CLOSED' },
-        { id: 204, eventName: 'ถ่ายรูปรับปริญญา', eventType: 'other', eventTime: '09:00', eventDate: '2026-10-20', location: 'คณะวิทย์ฯ', status: 'CLOSED' }
+        { id: 102, eventName: 'ติวแคลคูลัส', eventType: 'study', eventTime: '13:00', eventDate: '2026-11-16', location: 'หอสมุดป๋วยฯ', description: 'ติวเข้มแคลคูลัสก่อนสอบที่ห้องสมุดป๋วยฯ', currentParticipants: 3, eventSize: 6, creator: mockMe, participants: [mockMembers[0], mockMembers[1]], status: 'OPEN' },
+        { id: 104, eventName: 'หาเพื่อนกินหมูกระทะ', eventType: 'food', eventTime: '18:30', eventDate: '2026-11-15', location: 'อู๊ดอู๊ด หมูกระทะ', description: 'กินหมูกระทะหารเท่ากันหลังเลิกเรียน', currentParticipants: 2, eventSize: 6, creator: mockMe, participants: [mockMembers[2]], status: 'OPEN' },
+        { id: 105, eventName: 'เล่นบอร์ดเกม Avalon', eventType: 'bordgame', eventTime: '19:00', eventDate: '2026-11-14', location: 'ร้าน Dice Cup', description: 'หาเพื่อนเล่น Avalon ขาดอีก 3 คน', currentParticipants: 3, eventSize: 6, creator: mockMe, participants: [mockMembers[0], mockMembers[2]], status: 'OPEN' },
+        { id: 202, eventName: 'เดินตลาดนัดอินเตอร์โซน', eventType: 'ไลฟ์สไตล์', eventTime: '17:00', eventDate: '2026-11-05', location: 'อินเตอร์โซน', description: 'เดินหาของกินอร่อยๆ ที่ตลาดอินเตอร์โซน', currentParticipants: 2, eventSize: 4, creator: mockMe, participants: [mockMembers[0]], status: 'CLOSED' },
+        { id: 204, eventName: 'ถ่ายรูปรับปริญญา', eventType: 'other', eventTime: '09:00', eventDate: '2026-10-20', location: 'คณะวิทย์ฯ', description: 'นัดรวมตัวถ่ายรูปกลุ่มกับเพื่อนคณะวิทย์ฯ', currentParticipants: 3, eventSize: 8, creator: mockMe, participants: [mockMembers[1], mockMembers[2]], status: 'CLOSED' }
       ];
 
       try {
@@ -513,7 +534,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const cardClass = (isPast || event.expired) ? "event-card expired" : "event-card";
 
     return `
-      <div class="${cardClass}" data-event-id="${event.id}">
+      <div class="${cardClass}" data-event-id="${event.id}" data-description="${escapeAttr(event.description)}" data-capacity="${event.eventSize || 6}" data-participants="${event.currentParticipants || 1}" data-creator="${event.isOwner ? "true" : "false"}">
         <div class="event-logo">
           <img src="${event.logo}" alt="${event.title}">
         </div>
@@ -548,6 +569,13 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function renderEvents() {
+    window.profileEventsById = {};
+    [...activeEvents, ...pastEvents].forEach(ev => {
+      if (ev && ev.id != null) {
+        window.profileEventsById[String(ev.id)] = ev;
+      }
+    });
+
     const activeContainer = document.getElementById("activeEventsList");
     const pastContainer = document.getElementById("pastEventsList");
 
@@ -641,6 +669,8 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   }
+
+  window.refreshProfileEvents = loadUserEvents;
 
   loadUserProfile();
   loadUserEvents();

@@ -38,6 +38,9 @@ public class Event {
     @Column(name = "location", length = 255)
     private String location;
 
+    @Column(name = "description", length = 1000)
+    private String description;
+
     @Column(name = "event_size", nullable = false)
     private Integer eventSize;
 
@@ -141,6 +144,22 @@ public class Event {
 
     public void setEventLocation(String eventLocation) {
         this.location = eventLocation;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getEventDescription() {
+        return description;
+    }
+
+    public void setEventDescription(String eventDescription) {
+        this.description = eventDescription;
     }
 
     public Integer getEventSize() {

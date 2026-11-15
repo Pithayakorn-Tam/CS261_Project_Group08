@@ -29,6 +29,7 @@ public class DataInitializer {
             String eventName,
             String eventType,
             String location,
+            String description,
             int eventSize,
             LocalDate eventDate,
             String eventTime,
@@ -102,13 +103,13 @@ public class DataInitializer {
             // 2. Define 7 consistent mock events (5 expired COMPLETED + 2 active UPCOMING near TU Rangsit)
             LocalDate today = LocalDate.now();
             List<SeedEventSpec> specs = List.of(
-                    new SeedEventSpec("ตี๋น้อย", "food", "Mingle, ม.กรุงเทพ", 7, LocalDate.of(2026, 11, 3), "19.00", "CLOSED", "COMPLETED", 1, new int[]{0, 2, 3, 4, 5}),       // 6/7
-                    new SeedEventSpec("อ่านหนังสือ", "study", "ห้องสมุด", 9, LocalDate.of(2026, 11, 4), "18.00", "CLOSED", "COMPLETED", 2, new int[]{0, 1, 3, 4, 5, 6, 7, 8}), // 9/9
-                    new SeedEventSpec("ตีแบดมินตัน", "sport", "ยิม มธ.", 3, LocalDate.of(2026, 11, 5), "20.00", "CLOSED", "COMPLETED", 3, new int[]{0, 4}),                    // 3/3
-                    new SeedEventSpec("บอร์ดเกม", "bordgame", "Mingle, ม.กรุงเทพ", 5, LocalDate.of(2026, 11, 6), "13.00", "CLOSED", "COMPLETED", 4, new int[]{0, 5, 6}),          // 4/5
-                    new SeedEventSpec("อ่านหนังสือ", "study", "ห้องสมุดป๋วย", 3, LocalDate.of(2026, 10, 7), "19.00", "CLOSED", "COMPLETED", 0, new int[]{1}),                  // 2/3 (User00 created & completed)
-                    new SeedEventSpec("หมูกระทะ", "food", "ตลาดนัดอินเตอร์โซน มธ.รังสิต", 6, today.plusDays(2), "19.00", "OPEN", "UPCOMING", 0, new int[]{2, 3}),                // 3/6 (User00 created & active)
-                    new SeedEventSpec("เล่นบอร์ดเกม", "bordgame", "U-Square มธ.รังสิต", 5, today.plusDays(3), "20.00", "OPEN", "UPCOMING", 6, new int[]{7})                   // 2/5 (Active near TU)
+                    new SeedEventSpec("ตี๋น้อย", "food", "Mingle, ม.กรุงเทพ", "หาเพื่อนไปกินสุกี้ตี๋น้อยที่ Mingle ม.กรุงเทพ หารค่าน้ำรีฟิลและแท็กซี่กันครับ", 7, LocalDate.of(2026, 11, 3), "19.00", "CLOSED", "COMPLETED", 1, new int[]{0, 2, 3, 4, 5}),       // 6/7
+                    new SeedEventSpec("อ่านหนังสือ", "study", "ห้องสมุด", "นัดติวหนังสือและสรุปเนื้อหาก่อนสอบกลางภาคที่ห้องสมุด ใครมีชีทเอามาแชร์กันได้นะ", 9, LocalDate.of(2026, 11, 4), "18.00", "CLOSED", "COMPLETED", 2, new int[]{0, 1, 3, 4, 5, 6, 7, 8}), // 9/9
+                    new SeedEventSpec("ตีแบดมินตัน", "sport", "ยิม มธ.", "หาเพื่อนตีแบดออกกำลังกายหลังเลิกเรียนที่ยิม มธ. มีลูกแบดเตรียมไว้ให้แล้ว", 3, LocalDate.of(2026, 11, 5), "20.00", "CLOSED", "COMPLETED", 3, new int[]{0, 4}),                    // 3/3
+                    new SeedEventSpec("บอร์ดเกม", "bordgame", "Mingle, ม.กรุงเทพ", "ชวนเล่นบอร์ดเกมสนุกๆ คลายเครียดที่ Mingle มือใหม่ก็มาจอยได้ สอนเล่นให้ครบทุกเกม", 5, LocalDate.of(2026, 11, 6), "13.00", "CLOSED", "COMPLETED", 4, new int[]{0, 5, 6}),          // 4/5
+                    new SeedEventSpec("อ่านหนังสือ", "study", "ห้องสมุดป๋วย", "อ่านหนังสือเตรียมสอบและทำโจทย์ด้วยกันที่ห้องสมุดป๋วยฯ บรรยากาศชิลๆ", 3, LocalDate.of(2026, 10, 7), "19.00", "CLOSED", "COMPLETED", 0, new int[]{1}),                  // 2/3 (User00 created & completed)
+                    new SeedEventSpec("หมูกระทะ", "food", "ตลาดนัดอินเตอร์โซน มธ.รังสิต", "หาตี้กินหมูกระทะที่ตลาดนัดอินเตอร์โซน มธ.รังสิต อิ่มคุ้มหารเท่ากันทุกคน", 6, today.plusDays(2), "19.00", "OPEN", "UPCOMING", 0, new int[]{2, 3}),                // 3/6 (User00 created & active)
+                    new SeedEventSpec("เล่นบอร์ดเกม", "bordgame", "U-Square มธ.รังสิต", "หาเพื่อนเล่นบอร์ดเกม Avalon และ Catan ที่ U-Square มธ.รังสิต มาจอยกันได้เลย", 5, today.plusDays(3), "20.00", "OPEN", "UPCOMING", 6, new int[]{7})                   // 2/5 (Active near TU)
             );
 
             // Clean legacy test/extra past events if upgrading an existing DB
@@ -154,7 +155,7 @@ public class DataInitializer {
                 }
             }
 
-            // 3. Ensure any event without a creator gets a random mock creator, and sync participant counts
+            // 3. Ensure any event without a creator gets a random mock creator, default description, and sync participant counts
             Random random = new Random();
             List<Event> allEvents = eventRepository.findAllByOrderByIdAsc();
             for (Event ev : allEvents) {
@@ -163,7 +164,30 @@ public class DataInitializer {
                     ev.setCreator(mockUsers[random.nextInt(mockUsers.length)]);
                     changed = true;
                 }
-                int joinedCount = ev.getParticipants() != null ? ev.getParticipants().size() : 0;
+                if (ev.getDescription() == null || ev.getDescription().isBlank()) {
+                    String loc = ev.getLocation() != null && !ev.getLocation().isBlank() ? " ที่ " + ev.getLocation() : "";
+                    ev.setDescription("เชิญชวนเพื่อนๆ มาร่วมกิจกรรม " + ev.getEventName() + loc);
+                    changed = true;
+                }
+                if (ev.getParticipants() == null) {
+                    ev.setParticipants(new LinkedHashSet<>());
+                    changed = true;
+                }
+                int joinedCount = ev.getParticipants().size();
+                if (ev.getCurrentParticipants() != null && ev.getCurrentParticipants() > 1 + joinedCount) {
+                    String creatorStudentId = ev.getCreator().getStudentId();
+                    for (User candidate : mockUsers) {
+                        if (1 + ev.getParticipants().size() >= ev.getCurrentParticipants()) {
+                            break;
+                        }
+                        if (candidate != null && !candidate.getStudentId().equals(creatorStudentId)) {
+                            if (ev.getParticipants().add(candidate)) {
+                                changed = true;
+                            }
+                        }
+                    }
+                    joinedCount = ev.getParticipants().size();
+                }
                 int expectedParticipants = 1 + joinedCount;
                 if (ev.getCurrentParticipants() == null || ev.getCurrentParticipants() < expectedParticipants) {
                     ev.setCurrentParticipants(expectedParticipants);
@@ -282,6 +306,9 @@ public class DataInitializer {
         ev.setEventName(spec.eventName());
         ev.setEventType(spec.eventType());
         ev.setLocation(spec.location());
+        if (ev.getDescription() == null || ev.getDescription().isBlank()) {
+            ev.setDescription(spec.description());
+        }
         ev.setEventSize(spec.eventSize());
         ev.setEventDate(spec.eventDate());
         ev.setEventTime(spec.eventTime());
