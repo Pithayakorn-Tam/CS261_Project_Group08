@@ -1,9 +1,12 @@
 package com.tumeet.backend.config;
 
 import com.tumeet.backend.model.Event;
+import com.tumeet.backend.model.Notification;
 import com.tumeet.backend.model.User;
 import com.tumeet.backend.repository.EventRepository;
+import com.tumeet.backend.repository.NotificationRepository;
 import com.tumeet.backend.repository.UserRepository;
+import com.tumeet.backend.service.NotificationService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -38,6 +41,8 @@ public class DataInitializer {
     @Bean
     public CommandLineRunner seedInitialData(UserRepository userRepository,
                                              EventRepository eventRepository,
+                                             NotificationRepository notificationRepository,
+                                             NotificationService notificationService,
                                              JdbcTemplate jdbcTemplate,
                                              TransactionTemplate transactionTemplate) {
         return args -> transactionTemplate.executeWithoutResult(status -> {
@@ -201,6 +206,75 @@ public class DataInitializer {
                 u.setCompletedJoinedCount(joinedCounts.getOrDefault(u.getId(), 0));
             }
             userRepository.saveAll(allUsers);
+
+            // 5. Seed mock notifications in chronological event order (create -> join -> completed badge unlock)
+            Map<Long, Integer> runningCompletedTotals = new HashMap<>();
+            for (Event ev : allEvents) {
+                User creator = ev.getCreator();
+                if (creator != null && creator.getId() != null
+                        && !notificationRepository.existsByRecipientIdAndEventIdAndType(
+                                creator.getId(), ev.getId(), NotificationService.TYPE_CREATE_SUCCESS)) {
+                    notificationRepository.save(new Notification(
+                            creator,
+                            ev,
+                            NotificationService.TYPE_CREATE_SUCCESS,
+                            "สร้างกิจกรรมสำเร็จ",
+                            "คุณสร้างกิจกรรมสำเร็จ"
+                    ));
+                }
+
+                if (ev.getParticipants() != null) {
+                    for (User participant : ev.getParticipants()) {
+                        if (participant == null || participant.getId() == null) {
+                            continue;
+                        }
+                        if (!notificationRepository.existsByRecipientIdAndEventIdAndType(
+                                participant.getId(), ev.getId(), NotificationService.TYPE_JOIN_SUCCESS)) {
+                            notificationRepository.save(new Notification(
+                                    participant,
+                                    ev,
+                                    NotificationService.TYPE_JOIN_SUCCESS,
+                                    "เข้าร่วมกิจกรรมสำเร็จ",
+                                    "คุณเข้าร่วมกิจกรรมสำเร็จ"
+                            ));
+                        }
+                        if (creator != null && creator.getId() != null
+                                && !creator.getId().equals(participant.getId())
+                                && !notificationRepository.existsByRecipientIdAndEventIdAndType(
+                                        creator.getId(), ev.getId(), NotificationService.TYPE_USER_JOINED)) {
+                            notificationRepository.save(new Notification(
+                                    creator,
+                                    ev,
+                                    NotificationService.TYPE_USER_JOINED,
+                                    "มีผู้เข้าร่วมกิจกรรม",
+                                    "มีผู้เข้าร่วมกิจกรรมของคุณ"
+                            ));
+                        }
+                    }
+                }
+
+                if ("COMPLETED".equalsIgnoreCase(ev.getLifecycleStatus())) {
+                    int memberCount = (ev.getParticipants() != null ? ev.getParticipants().size() : 0) + 1;
+                    if (memberCount >= 2 || (ev.getCurrentParticipants() != null && ev.getCurrentParticipants() >= 2)) {
+                        if (creator != null && creator.getId() != null) {
+                            int prevTotal = runningCompletedTotals.getOrDefault(creator.getId(), 0);
+                            int newTotal = prevTotal + 1;
+                            runningCompletedTotals.put(creator.getId(), newTotal);
+                            notificationService.notifyBadgeUpgradedIfEligible(creator, ev, prevTotal, newTotal);
+                        }
+                        if (ev.getParticipants() != null) {
+                            for (User participant : ev.getParticipants()) {
+                                if (participant != null && participant.getId() != null) {
+                                    int prevTotal = runningCompletedTotals.getOrDefault(participant.getId(), 0);
+                                    int newTotal = prevTotal + 1;
+                                    runningCompletedTotals.put(participant.getId(), newTotal);
+                                    notificationService.notifyBadgeUpgradedIfEligible(participant, ev, prevTotal, newTotal);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         });
     }
 

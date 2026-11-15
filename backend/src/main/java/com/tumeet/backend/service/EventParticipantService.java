@@ -23,14 +23,23 @@ public class EventParticipantService {
     private final EventParticipantRepository eventParticipantRepository;
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
+    private final NotificationService notificationService;
+
+    public EventParticipantService(EventParticipantRepository eventParticipantRepository,
+                                   EventRepository eventRepository,
+                                   UserRepository userRepository) {
+        this(eventParticipantRepository, eventRepository, userRepository, null);
+    }
 
     @Autowired
     public EventParticipantService(EventParticipantRepository eventParticipantRepository,
                                    EventRepository eventRepository,
-                                   UserRepository userRepository) {
+                                   UserRepository userRepository,
+                                   NotificationService notificationService) {
         this.eventParticipantRepository = eventParticipantRepository;
         this.eventRepository = eventRepository;
         this.userRepository = userRepository;
+        this.notificationService = notificationService;
     }
 
     public ActionResponse joinEvent(JoinEventRequest request) {
@@ -87,6 +96,9 @@ public class EventParticipantService {
             event.setStatus("FULL");
         }
         eventRepository.save(event);
+        if (notificationService != null) {
+            notificationService.notifyUserJoined(event, user);
+        }
 
         return new ActionResponse(true, "เข้าร่วมกิจกรรมสำเร็จ", event);
     }
@@ -139,6 +151,9 @@ public class EventParticipantService {
             event.setStatus("OPEN");
         }
         eventRepository.save(event);
+        if (notificationService != null) {
+            notificationService.notifyUserLeft(event, user);
+        }
 
         return new ActionResponse(true, "ยกเลิกการเข้าร่วมกิจกรรมสำเร็จ", event);
     }
