@@ -9,6 +9,7 @@ public class CreatorDto {
     private String displayname_th;
     private String faculty;
     private String email;
+    private String profileImage;
     private Integer completedCreatedCount;
     private Integer completedJoinedCount;
     private String badge;
@@ -34,6 +35,7 @@ public class CreatorDto {
                 user.getEmail()
         );
         dto.setUsername(user.getUsername());
+        dto.setProfileImage(user.getProfileImage());
         dto.setCompletedCreatedCount(user.getCompletedCreatedCount() != null ? user.getCompletedCreatedCount() : 0);
         dto.setCompletedJoinedCount(user.getCompletedJoinedCount() != null ? user.getCompletedJoinedCount() : 0);
         dto.setBadge(user.getBadge());
@@ -78,6 +80,14 @@ public class CreatorDto {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getProfileImage() {
+        return profileImage;
+    }
+
+    public void setProfileImage(String profileImage) {
+        this.profileImage = profileImage;
     }
 
     public Integer getCompletedCreatedCount() {

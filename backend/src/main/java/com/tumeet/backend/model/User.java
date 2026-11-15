@@ -54,6 +54,10 @@ public class User {
     @Column(length = 100)
     private String username;
 
+    // --- [US-6] รูปโปรไฟล์ (เก็บ Base64 Data URL) ---
+    @Column(name = "profile_image", columnDefinition = "NVARCHAR(MAX)")
+    private String profileImage;
+
     // --- [US-9] จำนวนกิจกรรมที่สร้างสำเร็จและเข้าร่วมสำเร็จ ---
     @Column(name = "completed_created_count", nullable = false)
     @ColumnDefault("0")
@@ -198,6 +202,14 @@ public class User {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getProfileImage() {
+        return profileImage;
+    }
+
+    public void setProfileImage(String profileImage) {
+        this.profileImage = profileImage;
     }
 
     public Integer getCompletedCreatedCount() {

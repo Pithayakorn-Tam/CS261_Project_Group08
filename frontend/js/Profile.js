@@ -203,6 +203,15 @@ document.addEventListener("DOMContentLoaded", () => {
             window.renderUserBadgeFromData(user);
           }
 
+          // [US-6] โหลดรูปโปรไฟล์จากฐานข้อมูล
+          if (user.profileImage && avatarImg) {
+            avatarImg.src = user.profileImage;
+            // อัปเดต localStorage ด้วยเพื่อแสดงรูปทันทีก่อน API ตอบกลับในครั้งถัดไป
+            const updatedData = JSON.parse(localStorage.getItem("loginData") || "{}");
+            updatedData.avatarUrl = user.profileImage;
+            localStorage.setItem("loginData", JSON.stringify(updatedData));
+          }
+
           localStorage.setItem(
             "loginData",
             JSON.stringify({
@@ -394,13 +403,33 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         const reader = new FileReader();
-        reader.onload = function (e) {
+        reader.onload = async function (e) {
           const base64Image = e.target.result;
           avatarImg.src = base64Image;
 
           const storedUserData = JSON.parse(localStorage.getItem("loginData") || "{}");
           storedUserData.avatarUrl = base64Image;
           localStorage.setItem("loginData", JSON.stringify(storedUserData));
+
+          // [US-6] บันทึกรูปโปรไฟล์ลงฐานข้อมูล
+          const studentId = getCurrentStudentId();
+          try {
+            const res = await fetch(`${API_BASE_URL}/user/update-profile-image`, {
+              method: "PUT",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                studentId: studentId,
+                profileImage: base64Image
+              })
+            });
+
+            if (!res.ok) {
+              const result = await res.json();
+              console.error("อัปเดตรูปโปรไฟล์ล้มเหลว:", result.message);
+            }
+          } catch (error) {
+            console.error("เกิดข้อผิดพลาดในการบันทึกรูปโปรไฟล์:", error);
+          }
         };
 
         reader.readAsDataURL(file);
