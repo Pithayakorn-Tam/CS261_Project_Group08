@@ -164,7 +164,7 @@ public class EventParticipantService {
     }
 
     // เพิ่มเมธอดสำหรับส่งแบบประเมินและอัปเดตแต้ม Badge
-
+    @Transactional
     public ActionResponse submitEvaluation(String studentId, Long eventId, String reviewText) {
         if (studentId == null || studentId.isBlank() || eventId == null) {
             return new ActionResponse(false, "ข้อมูลไม่ครบถ้วน กรุณาระบุรหัสนักศึกษาและรหัสกิจกรรม");
@@ -191,6 +191,9 @@ public class EventParticipantService {
         
         user.setEvaluatedCount(newPoints);
         userRepository.save(user);
+        if (notificationService != null) {
+            notificationService.notifyBadgeUpgradedIfEligible(user, eventOptional.get(), previousPoints, newPoints);
+        }
 
         return new ActionResponse(true, "ส่งแบบประเมินสำเร็จ ได้รับแต้มสะสมเพิ่ม 1 แต้ม!", user);
     }

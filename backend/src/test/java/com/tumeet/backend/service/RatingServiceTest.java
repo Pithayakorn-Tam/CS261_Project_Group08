@@ -284,8 +284,11 @@ class RatingServiceTest {
 
         assertTrue(response.isStatus());
         assertEquals("บันทึกผลการประเมินสำเร็จ", response.getMessage());
+        assertEquals(1, participant1.getEvaluatedCount());
+        assertEquals("Newly Bee", participant1.getBadge());
         verify(eventRatingRepository, times(1)).save(any(EventRating.class));
         verify(userRepository).save(creator);
+        verify(userRepository).save(participant1);
         verify(userRepository, never()).save(participant2);
 
         @SuppressWarnings("unchecked")
@@ -293,6 +296,8 @@ class RatingServiceTest {
         assertEquals(1L, data.get("eventId"));
         assertEquals("6800000002", data.get("raterStudentId"));
         assertEquals(5, data.get("score"));
+        assertEquals(1, data.get("evaluatedCount"));
+        assertEquals("Newly Bee", data.get("badge"));
     }
 
     @Test

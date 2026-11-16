@@ -9,6 +9,7 @@ import com.tumeet.backend.model.User;
 import com.tumeet.backend.repository.EventRatingRepository;
 import com.tumeet.backend.repository.EventRepository;
 import com.tumeet.backend.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,13 +28,23 @@ public class RatingService {
     private final EventRatingRepository eventRatingRepository;
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
+    private final NotificationService notificationService;
 
     public RatingService(EventRatingRepository eventRatingRepository,
                          EventRepository eventRepository,
                          UserRepository userRepository) {
+        this(eventRatingRepository, eventRepository, userRepository, null);
+    }
+
+    @Autowired
+    public RatingService(EventRatingRepository eventRatingRepository,
+                         EventRepository eventRepository,
+                         UserRepository userRepository,
+                         NotificationService notificationService) {
         this.eventRatingRepository = eventRatingRepository;
         this.eventRepository = eventRepository;
         this.userRepository = userRepository;
+        this.notificationService = notificationService;
     }
 
     /**
@@ -226,10 +237,20 @@ public class RatingService {
 
         updateUserRatingStats(creator);
 
+        int prevPoints = rater.getEvaluatedCount();
+        int newPoints = prevPoints + 1;
+        rater.setEvaluatedCount(newPoints);
+        userRepository.save(rater);
+        if (notificationService != null) {
+            notificationService.notifyBadgeUpgradedIfEligible(rater, event, prevPoints, newPoints);
+        }
+
         Map<String, Object> resultData = new LinkedHashMap<>();
         resultData.put("eventId", eventId);
         resultData.put("raterStudentId", rater.getStudentId());
         resultData.put("score", avgScore);
+        resultData.put("evaluatedCount", newPoints);
+        resultData.put("badge", rater.getBadge());
         return new ActionResponse(true, "บันทึกผลการประเมินสำเร็จ", resultData);
     }
 

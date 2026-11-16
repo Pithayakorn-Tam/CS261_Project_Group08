@@ -232,11 +232,12 @@ class EventServiceTest {
     }
 
     @Test
-    @DisplayName("US-9: คำนวณยศ (Badge) ตามผลรวมกิจกรรมที่สร้างและเข้าร่วมสำเร็จ")
+    @DisplayName("US-9: คำนวณยศ (Badge) ตามผลรวมกิจกรรมที่สร้างและเข้าร่วมสำเร็จ รวมถึง evaluatedCount")
     void userBadgeCalculation_Success() {
         User user = new User();
         assertEquals(0, user.getCompletedCreatedCount());
         assertEquals(0, user.getCompletedJoinedCount());
+        assertEquals(0, user.getEvaluatedCount());
         assertEquals("No Badge", user.getBadge());
 
         user.setCompletedCreatedCount(1);
@@ -258,6 +259,10 @@ class EventServiceTest {
         user.setCompletedCreatedCount(12);
         user.setCompletedJoinedCount(8);
         assertEquals("Super Bouquet", user.getBadge());
+
+        User evaluatedOnlyUser = new User();
+        evaluatedOnlyUser.setEvaluatedCount(5);
+        assertEquals("Baby Bloom", evaluatedOnlyUser.getBadge());
     }
 
     @Test

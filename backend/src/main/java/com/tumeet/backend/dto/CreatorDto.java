@@ -12,6 +12,7 @@ public class CreatorDto {
     private String profileImage;
     private Integer completedCreatedCount;
     private Integer completedJoinedCount;
+    private Integer evaluatedCount;
     private String badge;
     private Double averageRating;
     private Integer ratingCount;
@@ -40,6 +41,7 @@ public class CreatorDto {
         dto.setProfileImage(user.getProfileImage());
         dto.setCompletedCreatedCount(user.getCompletedCreatedCount() != null ? user.getCompletedCreatedCount() : 0);
         dto.setCompletedJoinedCount(user.getCompletedJoinedCount() != null ? user.getCompletedJoinedCount() : 0);
+        dto.setEvaluatedCount(user.getEvaluatedCount());
         dto.setBadge(user.getBadge());
         dto.setAverageRating(user.getAverageRating() != null ? user.getAverageRating() : 0.0);
         dto.setRatingCount(user.getRatingCount() != null ? user.getRatingCount() : 0);
@@ -108,6 +110,14 @@ public class CreatorDto {
 
     public void setCompletedJoinedCount(Integer completedJoinedCount) {
         this.completedJoinedCount = completedJoinedCount;
+    }
+
+    public Integer getEvaluatedCount() {
+        return evaluatedCount;
+    }
+
+    public void setEvaluatedCount(Integer evaluatedCount) {
+        this.evaluatedCount = evaluatedCount;
     }
 
     public String getBadge() {

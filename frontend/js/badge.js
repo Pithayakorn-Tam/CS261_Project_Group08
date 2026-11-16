@@ -64,7 +64,8 @@ document.addEventListener("DOMContentLoaded", () => {
   function renderBadgeFromUser(user) {
     const created = Number(user?.completedCreatedCount) || 0;
     const joined = Number(user?.completedJoinedCount) || 0;
-    const totalCount = created + joined;
+    const evaluated = Number(user?.evaluatedCount) || 0;
+    const totalCount = Math.max(created + joined, evaluated);
     const badge = getBadgeByNameOrCount(user?.badge, totalCount);
     applyBadgeRender(badge, totalCount);
   }

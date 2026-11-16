@@ -226,8 +226,12 @@ public class DataInitializer {
             }
 
             for (User u : allUsers) {
-                u.setCompletedCreatedCount(createdCounts.getOrDefault(u.getId(), 0));
-                u.setCompletedJoinedCount(joinedCounts.getOrDefault(u.getId(), 0));
+                int created = createdCounts.getOrDefault(u.getId(), 0);
+                int joined = joinedCounts.getOrDefault(u.getId(), 0);
+                u.setCompletedCreatedCount(created);
+                u.setCompletedJoinedCount(joined);
+                int currentEvaluated = u.getEvaluatedCount();
+                u.setEvaluatedCount(Math.max(currentEvaluated, created + joined));
             }
             userRepository.saveAll(allUsers);
 

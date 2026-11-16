@@ -253,7 +253,9 @@ public class User {
         this.completedJoinedCount = completedJoinedCount != null ? completedJoinedCount : 0;
     }
     
-    private Integer evaluatedCount;
+    @Column(name = "evaluated_count", nullable = false)
+    @ColumnDefault("0")
+    private Integer evaluatedCount = 0;
 
     public Integer getEvaluatedCount() {
         return evaluatedCount != null ? evaluatedCount : 0;
@@ -264,8 +266,10 @@ public class User {
     }
 
     public String getBadge() {
-        // ใช้ "แต้มจากการประเมิน" (evaluatedCount) เป็นตัวตัดสินยศ แทนการนับรอบเข้าร่วม!
-        int points = getEvaluatedCount();
+        int created = this.completedCreatedCount != null ? this.completedCreatedCount : 0;
+        int joined = this.completedJoinedCount != null ? this.completedJoinedCount : 0;
+        int evaluated = this.evaluatedCount != null ? this.evaluatedCount : 0;
+        int points = Math.max(created + joined, evaluated);
 
         if (points >= 20) return "Super Bouquet";
         if (points >= 10) return "Happy Blossom";
