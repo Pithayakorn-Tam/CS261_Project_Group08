@@ -7,6 +7,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import org.hibernate.annotations.ColumnDefault;
 
 @Entity
 @Table(name = "users")
@@ -52,6 +53,28 @@ public class User {
 
     @Column(length = 100)
     private String username;
+
+    // --- [US-6] รูปโปรไฟล์ (เก็บ Base64 Data URL) ---
+    @Column(name = "profile_image", columnDefinition = "NVARCHAR(MAX)")
+    private String profileImage;
+
+    // --- [US-8] คะแนนประเมินเฉลี่ยและจำนวนครั้งที่ถูกประเมิน ---
+    @Column(name = "average_rating", nullable = false)
+    @ColumnDefault("0.0")
+    private Double averageRating = 0.0;
+
+    @Column(name = "rating_count", nullable = false)
+    @ColumnDefault("0")
+    private Integer ratingCount = 0;
+
+    // --- [US-9] จำนวนกิจกรรมที่สร้างสำเร็จและเข้าร่วมสำเร็จ ---
+    @Column(name = "completed_created_count", nullable = false)
+    @ColumnDefault("0")
+    private Integer completedCreatedCount = 0;
+
+    @Column(name = "completed_joined_count", nullable = false)
+    @ColumnDefault("0")
+    private Integer completedJoinedCount = 0;
 
     public User() {
     }
@@ -188,5 +211,70 @@ public class User {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getProfileImage() {
+        return profileImage;
+    }
+
+    public void setProfileImage(String profileImage) {
+        this.profileImage = profileImage;
+    }
+
+    public Double getAverageRating() {
+        return averageRating;
+    }
+
+    public void setAverageRating(Double averageRating) {
+        this.averageRating = averageRating != null ? averageRating : 0.0;
+    }
+
+    public Integer getRatingCount() {
+        return ratingCount;
+    }
+
+    public void setRatingCount(Integer ratingCount) {
+        this.ratingCount = ratingCount != null ? ratingCount : 0;
+    }
+
+    public Integer getCompletedCreatedCount() {
+        return completedCreatedCount;
+    }
+
+    public void setCompletedCreatedCount(Integer completedCreatedCount) {
+        this.completedCreatedCount = completedCreatedCount != null ? completedCreatedCount : 0;
+    }
+
+    public Integer getCompletedJoinedCount() {
+        return completedJoinedCount;
+    }
+
+    public void setCompletedJoinedCount(Integer completedJoinedCount) {
+        this.completedJoinedCount = completedJoinedCount != null ? completedJoinedCount : 0;
+    }
+    
+    @Column(name = "evaluated_count", nullable = false)
+    @ColumnDefault("0")
+    private Integer evaluatedCount = 0;
+
+    public Integer getEvaluatedCount() {
+        return evaluatedCount != null ? evaluatedCount : 0;
+    }
+
+    public void setEvaluatedCount(Integer evaluatedCount) {
+        this.evaluatedCount = evaluatedCount != null ? evaluatedCount : 0;
+    }
+
+    public String getBadge() {
+        int created = this.completedCreatedCount != null ? this.completedCreatedCount : 0;
+        int joined = this.completedJoinedCount != null ? this.completedJoinedCount : 0;
+        int evaluated = this.evaluatedCount != null ? this.evaluatedCount : 0;
+        int points = Math.max(created + joined, evaluated);
+
+        if (points >= 20) return "Super Bouquet";
+        if (points >= 10) return "Happy Blossom";
+        if (points >= 5)  return "Baby Bloom";
+        if (points >= 1)  return "Newly Bee";
+        return "No Badge";
     }
 }

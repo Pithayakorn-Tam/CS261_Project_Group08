@@ -5,38 +5,63 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TU Meet</title>
-    <link rel="stylesheet" href="../css/Homepage.css?v=3">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/Homepage.css?v=4">
+    <link rel="stylesheet" href="../css/EventDetail.css">
+    <script src="../js/EventDetail.js" defer></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Mitr:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <script src="../js/Homepage.js?v=3" defer></script>
+    <script src="../js/Homepage.js?v=4" defer></script>
 
-    <link rel="stylesheet" href="../css/Join.css?v=3">
-    <script src="../js/Join.js?v=3" defer></script>
+    <link rel="stylesheet" href="../css/Join.css?v=4">
+    <script src="../js/Join.js?v=4" defer></script>
+    <script src="../js/Header.js"></script>
 </head>
 
 <body>
     <!-- กรอบจำลองหน้าจอมือถือ -->
     <div class="mobile-container">
 
-        <!-- ส่วน Header -->
         <header class="app-header">
-            <div class="logo">
-                 <a href="./Homepage.html" aria-label="กลับไปหน้า Home">
-                    <img src="../Picture/LogoTUmeet.svg" alt="TU Meet Logo">
-                </a>
-            </div>
-            <div class="header-actions">
-                <button class="icon-btn">
-                    <img src="../Picture/NotificationIcon.svg" alt="Notifications">
-                </button>
-                <button class="icon-btn">
-                     <a href="Profile.html" aria-label="ไปหน้า Profile">
-                    <img src="../Picture/ProfileIcon.svg" alt="Profile">
-                </a>  
-                </button>
-            </div>
-        </header>
+      <div class="logo">
+        <a href="./Homepage.html" aria-label="กลับไปหน้า Home">
+          <img src="../Picture/LogoTUmeet.svg" alt="TU Meet Logo">
+        </a>
+      </div>
+      <div class="header-actions">
+        <!-- Notification -->
+        <a href="#" class="icon-btn" aria-label="Notifications">
+          <img src="../Picture/NotificationIcon.svg" alt="Notifications">
+        </a>
+        <!-- Profile Dropdown -->
+        <div class="profile-dropdown">
+          <button class="icon-btn profile-trigger" id="profileBtn" type="button" aria-label="Profile"
+            aria-expanded="false">
+            <img src="../Picture/profile.svg" alt="Profile">
+          </button>
+          <!-- กรณี Login แล้ว -->
+          <div class="dropdown-menu" id="loggedInMenu" hidden>
+            <a href="./Profile.html" class="dropdown-item">
+              <img src="../Picture/profile-menu.svg" alt="">
+              <span>โปรไฟล์</span>
+            </a>
+            <button type="button" class="dropdown-item" id="logoutBtn">
+              <img src="../Picture/logout.svg" alt="">
+              <span>ออกจากระบบ</span>
+            </button>
+          </div>
+          <!-- กรณียังไม่ได้ Login -->
+          <div class="dropdown-menu" id="guestMenu" hidden>
+            <a href="./Login.html" class="dropdown-item">
+              <img src="../Picture/ProfileIcon.svg" alt="">
+              <span>เข้าสู่ระบบ</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </header>
+
 
         <!-- พื้นที่เนื้อหาหลัก -->
         <main class="content">
@@ -98,6 +123,7 @@
                         <option value="sport">กีฬา</option>
                         <option value="entertainment">บันเทิง</option>
                         <option value="lifestyle">ไลฟ์สไตล์</option>
+                        <option value="other">อื่นๆ</option>
                     </select>
                 </div>
             </section>
@@ -115,6 +141,10 @@
 
     <!-- พื้นที่โหลด Popup  -->
     <div id="joinPopupContainer"></div>
+    <!-- Sticky Chat Button -->
+    <a href="Chat.html" class="sticky-chat-btn" aria-label="เปิดหน้าแชท">
+        <img src="../Picture/chat-outline.svg" alt="Chat">
+    </a>
 </body>
 
 </html>

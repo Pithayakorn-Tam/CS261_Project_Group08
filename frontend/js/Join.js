@@ -54,6 +54,16 @@ function initJoinPopup() {
         const isOpen = card.dataset.open !== 'false';
         const isCancelled = card.dataset.cancelled === 'true';
         const alreadyJoined = button.dataset.joined === 'true';
+        const isCreator = card.dataset.creator === 'true';
+
+        if (isCreator) {
+            showPopup(
+                false,
+                'ไม่สามารถเข้าร่วมกิจกรรมได้',
+                'ผู้สร้างกิจกรรมไม่สามารถเข้าร่วมกิจกรรมของตนเองได้'
+            );
+            return;
+        }
 
         if (isCancelled) {
             showPopup(
@@ -120,7 +130,10 @@ function initJoinPopup() {
 
         if (eventId) {
             try {
-                const res = await fetch(`http://localhost:8080/api/events/${eventId}/join`, {
+                const apiBaseUrl = (window.location.protocol === 'file:' || window.location.port === '5500' || window.location.port === '5501')
+                    ? 'http://localhost:8080/api'
+                    : '/api';
+                const res = await fetch(`${apiBaseUrl}/events/${eventId}/join`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ studentId: studentId })
@@ -139,9 +152,10 @@ function initJoinPopup() {
         card.dataset.participants = String(newParticipants);
         button.dataset.joined = 'true';
         button.disabled = true;
-        button.textContent = '✓';
+        button.innerHTML = '<span class="joined-check">✓</span>';
 
-        const capacityElement = card.querySelector('.capacity');
+        const capacitySpan = card.querySelector('.capacity span');
+        const capacityElement = capacitySpan || card.querySelector('.capacity');
 
         if (capacityElement) {
             capacityElement.textContent =

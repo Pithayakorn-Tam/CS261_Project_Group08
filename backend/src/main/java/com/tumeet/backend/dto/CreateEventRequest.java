@@ -6,6 +6,8 @@ public class CreateEventRequest {
     private String eventType;
     private String location;
     private String eventLocation;
+    private String description;
+    private String eventDescription;
     private Integer eventSize;
     private String eventDate;
     private String eventTime;
@@ -72,6 +74,28 @@ public class CreateEventRequest {
         this.eventLocation = eventLocation;
         if (this.location == null) {
             this.location = eventLocation;
+        }
+    }
+
+    public String getDescription() {
+        return description != null ? description : eventDescription;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+        if (this.eventDescription == null) {
+            this.eventDescription = description;
+        }
+    }
+
+    public String getEventDescription() {
+        return eventDescription != null ? eventDescription : description;
+    }
+
+    public void setEventDescription(String eventDescription) {
+        this.eventDescription = eventDescription;
+        if (this.description == null) {
+            this.description = eventDescription;
         }
     }
 

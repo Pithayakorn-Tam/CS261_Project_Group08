@@ -1,0 +1,345 @@
+/* ==========================================
+   Global Style & Header (ไฟล์กลางควบคุมทุกหน้า)
+========================================== */
+@font-face {
+  font-family: 'Mitr';
+  src: url(../Font/Mitr/Mitr-Regular.ttf);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Mitr', sans-serif;
+}
+
+body {
+  min-height: 100vh;
+  background-color: #f0f0f0;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Container */
+.app-container,
+.mobile-container {
+  width: 100%;
+  min-height: 100vh;
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* Header Standard */
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px 8px;
+  border-bottom: 1px solid #eaeaea;
+  background-color: #FFFAF0;
+  width: 100%;
+}
+
+.logo img {
+  display: block;
+  height: 24px;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  position: relative;
+}
+
+.icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: none;
+  outline: none;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  text-decoration: none;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.icon-btn img {
+  display: block;
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+}
+
+@media (min-width: 768px) {
+  .app-header {
+    padding: 16px 40px;
+  }
+  .logo img {
+    height: 30px;
+  }
+  .header-actions {
+    gap: 24px;
+  }
+}
+/* =====================================
+   Profile Dropdown
+===================================== */
+
+.profile-dropdown {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.profile-trigger {
+    cursor: pointer;
+}
+
+/* Dropdown Box */
+.dropdown-menu {
+    position: absolute;
+    top: calc(100% + 12px);
+    right: 0;
+    z-index: 1000;
+
+    width: 180px;
+    padding: 6px 10px;
+
+    background: #FFFAF0;
+    border-radius: 8px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Dropdown Items */
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    width: 100%;
+    min-height: 42px;
+    padding: 6px 4px;
+
+    border: none;
+    border-bottom: 1px solid #222;
+    background: transparent;
+
+    color: #000;
+    font-size: 15px;
+    font-weight: 600;
+    text-decoration: none;
+    text-align: left;
+
+    cursor: pointer;
+}
+
+.dropdown-item:last-child {
+    border-bottom: none;
+}
+
+.dropdown-item img {
+    width: 20px;
+    height: 30px;
+    object-fit: contain;
+}
+
+.dropdown-item:hover {
+    background: #f3eadb;
+    border-radius: 5px;
+}
+
+/* ซ่อนเมนู */
+.dropdown-menu[hidden] {
+    display: none;
+}
+.profile-trigger {
+    border: none;
+    background: transparent;
+    padding: 0;
+    cursor: pointer;
+}
+
+.profile-trigger img.profile-avatar-loaded {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1.5px solid #E5989B;
+}
+
+/* =====================================
+   Notification Dropdown & Popup (US-11)
+===================================== */
+
+.notification-dropdown {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.notification-trigger {
+    position: relative;
+}
+
+.notification-unread-dot {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #F28B8B;
+    border: 1.5px solid #FFFAF0;
+    pointer-events: none;
+}
+
+.notification-unread-dot[hidden] {
+    display: none;
+}
+
+.notification-popup {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    z-index: 1100;
+    width: min(330px, calc(100vw - 24px));
+    background: #FFFFFF;
+    border-radius: 12px;
+    border: 1px solid #ECECEC;
+    box-shadow: 0 6px 22px rgba(0, 0, 0, 0.16);
+    padding: 12px 14px 10px;
+}
+
+.notification-popup[hidden] {
+    display: none;
+}
+
+.notification-popup-header {
+    padding-bottom: 6px;
+    border-bottom: 1.5px solid #293FE8;
+}
+
+.notification-popup-title {
+    display: block;
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1.15;
+    color: #F4D06F;
+    letter-spacing: 0.2px;
+}
+
+.notification-list {
+    max-height: min(300px, calc(100vh - 160px));
+    overflow-y: auto;
+    padding-right: 6px;
+    margin-top: 2px;
+}
+
+.notification-list::-webkit-scrollbar {
+    width: 5px;
+}
+
+.notification-list::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.notification-list::-webkit-scrollbar-thumb {
+    background: #E5989B;
+    border-radius: 999px;
+}
+
+.notification-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 11px;
+    padding: 9px 2px;
+    border-bottom: 1px solid #DEDEDE;
+}
+
+.notification-item:last-child {
+    border-bottom: none;
+}
+
+.notification-icon {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1px;
+}
+
+.notification-icon svg,
+.notification-badge-img {
+    width: 22px;
+    height: 22px;
+    display: block;
+    object-fit: contain;
+}
+
+.notification-text {
+    flex: 1;
+    min-width: 0;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.45;
+    color: #111111;
+    white-space: pre-line;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+.notification-empty {
+    padding: 22px 8px;
+    text-align: center;
+    font-size: 13px;
+    color: #777777;
+}
+
+@media (min-width: 768px) {
+    .notification-popup {
+        width: 380px;
+        right: 48px;
+        padding: 14px 18px 12px;
+    }
+
+    .notification-popup-title {
+        font-size: 22px;
+    }
+
+    .notification-list {
+        max-height: min(360px, calc(100vh - 180px));
+    }
+
+    .notification-item {
+        gap: 12px;
+        padding: 11px 4px;
+    }
+
+    .notification-icon {
+        width: 26px;
+        height: 26px;
+    }
+
+    .notification-icon svg,
+    .notification-badge-img {
+        width: 24px;
+        height: 24px;
+    }
+
+    .notification-text {
+        font-size: 14px;
+    }
+}

@@ -23,14 +23,23 @@ public class EventParticipantService {
     private final EventParticipantRepository eventParticipantRepository;
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
+    private final NotificationService notificationService;
+
+    public EventParticipantService(EventParticipantRepository eventParticipantRepository,
+                                   EventRepository eventRepository,
+                                   UserRepository userRepository) {
+        this(eventParticipantRepository, eventRepository, userRepository, null);
+    }
 
     @Autowired
     public EventParticipantService(EventParticipantRepository eventParticipantRepository,
                                    EventRepository eventRepository,
-                                   UserRepository userRepository) {
+                                   UserRepository userRepository,
+                                   NotificationService notificationService) {
         this.eventParticipantRepository = eventParticipantRepository;
         this.eventRepository = eventRepository;
         this.userRepository = userRepository;
+        this.notificationService = notificationService;
     }
 
     public ActionResponse joinEvent(JoinEventRequest request) {
@@ -55,6 +64,9 @@ public class EventParticipantService {
         Event event = eventOptional.get();
 
         // 3. ตรวจสอบสถานะกิจกรรม
+        if (event.getLifecycleStatus() != null && !"UPCOMING".equalsIgnoreCase(event.getLifecycleStatus())) {
+            return new ActionResponse(false, "ไม่สามารถทำรายการได้เนื่องจากกิจกรรมนี้สิ้นสุดหรือถูกยกเลิกแล้ว");
+        }
         if ("CLOSED".equalsIgnoreCase(event.getStatus())) {
             return new ActionResponse(false, "กิจกรรมนี้ปิดรับสมัครแล้ว");
         }
@@ -62,6 +74,10 @@ public class EventParticipantService {
             event.setStatus("FULL");
             eventRepository.save(event);
             return new ActionResponse(false, "กิจกรรมนี้มีผู้เข้าร่วมเต็มแล้ว");
+        }
+
+        if (event.getCreator() != null && user.getStudentId().equals(event.getCreator().getStudentId())) {
+            return new ActionResponse(false, "ผู้สร้างกิจกรรมไม่สามารถเข้าร่วมกิจกรรมของตนเองได้");
         }
 
         // 4. ตรวจสอบการเข้าร่วมซ้ำ
@@ -80,6 +96,9 @@ public class EventParticipantService {
             event.setStatus("FULL");
         }
         eventRepository.save(event);
+        if (notificationService != null) {
+            notificationService.notifyUserJoined(event, user);
+        }
 
         return new ActionResponse(true, "เข้าร่วมกิจกรรมสำเร็จ", event);
     }
@@ -105,6 +124,10 @@ public class EventParticipantService {
         }
         Event event = eventOptional.get();
 
+        if (event.getLifecycleStatus() != null && !"UPCOMING".equalsIgnoreCase(event.getLifecycleStatus())) {
+            return new ActionResponse(false, "ไม่สามารถทำรายการได้เนื่องจากกิจกรรมนี้สิ้นสุดหรือถูกยกเลิกแล้ว");
+        }
+
         // 3. ป้องกันไม่ให้ผู้สร้างกิจกรรมกดออกจากกิจกรรมตนเอง
         if (event.getCreator() != null && user.getStudentId().equals(event.getCreator().getStudentId())) {
             return new ActionResponse(false, "ผู้สร้างกิจกรรมไม่สามารถยกเลิกการเข้าร่วมได้");
@@ -121,13 +144,16 @@ public class EventParticipantService {
         eventParticipantRepository.delete(participantOptional.get());
 
         // 6. ลดจำนวนคนและปรับสถานะกิจกรรมกลับเป็น OPEN หากมีที่ว่าง
-        int updatedCount = Math.max(0, event.getCurrentParticipants() - 1);
+        int updatedCount = Math.max(1, event.getCurrentParticipants() - 1);
         event.setCurrentParticipants(updatedCount);
 
         if ("FULL".equalsIgnoreCase(event.getStatus()) && updatedCount < event.getEventSize()) {
             event.setStatus("OPEN");
         }
         eventRepository.save(event);
+        if (notificationService != null) {
+            notificationService.notifyUserLeft(event, user);
+        }
 
         return new ActionResponse(true, "ยกเลิกการเข้าร่วมกิจกรรมสำเร็จ", event);
     }
@@ -135,5 +161,40 @@ public class EventParticipantService {
     @Transactional(readOnly = true)
     public List<EventParticipant> getParticipantsByEventId(Long eventId) {
         return eventParticipantRepository.findByEventId(eventId);
+    }
+
+    // เพิ่มเมธอดสำหรับส่งแบบประเมินและอัปเดตแต้ม Badge
+    @Transactional
+    public ActionResponse submitEvaluation(String studentId, Long eventId, String reviewText) {
+        if (studentId == null || studentId.isBlank() || eventId == null) {
+            return new ActionResponse(false, "ข้อมูลไม่ครบถ้วน กรุณาระบุรหัสนักศึกษาและรหัสกิจกรรม");
+        }
+
+        studentId = studentId.trim();
+
+        // ตรวจสอบข้อมูลผู้ใช้งาน
+        Optional<User> userOptional = userRepository.findByStudentId(studentId);
+        if (userOptional.isEmpty()) {
+            return new ActionResponse(false, "ไม่พบข้อมูลผู้ใช้งานรหัสนักศึกษา: " + studentId);
+        }
+        User user = userOptional.get();
+
+        // ตรวจสอบว่ากิจกรรมมีอยู่จริงและจบแล้ว (ทางเลือก: ปรับเงื่อนไขตามลอจิกของคุณ)
+        Optional<Event> eventOptional = eventRepository.findById(eventId);
+        if (eventOptional.isEmpty()) {
+            return new ActionResponse(false, "ไม่พบข้อมูลกิจกรรม ID: " + eventId);
+        }
+
+        // อัปเดตแต้ม Badge (evaluatedCount)
+        int previousPoints = user.getEvaluatedCount();
+        int newPoints = previousPoints + 1;
+        
+        user.setEvaluatedCount(newPoints);
+        userRepository.save(user);
+        if (notificationService != null) {
+            notificationService.notifyBadgeUpgradedIfEligible(user, eventOptional.get(), previousPoints, newPoints);
+        }
+
+        return new ActionResponse(true, "ส่งแบบประเมินสำเร็จ ได้รับแต้มสะสมเพิ่ม 1 แต้ม!", user);
     }
 }

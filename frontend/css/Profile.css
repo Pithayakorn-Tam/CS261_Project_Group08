@@ -1,126 +1,50 @@
-@font-face {
-  font-family: 'Mitr';
-  src: url(../Font/Mitr/Mitr-Regular.ttf);
-}
+/* ==========================================
+   Profile Page Style
+========================================== */
 
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  font-family: "Mitr", sans-serif;
-}
-
-body {
-  background-color: #f0f0f0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  margin: 0;
-}
-
-/* กรอบหลักสำหรับหน้าจอมือถือ */
-.app-container {
-  width: 100%;
-  max-width: 430px;          
-  height: 100vh;              
-  max-height: 850px;          
-  background-color: #ffffff;
-  border: 1px solid #dedede;
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  overflow-y: auto;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-}
-
+/* Main Layout */
 .main-content {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
   display: flex;
   flex-direction: column;
+  gap: 20px;
   flex: 1;
-  overflow-y: auto;
 }
 
-/* Header */
-.header {
-  width: 100%;
-  height: 48px;
-  background-color: #ffffff;
-  border-bottom: 1px solid #dedede;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 16px;
-}
-
-.icon-logo {
-  height: 22px;
-  width: auto;
-}
-
-.header-action {
-  display: flex;
-  gap: 12px;
-  align-items: center;
-}
-
-.icon-btn {
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: transform 0.1s ease, opacity 0.1s ease;
-}
-
-.icon-btn:active {
-  transform: scale(0.90);
-  opacity: 0.8;
-}
-
-.vector-img {
-  width: 20px;
-  height: 20px;
-}
-
-.profile-img {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-}
-
-/* Profile Section */
+/* =========================
+   Profile Layout
+========================= */
 .profile-section {
-  display: flex;
-  padding: 24px 20px 10px 20px;
-  gap: 16px;
-  align-items: center;
+  display: grid;
+  grid-template-columns: 210px minmax(0, 1fr);
+  align-items: start;
+  gap: 40px;
+  padding: 24px 0;
 }
 
-/* Avatar & Edit Badge */
 .avatar-container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  flex-shrink: 0;
 }
 
 .avatar-wrapper {
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  border: 2px solid #FFE799;
   position: relative;
+  width: clamp(120px, 20vw, 210px);
+  aspect-ratio: 1 / 1;
+  height: auto;
   overflow: hidden;
+  border: 2px solid #2e3bcf;
+  border-radius: 50%;
   background-color: #f5f5f5;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 .avatar-img {
+  display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -129,124 +53,160 @@ body {
 .edit-badge {
   position: absolute;
   bottom: 0;
+  left: 0;
+  z-index: 1;
+  display: block;
   width: 100%;
-  background-color: #FFE799;
-  color: #333333;
+  padding: 4px 0;
+  background: #2e3bcf;
+  color: #fff;
   text-align: center;
   font-size: 12px;
-  padding: 3px 0;
-  cursor: pointer;
   font-weight: 500;
-  transition: background-color 0.2s ease;
+  cursor: pointer;
 }
 
-.edit-badge:hover {
-  background-color: #ffd966;
+.badge-container {
+  width: 100%;
+  max-width: 230px;
+  margin-top: 20px;
+  text-align: center;
 }
 
-/* Info Container & Inputs */
+.badge-container h4 {
+  margin-bottom: 8px;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.badge-box {
+  width: 100%;
+  min-height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #9999ff;
+  border-radius: 99px;
+  color: #666;
+  font-size: 14px;
+}
+
+/* Profile Information */
 .info-container {
-  flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 20px;
+  width: 100%;
+  min-width: 0;
 }
 
 .input-group {
   position: relative;
+  width: 100%;
+  min-width: 0;
 }
 
 .input-label {
   position: absolute;
-  top: -8px;
-  left: 12px;
-  background-color: #ffffff;
-  padding: 0 4px;
-  font-size: 11px;
-  color: #000000;
-  font-weight: 600;
+  top: -15px;
+  left: 14px;
   z-index: 1;
+  padding: 0 6px;
+  background: #fff;
+  color: #000;
+  font-size: 18px !important;
+  font-weight: 600;
 }
 
-.input-box {
-  width: 100%;
-  height: 36px;
-  border: 1px solid #8e8e8e;
-  border-radius: 8px;
+/* ล็อกความสูงทุกประเภทกล่องให้อยู่ที่ 45px เท่ากันเป๊ะ */
+.input-box,
+.input-box-wrapper {
   display: flex;
   align-items: center;
-  justify-content: center;
-  padding: 0 10px;
-  font-size: 14px;
-  color: #000000;
-  background-color: #ffffff;
+  width: 100%;
+  height: 45px;
+  padding: 0 16px;
+  border: 1px solid #8e8e8e;
+  border-radius: 10px;
+  background: #fff;
+  color: #000;
+  font-size: 18px;
 }
 
-/* กล่อง Username แสดงผลปกติ */
 .username-display-box {
   justify-content: space-between;
-  padding: 0 12px;
   cursor: pointer;
   transition: border-color 0.2s ease;
 }
 
 .username-display-box:hover {
-  border-color: #4A90E2;
+  border-color: #4a90e2;
+}
+
+.username-row {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.username-row .username-display-box {
+  flex: 1;
+  min-width: 0;
+}
+
+.username-side-icon {
+  display: none;
 }
 
 .username-text {
   flex: 1;
+  min-width: 0;
   text-align: center;
 }
 
 .edit-text-btn {
-  font-size: 12px;
   color: #8e8e8e;
+  font-size: 14px;
   font-weight: 400;
   white-space: nowrap;
 }
 
 .edit-text-btn:hover {
-  color: #555555;
+  color: #555;
   text-decoration: underline;
 }
 
-/* กล่องในโหมดแก้ไข */
 .input-box-wrapper {
-  width: 100%;
-  height: 36px;
-  border: 1px solid #4A90E2;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  padding: 0 8px;
-  background-color: #ffffff;
+  border-color: #4a90e2;
+  padding: 0 12px;
 }
 
 .input-field {
   width: 100%;
+  min-width: 0;
   border: none;
   outline: none;
   background: transparent;
-  font-size: 14px;
-  color: #000000;
+  color: #000;
+  font-size: 18px;
   text-align: center;
 }
 
 .save-icon-btn {
-  background: #FFE799;
-  border: none;
-  border-radius: 4px;
-  width: 24px;
-  height: 24px;
-  cursor: pointer;
-  font-size: 12px;
-  font-weight: bold;
-  color: #333;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-left: 4px;
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  margin-left: 6px;
+  border: none;
+  border-radius: 5px;
+  background: #ffe799;
+  color: #333;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
 }
 
 .save-icon-btn:hover {
@@ -257,151 +217,265 @@ body {
   font-weight: 700;
 }
 
-/* Email Box */
 .email-box {
   justify-content: center;
   text-align: center;
-  font-size: 13px;
-  color: #000000;
+  font-size: 17px;
 }
 
-/* ========================================== */
-/* ส่วนการ์ดกิจกรรม */
-/* ========================================== */
+/* Activity Sections */
 .activity-section {
-  padding: 12px 16px 8px 16px;
+  width: 100%;
+  padding: 12px 0;
 }
 
 .section-title {
-  font-size: 16px;
-  font-weight: 700;
-  color: #000000;
-  text-align: center;
   margin-bottom: 12px;
+  color: #000;
+  font-size: 25px;
+  font-weight: 700;
+  text-align: center;
 }
 
 .event-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+/* =========================
+   Event Card (นำสไตล์มาจาก Homepage)
+========================= */
+.event-card {
   display: flex;
-  flex-direction: column;
-}
-
-.event-card { 
-  display: flex; 
-  align-items: center; 
-  border: 1px solid #000; 
-  border-radius: 12px; 
-  padding: 10px 12px; 
-  margin-bottom: 12px; 
-  background-color: white;     
-  font-size: 12px; 
-  font-weight: 500; 
-}
-
-.event-logo { 
-  width: 50px; 
-  height: 50px;
-  display: flex; 
-  align-items: center; 
-  justify-content: center; 
-  margin-right: 12px; 
-  flex-shrink: 0; 
+  align-items: center;
+  position: relative;
+  width: 100%;
+  box-sizing: border-box;
+  min-width: 0;
+  min-height: 76px;
+  border: 1.5px solid #000;
+  border-radius: 12px;
+  padding: 7px 9px;
+  margin: 0;
+  background-color: #fff;
+  color: #000;
+  font-size: 12px;
+  font-weight: 500;
   overflow: hidden;
-}
-
-.event-logo img { 
-  width: 100%; 
-  height: 100%; 
-  object-fit: contain; 
-}
-
-.event-info { 
-  flex-grow: 1; 
-  display: flex; 
-  flex-direction: column; 
-  gap: 4px; 
-}
-
-.event-badge { 
-  font-size: 14px;
-  font-weight: 700;
-  color: #ffffff;
-  background-color: #2e3bcf;
-  padding: 2px 8px;
-  border-radius: 4px;
-  align-self: flex-start;
 }
 
 .event-card.expired {
   border-color: #8e8e8e;
-  color: #666666;
+  color: #666;
+  cursor: default;
 }
 
 .event-card.expired .event-badge {
   background-color: #8e8e8e;
-  color: #ffffff;
+  color: #fff;
 }
 
-.event-time-date { 
-  display: flex; 
-  gap: 12px; 
-  font-weight: 600;
-}
-
-.event-location { 
-  font-size: 12px;
-  color: #333;
-}
-
-.detail-icon {
-  width: 14px; 
-  height: 14px;
-  vertical-align: middle;
-  margin-right: 4px;
-}
-
-/* Action Area ฝั่งขวาของการ์ด */
-.event-action-right {
+/* Event Logo */
+.event-logo {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-left: 8px;
+  justify-content: center;
   flex-shrink: 0;
+  width: 55px;
+  height: 55px;
+  margin-right: 8px;
+  overflow: hidden;
 }
 
-/* ปุ่มดูรายละเอียด */
-.detail-link-btn {
-  font-size: 13px;
-  color: #2e3bcf;
-  text-decoration: none;
-  font-weight: 600;
+.event-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* Event Info */
+.event-info {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.event-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  align-self: flex-start;
+  max-width: 100%;
+  background-color: #2e3bcf;
+  color: #fff;
+  padding: 2px 5px;
+  border-radius: 3px;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.event-title {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.detail-link-btn:hover {
-  text-decoration: underline;
+.event-info-btn {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  margin-left: 2px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  overflow: visible;
 }
 
-/* สถานะเข้าร่วมแล้ว + กากบาทแดง */
+.event-info-btn img {
+  width: 14px;
+  height: 14px;
+  display: block;
+  object-fit: contain;
+}
+
+.event-info-btn:hover {
+  opacity: 0.8;
+}
+
+.event-info-btn:active {
+  transform: scale(0.9);
+}
+
+.event-time-date {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 8px;
+  font-size: 11px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.event-time-date span {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.event-location {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  font-size: 11px;
+  font-weight: 500;
+  color: #333;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.detail-icon {
+  width: 14px;
+  height: 14px;
+  flex: 0 0 14px;
+  margin-right: 3px;
+  vertical-align: middle;
+  object-fit: contain;
+}
+
+.event-action-right {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  gap: 8px;
+  margin-left: 8px;
+}
+
 .joined-action {
   gap: 6px;
 }
 
+.review-action {
+  position: absolute;
+  top: 50%;
+  right: 9px;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+  width: 55px;
+  margin: 0;
+  transform: translateY(-50%);
+  color: #2130da;
+  text-decoration: none;
+  font-size: 11px;
+  line-height: 1.1;
+}
+
+.review-icon-wrap {
+  position: relative;
+  display: block;
+  width: 43px;
+  height: 29px;
+}
+
+.review-icon-background {
+  display: block;
+  width: 43px;
+  height: 29px;
+}
+
+.review-icon-star {
+  position: absolute;
+  top: 4px;
+  left: 10px;
+  width: 23px;
+  height: 22px;
+}
+
+.review-label {
+  white-space: nowrap;
+}
+
+.review-action:hover {
+  opacity: 0.75;
+}
+
+.event-card:has(.review-action) .event-info {
+  padding-right: 64px;
+}
+
+.review-completed {
+  color: #8e8e8e;
+}
+
 .joined-status-text {
+  color: #333;
   font-size: 12px;
-  color: #333333;
   font-weight: 500;
   white-space: nowrap;
 }
 
 .cancel-event-btn {
-  background: transparent;
+  padding: 0 4px;
   border: none;
+  background: transparent;
   color: #e53935;
   font-size: 20px;
   font-weight: bold;
-  cursor: pointer;
-  padding: 0 4px;
   line-height: 1;
+  cursor: pointer;
   transition: opacity 0.2s ease;
 }
 
@@ -409,47 +483,57 @@ body {
   opacity: 0.7;
 }
 
-/* Modal Popup ยืนยันการยกเลิก */
+.empty-message {
+  grid-column: 1 / -1;
+  width: 100%;
+  min-height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: #888;
+  font-size: 18px;
+  padding: 16px;
+}
+
+/* Modal */
 .modal-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.6);
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  inset: 0;
   z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.6);
 }
 
 .modal-box {
-  background-color: #ffffff;
   width: 85%;
   max-width: 320px;
-  border-radius: 16px;
   padding: 24px 20px;
+  border-radius: 16px;
+  background: #fff;
   text-align: center;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
 .modal-title {
+  margin-bottom: 8px;
+  color: #000;
   font-size: 16px;
   font-weight: 700;
-  color: #000000;
-  margin-bottom: 8px;
 }
 
 .modal-desc {
-  font-size: 13px;
-  color: #666666;
   margin-bottom: 20px;
+  color: #666;
+  font-size: 13px;
 }
 
 .modal-actions {
   display: flex;
-  gap: 12px;
   justify-content: center;
+  gap: 12px;
 }
 
 .modal-btn {
@@ -462,20 +546,249 @@ body {
   cursor: pointer;
 }
 
-.confirm-btn {
-  background-color: #d9d9d9;
-  color: #333333;
-}
-
-.confirm-btn:hover {
-  background-color: #cccccc;
-}
-
 .dismiss-btn {
-  background-color: #e53935;
-  color: #ffffff;
+  background: #d9d9d9;
+  color: #333;
 }
 
 .dismiss-btn:hover {
-  background-color: #c62828;
+  background: #ccc;
+}
+
+.confirm-btn {
+  background: #e53935;
+  color: #fff;
+}
+
+.confirm-btn:hover {
+  background: #c62828;
+}
+
+/* Mobile Rules */
+@media (max-width: 600px) {
+  .main-content {
+    padding: 16px 12px;
+    gap: 12px;
+  }
+
+  .profile-section {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+    align-items: center;
+    gap: 16px;
+    padding: 16px 0 24px;
+    border-bottom: 3px solid #f38484;
+    margin-bottom: 4px;
+  }
+
+  .avatar-wrapper {
+    width: min(100%, clamp(120px, 28vw, 190px));
+  }
+
+  .badge-container {
+    display: none;
+  }
+
+  .info-container {
+    padding-right: 0;
+  }
+
+  /* ปรับให้ทุกช่องกว้างเต็ม 100% เท่ากันทั้งหมด */
+  .info-container .input-group {
+    width: 100% !important;
+  }
+
+  .username-side-icon {
+    display: block;
+    flex: 0 0 40px;
+    width: 40px;
+    height: 40px;
+    margin-left: 6px;
+    opacity: 0.25;
+    object-fit: contain;
+  }
+
+  .input-box,
+  .input-box-wrapper {
+    height: 40px;
+    padding: 0 8px;
+    font-size: 13px;
+  }
+
+  .email-box {
+    font-size: 12px;
+  }
+
+  .section-title {
+    margin-bottom: 10px;
+    font-size: 20px;
+  }
+
+  .event-list {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .event-card {
+    width: 100%;
+    min-height: 76px;
+    padding: 7px 8px;
+    margin-bottom: 10px;
+    border-radius: 12px;
+  }
+
+  .event-logo {
+    width: 55px;
+    height: 55px;
+    flex-basis: 55px;
+    margin-right: 7px;
+  }
+
+  .event-info {
+    gap: 2px;
+  }
+
+  .event-badge {
+    font-size: 12px;
+    padding: 2px 5px;
+  }
+
+  .event-info-btn {
+    width: 16px;
+    height: 16px;
+    flex-basis: 16px;
+  }
+
+  .event-info-btn img {
+    width: 14px;
+    height: 14px;
+  }
+
+  .event-time-date {
+    font-size: 10px;
+    gap: 6px;
+  }
+
+  .event-location {
+    font-size: 10px;
+  }
+
+  .event-action-right {
+    gap: 4px;
+    margin-left: 4px;
+  }
+
+  .input-label {
+    font-size: 15px !important;
+    top: -15px;
+    left: 10px;
+  }
+}
+
+/* Tablet & Desktop Rules */
+@media (min-width: 768px) {
+  .main-content {
+    display: grid;
+    grid-template-columns: 320px minmax(0, 1fr);
+    grid-template-rows: auto auto auto;
+    column-gap: 48px;
+    row-gap: 20px;
+    align-items: start;
+    max-width: 1200px;
+    padding: 32px 48px;
+  }
+
+  .profile-section {
+    display: contents;
+  }
+
+  .avatar-container {
+    grid-column: 1;
+    grid-row: 1 / 4;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+  }
+
+  .avatar-wrapper {
+    width: 220px;
+    height: 220px;
+  }
+
+  .badge-container {
+    width: 230px;
+    max-width: 100%;
+    margin-top: 20px;
+  }
+
+  .info-container {
+    grid-column: 2;
+    grid-row: 1;
+    width: 100%;
+    padding-right: 0;
+  }
+
+  .activity-section:nth-of-type(2) {
+    grid-column: 2;
+    grid-row: 2;
+    width: 100%;
+    padding: 16px 0;
+  }
+
+  .activity-section:nth-of-type(3) {
+    grid-column: 2;
+    grid-row: 3;
+    width: 100%;
+    padding: 16px 0;
+  }
+
+  .event-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
+}
+/* Student ID */
+.student-id-box {
+    justify-content: center;
+    text-align: center;
+}
+
+/* Student Email */
+.email-box {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    text-align: center;
+    padding: 0 16px;
+}
+.email-name {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #000;
+    font-size: 20px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.email-domain {
+    position: absolute;
+    right: 16px;
+    color: #888;
+    font-weight: 400;
+    white-space: nowrap;
+}
+@media (max-width: 600px) {
+    .email-box {
+        gap: 5px;
+        font-size: 13px;
+    }
+
+    .email-name {
+        font-size: 15px;
+    }
+
+    .email-domain {
+        font-size: 10px;
+    }
 }

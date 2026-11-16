@@ -36,6 +36,7 @@ class EventServiceTest {
     private EventService eventService;
 
     private User mockUser;
+    private LocalDate validFutureDate;
 
     @BeforeEach
     void setUp() {
@@ -45,16 +46,18 @@ class EventServiceTest {
         mockUser.setEmail("mock01@dome.tu.ac.th");
         mockUser.setDisplayname_th("นักศึกษาจำลอง ทดสอบ01");
         mockUser.setFaculty("คณะวิทยาศาสตร์และเทคโนโลยี");
+
+        validFutureDate = LocalDate.now().plusDays(2);
     }
 
     @Test
-    @DisplayName("สร้าง Event สำเร็จเมื่อข้อมูลถูกต้อง")
+    @DisplayName("สร้าง Event สำเร็จเมื่อข้อมูลถูกต้อง (อยู่ในช่วงไม่เกิน 7 วัน)")
     void createEvent_Success() {
         CreateEventRequest request = new CreateEventRequest();
         request.setEventType("food");
         request.setEventName("ไปกินตี๋น้อย");
         request.setEventSize(4);
-        request.setEventDate("2026-10-25");
+        request.setEventDate(validFutureDate.toString());
         request.setEventTime("18:00");
         request.setCreatorStudentId("6800000001");
 
@@ -76,15 +79,57 @@ class EventServiceTest {
         assertEquals("ไปกินตี๋น้อย", dto.getEventName());
         assertEquals("food", dto.getEventType());
         assertEquals(4, dto.getEventSize());
-        assertEquals(0, dto.getCurrentParticipants());
-        assertEquals(LocalDate.of(2026, 10, 25), dto.getEventDate());
+        assertEquals(1, dto.getCurrentParticipants());
+        assertEquals(validFutureDate, dto.getEventDate());
         assertEquals("18:00", dto.getEventTime());
         assertEquals("OPEN", dto.getStatus());
+        assertEquals("UPCOMING", dto.getLifecycleStatus());
         assertNotNull(dto.getCreator());
         assertEquals("6800000001", dto.getCreator().getStudentId());
         assertEquals("นักศึกษาจำลอง ทดสอบ01", dto.getCreator().getDisplayname_th());
+        assertEquals("No Badge", dto.getCreator().getBadge());
 
         verify(eventRepository, times(1)).save(any(Event.class));
+    }
+
+    @Test
+    @DisplayName("สร้าง Event ล้มเหลวเมื่อวันที่อยู่ในอดีต")
+    void createEvent_PastDate_Fails() {
+        CreateEventRequest request = new CreateEventRequest();
+        request.setCreatorStudentId("6800000001");
+        request.setEventName("ไปกินตี๋น้อย");
+        request.setEventType("food");
+        request.setEventSize(4);
+        request.setEventDate(LocalDate.now().minusDays(1).toString());
+        request.setEventTime("18:00");
+
+        when(userRepository.findByStudentId("6800000001")).thenReturn(Optional.of(mockUser));
+
+        EventResponse response = eventService.createEvent(request);
+
+        assertFalse(response.isStatus());
+        assertTrue(response.getMessage().contains("ไม่สามารถสร้างกิจกรรมในอดีตได้"));
+        verify(eventRepository, never()).save(any(Event.class));
+    }
+
+    @Test
+    @DisplayName("สร้าง Event ล้มเหลวเมื่อตั้งวันที่ล่วงหน้าเกิน 7 วัน")
+    void createEvent_MoreThan7DaysAdvance_Fails() {
+        CreateEventRequest request = new CreateEventRequest();
+        request.setCreatorStudentId("6800000001");
+        request.setEventName("ไปกินตี๋น้อย");
+        request.setEventType("food");
+        request.setEventSize(4);
+        request.setEventDate(LocalDate.now().plusDays(8).toString());
+        request.setEventTime("18:00");
+
+        when(userRepository.findByStudentId("6800000001")).thenReturn(Optional.of(mockUser));
+
+        EventResponse response = eventService.createEvent(request);
+
+        assertFalse(response.isStatus());
+        assertTrue(response.getMessage().contains("สามารถสร้างกิจกรรมล่วงหน้าได้ไม่เกิน 7 วัน"));
+        verify(eventRepository, never()).save(any(Event.class));
     }
 
     @Test
@@ -95,7 +140,7 @@ class EventServiceTest {
         request.setEventName("อ่านหนังสือ");
         request.setEventType("study");
         request.setEventSize(2);
-        request.setEventDate("2026-10-25");
+        request.setEventDate(validFutureDate.toString());
         request.setEventTime("18:00");
 
         when(userRepository.findByStudentId("9999999999")).thenReturn(Optional.empty());
@@ -115,7 +160,7 @@ class EventServiceTest {
         request.setEventName("ไปกินตี๋น้อย");
         request.setEventType("food");
         request.setEventSize(0);
-        request.setEventDate("2026-10-25");
+        request.setEventDate(validFutureDate.toString());
         request.setEventTime("18:00");
 
         when(userRepository.findByStudentId("6800000001")).thenReturn(Optional.of(mockUser));
@@ -130,9 +175,9 @@ class EventServiceTest {
     @Test
     @DisplayName("ดึงรายการ Event ที่เปิดรับอยู่สำเร็จ")
     void getAllOpenEvents_Success() {
-        Event e1 = new Event("บอร์ดเกม", "bordgame", 6, LocalDate.of(2026, 10, 20), "13:00", mockUser);
+        Event e1 = new Event("บอร์ดเกม", "bordgame", 6, validFutureDate, "13:00", mockUser);
         e1.setId(1L);
-        Event e2 = new Event("ไปกินตี๋น้อย", "food", 4, LocalDate.of(2026, 10, 25), "18:00", mockUser);
+        Event e2 = new Event("ไปกินตี๋น้อย", "food", 4, validFutureDate, "18:00", mockUser);
         e2.setId(2L);
 
         when(eventRepository.findByStatusOrderByIdAsc("OPEN")).thenReturn(List.of(e1, e2));
@@ -151,7 +196,7 @@ class EventServiceTest {
     @Test
     @DisplayName("เข้าร่วมและยกเลิกการเข้าร่วมกิจกรรมผ่าน EventService สำเร็จ")
     void joinAndLeaveEvent_Success() {
-        Event event = new Event("ตีแบดมินตัน", "sport", "ยิม มธ.", 4, LocalDate.of(2026, 10, 13), "20.00", mockUser);
+        Event event = new Event("ตีแบดมินตัน", "sport", "ยิม มธ.", 4, validFutureDate, "20.00", mockUser);
         event.setId(3L);
         event.setCurrentParticipants(2);
 
@@ -178,5 +223,211 @@ class EventServiceTest {
         assertEquals("ยกเลิกการเข้าร่วมกิจกรรมสำเร็จ", leaveRes.getMessage());
         assertEquals(2, event.getCurrentParticipants());
         assertFalse(event.getParticipants().contains(participantUser));
+
+        // 3. ทดสอบผู้สร้างไม่สามารถกดเข้าร่วมกิจกรรมของตนเองได้
+        when(userRepository.findByStudentId("6800000001")).thenReturn(Optional.of(mockUser));
+        EventResponse creatorJoinRes = eventService.joinEvent(3L, "6800000001");
+        assertFalse(creatorJoinRes.isStatus());
+        assertTrue(creatorJoinRes.getMessage().contains("ผู้สร้างกิจกรรมไม่สามารถเข้าร่วมกิจกรรมของตนเองได้"));
+    }
+
+    @Test
+    @DisplayName("US-9: คำนวณยศ (Badge) ตามผลรวมกิจกรรมที่สร้างและเข้าร่วมสำเร็จ รวมถึง evaluatedCount")
+    void userBadgeCalculation_Success() {
+        User user = new User();
+        assertEquals(0, user.getCompletedCreatedCount());
+        assertEquals(0, user.getCompletedJoinedCount());
+        assertEquals(0, user.getEvaluatedCount());
+        assertEquals("No Badge", user.getBadge());
+
+        user.setCompletedCreatedCount(1);
+        user.setCompletedJoinedCount(0);
+        assertEquals("Newly Bee", user.getBadge());
+
+        user.setCompletedCreatedCount(2);
+        user.setCompletedJoinedCount(2);
+        assertEquals("Newly Bee", user.getBadge());
+
+        user.setCompletedCreatedCount(2);
+        user.setCompletedJoinedCount(3);
+        assertEquals("Baby Bloom", user.getBadge());
+
+        user.setCompletedCreatedCount(5);
+        user.setCompletedJoinedCount(5);
+        assertEquals("Happy Blossom", user.getBadge());
+
+        user.setCompletedCreatedCount(12);
+        user.setCompletedJoinedCount(8);
+        assertEquals("Super Bouquet", user.getBadge());
+
+        User evaluatedOnlyUser = new User();
+        evaluatedOnlyUser.setEvaluatedCount(5);
+        assertEquals("Baby Bloom", evaluatedOnlyUser.getBadge());
+    }
+
+    @Test
+    @DisplayName("US-9: กิจกรรมที่หมดเวลาแล้วและมีสมาชิกตั้งแต่ 2 คนขึ้นไป จะเปลี่ยนเป็น COMPLETED และแจกแต้ม +1")
+    void syncAndCompleteExpiredEvents_AwardsPointsWhenAtLeastTwoMembers() {
+        User participant = new User();
+        participant.setId(2L);
+        participant.setStudentId("6800000002");
+
+        Event pastEvent = new Event("อ่านหนังสือ", "study", "ห้องสมุด", 4, LocalDate.now().minusDays(1), "18:00", mockUser);
+        pastEvent.setId(10L);
+        pastEvent.addParticipant(participant); // currentParticipants becomes 2
+
+        when(eventRepository.findByLifecycleStatus("UPCOMING")).thenReturn(List.of(pastEvent));
+
+        eventService.syncAndCompleteExpiredEvents();
+
+        assertEquals("COMPLETED", pastEvent.getLifecycleStatus());
+        assertEquals("CLOSED", pastEvent.getStatus());
+        assertEquals(1, mockUser.getCompletedCreatedCount());
+        assertEquals(0, mockUser.getCompletedJoinedCount());
+        assertEquals("Newly Bee", mockUser.getBadge());
+
+        assertEquals(0, participant.getCompletedCreatedCount());
+        assertEquals(1, participant.getCompletedJoinedCount());
+        assertEquals("Newly Bee", participant.getBadge());
+
+        verify(userRepository, times(1)).save(mockUser);
+        verify(userRepository, times(1)).save(participant);
+        verify(eventRepository, times(1)).save(pastEvent);
+    }
+
+    @Test
+    @DisplayName("US-9: กิจกรรมที่หมดเวลาแต่มีแค่ผู้สร้างคนเดียว (currentParticipants < 2) จะเปลี่ยนเป็น COMPLETED แต่ไม่แจกแต้ม +1")
+    void syncAndCompleteExpiredEvents_NoPointsWhenOnlyCreator() {
+        Event soloExpiredEvent = new Event("วิ่งคนเดียว", "sport", "สนาม", 4, LocalDate.now().minusDays(1), "18:00", mockUser);
+        soloExpiredEvent.setId(11L);
+        soloExpiredEvent.setCurrentParticipants(1);
+
+        when(eventRepository.findByLifecycleStatus("UPCOMING")).thenReturn(List.of(soloExpiredEvent));
+
+        eventService.syncAndCompleteExpiredEvents();
+
+        assertEquals("COMPLETED", soloExpiredEvent.getLifecycleStatus());
+        assertEquals("CLOSED", soloExpiredEvent.getStatus());
+        assertEquals(0, mockUser.getCompletedCreatedCount());
+        assertEquals("No Badge", mockUser.getBadge());
+
+        verify(userRepository, never()).save(any(User.class));
+        verify(eventRepository, times(1)).save(soloExpiredEvent);
+    }
+
+    @Test
+    @DisplayName("US-9: ผู้สร้างกดยกเลิกกิจกรรม จะเปลี่ยน lifecycleStatus เป็น CANCELLED และ status เป็น CLOSED โดยไม่ลบออกจาก DB")
+    void leaveEvent_ByCreator_CancelsWithoutDeleting() {
+        Event event = new Event("ตีแบดมินตัน", "sport", "ยิม มธ.", 4, validFutureDate, "20:00", mockUser);
+        event.setId(12L);
+
+        when(eventRepository.findById(12L)).thenReturn(Optional.of(event));
+        when(userRepository.findByStudentId("6800000001")).thenReturn(Optional.of(mockUser));
+        when(eventRepository.save(any(Event.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        EventResponse response = eventService.leaveEvent(12L, "6800000001");
+
+        assertTrue(response.isStatus());
+        assertEquals("ยกเลิกกิจกรรมสำเร็จ", response.getMessage());
+        assertEquals("CANCELLED", event.getLifecycleStatus());
+        assertEquals("CLOSED", event.getStatus());
+
+        verify(eventRepository, never()).delete(any(Event.class));
+        verify(eventRepository, times(1)).save(event);
+    }
+
+    @Test
+    @DisplayName("US-9: ไม่สามารถกด Join หรือ Leave ในกิจกรรมที่ COMPLETED หรือ CANCELLED ไปแล้วได้")
+    void joinAndLeaveEvent_BlockedWhenCompletedOrCancelled() {
+        Event completedEvent = new Event("อ่านหนังสือ", "study", "ห้องสมุด", 4, validFutureDate, "18:00", mockUser);
+        completedEvent.setId(13L);
+        completedEvent.setLifecycleStatus("COMPLETED");
+
+        User participant = new User();
+        participant.setId(2L);
+        participant.setStudentId("6800000002");
+
+        when(eventRepository.findById(13L)).thenReturn(Optional.of(completedEvent));
+        when(userRepository.findByStudentId("6800000002")).thenReturn(Optional.of(participant));
+
+        EventResponse joinRes = eventService.joinEvent(13L, "6800000002");
+        assertFalse(joinRes.isStatus());
+        assertEquals("ไม่สามารถทำรายการได้เนื่องจากกิจกรรมนี้สิ้นสุดหรือถูกยกเลิกแล้ว", joinRes.getMessage());
+
+        completedEvent.setLifecycleStatus("CANCELLED");
+        EventResponse leaveRes = eventService.leaveEvent(13L, "6800000002");
+        assertFalse(leaveRes.isStatus());
+        assertEquals("ไม่สามารถทำรายการได้เนื่องจากกิจกรรมนี้สิ้นสุดหรือถูกยกเลิกแล้ว", leaveRes.getMessage());
+    }
+
+    @Test
+    @DisplayName("US-10: สร้าง Event พร้อมคำอธิบาย (eventDescription / description) สำเร็จและบันทึกลง EventDto")
+    void createEvent_WithDescription_Success() {
+        CreateEventRequest request = new CreateEventRequest();
+        request.setCreatorStudentId("6800000001");
+        request.setEventName("ตี๋น้อย คลายเหงา");
+        request.setEventType("food");
+        request.setLocation("Mingle");
+        request.setEventDescription("  หาตี้กินตี๋น้อย ม.กรุงเทพ หารค่าน้ำรีฟิลกัน  ");
+        request.setEventSize(6);
+        request.setEventDate(validFutureDate.toString());
+        request.setEventTime("18:30");
+
+        when(userRepository.findByStudentId("6800000001")).thenReturn(Optional.of(mockUser));
+        when(eventRepository.save(any(Event.class))).thenAnswer(invocation -> {
+            Event saved = invocation.getArgument(0);
+            saved.setId(20L);
+            return saved;
+        });
+
+        EventResponse response = eventService.createEvent(request);
+
+        assertTrue(response.isStatus());
+        EventDto dto = (EventDto) response.getData();
+        assertNotNull(dto);
+        assertEquals("หาตี้กินตี๋น้อย ม.กรุงเทพ หารค่าน้ำรีฟิลกัน", dto.getDescription());
+    }
+
+    @Test
+    @DisplayName("US-10: ดึงรายละเอียดกิจกรรมรายตัวด้วย getEventById สำเร็จและคืน Error เมื่อไม่พบ")
+    void getEventById_SuccessAndNotFound() {
+        Event event = new Event("ตี๋น้อย", "food", "Mingle", 6, validFutureDate, "18.30", mockUser);
+        event.setId(21L);
+        event.setDescription("มากินด้วยกันนะ");
+
+        when(eventRepository.findById(21L)).thenReturn(Optional.of(event));
+        when(eventRepository.findById(999L)).thenReturn(Optional.empty());
+
+        EventResponse foundRes = eventService.getEventById(21L);
+        assertTrue(foundRes.isStatus());
+        assertEquals("ดึงรายละเอียดกิจกรรมสำเร็จ", foundRes.getMessage());
+        EventDto dto = (EventDto) foundRes.getData();
+        assertEquals("มากินด้วยกันนะ", dto.getDescription());
+        assertEquals("6800000001", dto.getCreator().getStudentId());
+
+        EventResponse notFoundRes = eventService.getEventById(999L);
+        assertFalse(notFoundRes.isStatus());
+        assertTrue(notFoundRes.getMessage().contains("ไม่พบกิจกรรมรหัส: 999"));
+    }
+
+    @Test
+    @DisplayName("US-10: อัปเดตคำอธิบายกิจกรรมได้เฉพาะผู้สร้างเท่านั้น")
+    void updateEventDescription_CreatorOnly() {
+        Event event = new Event("ตี๋น้อย", "food", "Mingle", 6, validFutureDate, "18.30", mockUser);
+        event.setId(22L);
+        event.setDescription("คำอธิบายเดิม");
+
+        when(eventRepository.findById(22L)).thenReturn(Optional.of(event));
+        when(eventRepository.save(any(Event.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        EventResponse forbiddenRes = eventService.updateEventDescription(22L, "6800000002", "แก้ไขโดยคนอื่น");
+        assertFalse(forbiddenRes.isStatus());
+        assertEquals("เฉพาะผู้สร้างกิจกรรมเท่านั้นที่สามารถแก้ไขคำอธิบายได้", forbiddenRes.getMessage());
+
+        EventResponse successRes = eventService.updateEventDescription(22L, "6800000001", "  คำอธิบายใหม่  ");
+        assertTrue(successRes.isStatus());
+        assertEquals("อัปเดตคำอธิบายกิจกรรมสำเร็จ", successRes.getMessage());
+        EventDto updatedDto = (EventDto) successRes.getData();
+        assertEquals("คำอธิบายใหม่", updatedDto.getDescription());
     }
 }

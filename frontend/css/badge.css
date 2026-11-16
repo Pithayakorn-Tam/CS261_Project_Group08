@@ -1,0 +1,109 @@
+
+/* Badge card shared by the desktop container and mobile popup. */
+.badge-card-host { 
+    width: 100%; 
+}
+
+.badge-card { 
+    display: flex; 
+    align-items: center; 
+    width: 100%; 
+    min-height: 114px; 
+    padding: 10px 14px; 
+    border-radius: 10px; 
+    background: #fff; 
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); 
+    box-sizing: border-box; 
+}
+
+.badge-card-empty {
+    justify-content: center;
+    text-align: center;
+}
+
+.badge-card-image { 
+    flex: 0 0 82px; 
+    width: 82px; 
+    height: 82px; 
+    margin-right: 10px; 
+    object-fit: contain; 
+}
+
+.badge-card-content { 
+    flex: 1; 
+    min-width: 0; 
+}
+
+.badge-card-name { 
+    margin: 0 0 2px; 
+    color: #193bd0; 
+    font-size: 21px; 
+    font-weight: 700; 
+    line-height: 1.1; 
+}
+
+.badge-card-description { 
+    margin: 0 0 8px; 
+    color: #000; 
+    font-size: 11px; 
+    font-weight: 600; 
+    line-height: 1.3; 
+}
+
+.badge-card-progress { 
+    margin: 0; 
+    padding: 6px 10px; 
+    border-radius: 6px; 
+    background: #fff0c9; 
+    color: #000; 
+    font-size: 15px; 
+    font-weight: 700; 
+    line-height: 1.1; 
+    text-align: center; 
+}
+
+.username-badge-trigger { 
+    display: none; 
+    flex: 0 0 40px; 
+    align-items: center; 
+    justify-content: center; 
+    width: 40px; height: 40px; 
+    margin: 0 0 0 6px; 
+    padding: 0; border: 0; 
+    background: transparent; 
+    cursor: pointer; 
+}
+
+.username-badge-trigger .username-side-icon { 
+    display: block; 
+    width: 40px; 
+    height: 40px; 
+    margin: 0; opacity: 1; 
+    object-fit: contain; 
+}
+
+.badge-popup { 
+    position: absolute; 
+    top: calc(100% + 8px); 
+    right: 0; z-index: 20; 
+    width: min(380px, calc(100vw - 16px)); 
+}
+
+@media (max-width: 600px) { 
+    .badge-container { 
+        display: none; 
+    } 
+    .username-row { 
+        position: relative; 
+    }
+    .username-badge-trigger { 
+        display: flex; 
+    } 
+}
+
+@media (min-width: 601px) { 
+    .badge-container { 
+        width: 100%; 
+        margin-top: 20px; 
+    } 
+}

@@ -5,9 +5,17 @@ import com.tumeet.backend.model.User;
 public class CreatorDto {
 
     private String studentId;
+    private String username;
     private String displayname_th;
     private String faculty;
     private String email;
+    private String profileImage;
+    private Integer completedCreatedCount;
+    private Integer completedJoinedCount;
+    private Integer evaluatedCount;
+    private String badge;
+    private Double averageRating;
+    private Integer ratingCount;
 
     public CreatorDto() {
     }
@@ -23,12 +31,21 @@ public class CreatorDto {
         if (user == null) {
             return null;
         }
-        return new CreatorDto(
+        CreatorDto dto = new CreatorDto(
                 user.getStudentId(),
                 user.getDisplayname_th(),
                 user.getFaculty(),
                 user.getEmail()
         );
+        dto.setUsername(user.getUsername());
+        dto.setProfileImage(user.getProfileImage());
+        dto.setCompletedCreatedCount(user.getCompletedCreatedCount() != null ? user.getCompletedCreatedCount() : 0);
+        dto.setCompletedJoinedCount(user.getCompletedJoinedCount() != null ? user.getCompletedJoinedCount() : 0);
+        dto.setEvaluatedCount(user.getEvaluatedCount());
+        dto.setBadge(user.getBadge());
+        dto.setAverageRating(user.getAverageRating() != null ? user.getAverageRating() : 0.0);
+        dto.setRatingCount(user.getRatingCount() != null ? user.getRatingCount() : 0);
+        return dto;
     }
 
     public String getStudentId() {
@@ -37,6 +54,14 @@ public class CreatorDto {
 
     public void setStudentId(String studentId) {
         this.studentId = studentId;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getDisplayname_th() {
@@ -61,5 +86,61 @@ public class CreatorDto {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getProfileImage() {
+        return profileImage;
+    }
+
+    public void setProfileImage(String profileImage) {
+        this.profileImage = profileImage;
+    }
+
+    public Integer getCompletedCreatedCount() {
+        return completedCreatedCount;
+    }
+
+    public void setCompletedCreatedCount(Integer completedCreatedCount) {
+        this.completedCreatedCount = completedCreatedCount;
+    }
+
+    public Integer getCompletedJoinedCount() {
+        return completedJoinedCount;
+    }
+
+    public void setCompletedJoinedCount(Integer completedJoinedCount) {
+        this.completedJoinedCount = completedJoinedCount;
+    }
+
+    public Integer getEvaluatedCount() {
+        return evaluatedCount;
+    }
+
+    public void setEvaluatedCount(Integer evaluatedCount) {
+        this.evaluatedCount = evaluatedCount;
+    }
+
+    public String getBadge() {
+        return badge;
+    }
+
+    public void setBadge(String badge) {
+        this.badge = badge;
+    }
+
+    public Double getAverageRating() {
+        return averageRating;
+    }
+
+    public void setAverageRating(Double averageRating) {
+        this.averageRating = averageRating;
+    }
+
+    public Integer getRatingCount() {
+        return ratingCount;
+    }
+
+    public void setRatingCount(Integer ratingCount) {
+        this.ratingCount = ratingCount;
     }
 }

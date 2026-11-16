@@ -1,91 +1,11 @@
-@font-face {
-  font-family: 'Mitr';
-  src: url(../Font/Mitr/Mitr-Regular.ttf);
-}
+/* ==========================================
+   CreateEvent Page Style
+========================================== */
 
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  font-family: "Mitr", sans-serif;
-}
-
-body {
-  background-color: #f0f0f0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  margin: 0;
-}
-
-/* ปรับให้กรอบหลักยืดหยุ่นตามหน้าจอ (Responsive) */
-.app-container {
-  width: 100%;
-  max-width: 430px;           
-  height: 100vh;               
-  max-height: 850px;           
-  background-color: #ffffff;
-  border: 1px solid #dedede;
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  overflow-y: auto;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-}
-
-
-.header {
-  width: 100%;
-  height: 48px;
-  background-color: #ffffff;
-  border-bottom: 1px solid #dedede;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 16px;
-}
-
-.icon-logo {
-  height: 22px;
-  width: auto;
-}
-
-.header-action {
-  display: flex;
-  gap: 12px;
-  align-items: center;
-}
-
-.icon-btn {
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: transform 0.1s ease, opacity 0.1s ease;
-}
-
-.icon-btn:active {
-  transform: scale(0.90);
-  opacity: 0.8;
-}
-
-.vector-img {
-  width: 20px;
-  height: 20px;
-}
-
-.profile-img {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-}
-
+/* Main Content Layout (ปลดล็อกขอบขาวฝั่งซ้าย) */
 .main-content {
-  padding: 20px;
+  width: 100%;
+  padding: 0;
   display: flex;
   flex-direction: column;
 }
@@ -103,10 +23,14 @@ body {
   height: auto;
 }
 
+.event-panel {
+  padding: 20px;
+}
+
 .event-form {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 8px;
 }
 
 .form-group {
@@ -115,7 +39,7 @@ body {
   gap: 4px;
 }
 
-/* ปรับ Event Type ให้อยู่แนวนอน ชิดซ้ายและสมดุล */
+/* Event Type Layout */
 .form-group-row {
   flex-direction: row;
   justify-content: flex-start;
@@ -130,7 +54,25 @@ body {
   white-space: nowrap;
 }
 
-/* Style Inputs & Select */
+/* Inputs, Select & Textarea */
+textarea {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid #333333;
+  border-radius: 6px;
+  font-family: "Mitr", sans-serif;
+  font-size: 14px;
+  background-color: #fff;
+  outline: none;
+  resize: vertical;
+  min-height: 70px;
+}
+
+textarea::placeholder,
+input::placeholder {
+  color: #a0a0a0;
+}
+
 input[type="text"],
 input[type="number"],
 input[type="date"],
@@ -138,17 +80,13 @@ input[type="time"],
 select {
   width: 100%;
   height: 38px;
-  padding: 0 10px;
+  padding: 10px;
   border: 1px solid #333333;
   border-radius: 6px;
-  font-family: "Mitr", sans-serif;
+  font-family: "Mitr", sans-serif !important;
   font-size: 14px;
   background-color: #fff;
   outline: none;
-}
-
-input::placeholder {
-  color: #a0a0a0;
 }
 
 .form-group-row .select-wrapper {
@@ -168,7 +106,6 @@ input::placeholder {
   color: #757575;
 }
 
-/* ลูกศรสีน้ำเงินเข้มขวาช่อง Select */
 .select-wrapper::after {
   content: '';
   position: absolute;
@@ -183,15 +120,15 @@ input::placeholder {
   pointer-events: none;
 }
 
-/* Row Size, Date, Time */
+/* Form Row (Size, Date, Time) */
 .form-row {
   display: flex;
-  gap: 10px;
+  gap: 9px;
   align-items: flex-start;
 }
 
 .size-group {
-  width: 55px;
+  width: 65px;
 }
 
 .date-group {
@@ -213,7 +150,84 @@ input[type="time"] {
   color: #555555;
 }
 
-/* ปุ่ม CREATE ชิดขวา */
+/* Size Custom Dropdown */
+.size-group select {
+  text-align: center;
+  padding-left: 6px;
+  padding-right: 20px;
+  color: #333;
+}
+
+.size-native-select {
+  display: none !important;
+}
+
+.size-dropdown-btn {
+  width: 100%;
+  height: 38px;
+  padding: 0 8px;
+  border: 1px solid #333;
+  border-radius: 6px;
+  background: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  font-family: "Mitr", sans-serif;
+  font-size: 14px;
+  color: #333;
+}
+
+.size-arrow {
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 6px solid #2333cf;
+}
+
+.size-dropdown-menu {
+  position: absolute;
+  top: 42px;
+  left: 0;
+  width: 100%;
+  max-height: 99px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+  z-index: 100;
+}
+
+.size-option {
+  width: 100%;
+  height: 33px;
+  border: none;
+  background: white;
+  cursor: pointer;
+  font-family: "Mitr", sans-serif;
+  font-size: 14px;
+  text-align: center;
+  color: #333;
+}
+
+.size-option:hover {
+  background: #eef0ff;
+  color: #2333cf;
+}
+
+.size-option.selected {
+  background: #e9ecff;
+  color: #2333cf;
+  font-weight: bold;
+}
+
+.size-select-wrapper::after {
+  display: none;
+}
+
+/* Submit Button */
 .form-actions {
   display: flex;
   justify-content: flex-end;
@@ -245,4 +259,123 @@ input[type="time"] {
   transform: scale(0.95);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
   background-color: #141d82;
+}
+
+/* Messages & Alerts */
+.hidden {
+  display: none !important;
+}
+
+.error-box {
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: 10px;
+  border-radius: 6px;
+  font-size: 13px;
+  border: 1px solid #f5c6cb;
+  margin-bottom: 10px;
+}
+
+.error-message {
+  color: #dc3545;
+  font-size: 11px;
+  margin-top: 0px;
+  display: block;
+}
+
+/* ==========================================
+   Desktop Responsive (768px ขึ้นไป)
+========================================== */
+@media (min-width: 768px) {
+  .main-content {
+    width: 100%;
+    max-width: none;
+    min-height: calc(100vh - 52px);
+    padding: 0;
+    display: grid;
+    grid-template-columns: 42.65% minmax(0, 1fr);
+  }
+
+  .banner {
+    min-height: 100%;
+    margin: 0;
+    border-radius: 0;
+    background:
+      radial-gradient(ellipse at 18% 24%, rgba(255, 255, 255, 0.8), transparent 38%),
+      radial-gradient(ellipse at 78% 72%, rgba(255, 255, 255, 0.65), transparent 42%),
+      linear-gradient(135deg, #dcecf6, #edf7fc 48%, #d9eaf4);
+  }
+
+  .logo-banner {
+    width: 74%;
+  }
+
+  .event-panel {
+    width: min(570px, calc(100% - 72px));
+    justify-self: center;
+    align-self: center;
+    padding: 0;
+  }
+
+  .event-panel h1 {
+    margin-bottom: 4px;
+    font-size: 34px;
+    line-height: 1.2;
+    font-weight: 700;
+  }
+
+  .event-form {
+    gap: 8px;
+  }
+
+  .form-row {
+    gap: 8px;
+  }
+}
+
+/* เมื่อพื้นที่สองคอลัมน์เริ่มไม่พอ ค่อยวางฟอร์มไว้ใต้โลโก้ */
+@media (max-width: 680px) {
+  .main-content {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+    padding: 20px;
+  }
+
+  .banner {
+    min-height: 120px;
+  }
+
+  .logo-banner {
+    width: min(80%, 400px);
+  }
+
+  .event-panel {
+    max-width: 650px;
+    justify-self: center;
+  }
+}
+
+/* มือถือเล็ก: จัดช่อง Size / Date / Time ให้ไม่เบียดกัน */
+@media (max-width: 420px) {
+  .main-content {
+    padding: 16px;
+  }
+
+  .form-row {
+    flex-wrap: wrap;
+  }
+
+  .size-group {
+    flex: 0 0 65px;
+  }
+
+  .date-group,
+  .time-group {
+    flex: 1 1 120px;
+    min-width: 0;
+  }
+
+  .form-actions {
+    margin-top: 12px;
+  }
 }

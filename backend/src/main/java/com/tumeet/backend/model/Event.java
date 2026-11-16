@@ -12,6 +12,7 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDate;
@@ -37,11 +38,14 @@ public class Event {
     @Column(name = "location", length = 255)
     private String location;
 
+    @Column(name = "description", length = 1000)
+    private String description;
+
     @Column(name = "event_size", nullable = false)
     private Integer eventSize;
 
     @Column(name = "current_participants", nullable = false)
-    private Integer currentParticipants = 0;
+    private Integer currentParticipants = 1;
 
     @Column(name = "event_date", nullable = false)
     private LocalDate eventDate;
@@ -51,6 +55,11 @@ public class Event {
 
     @Column(nullable = false, length = 20)
     private String status = "OPEN";
+
+    // --- [US-9] สถานะวงจรชีวิตของกิจกรรม: "UPCOMING" (ยังไม่จบ), "COMPLETED" (จบแล้ว), "CANCELLED" (ยกเลิกการสร้าง) ---
+    @Column(name = "lifecycle_status", nullable = false, length = 20)
+    @ColumnDefault("'UPCOMING'")
+    private String lifecycleStatus = "UPCOMING";
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
@@ -77,7 +86,7 @@ public class Event {
         this.eventName = eventName;
         this.eventType = eventType;
         this.eventSize = eventSize;
-        this.currentParticipants = 0;
+        this.currentParticipants = 1;
         this.eventDate = eventDate;
         this.eventTime = eventTime;
         this.status = "OPEN";
@@ -90,7 +99,7 @@ public class Event {
         this.eventType = eventType;
         this.location = location;
         this.eventSize = eventSize;
-        this.currentParticipants = 0;
+        this.currentParticipants = 1;
         this.eventDate = eventDate;
         this.eventTime = eventTime;
         this.status = "OPEN";
@@ -135,6 +144,22 @@ public class Event {
 
     public void setEventLocation(String eventLocation) {
         this.location = eventLocation;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getEventDescription() {
+        return description;
+    }
+
+    public void setEventDescription(String eventDescription) {
+        this.description = eventDescription;
     }
 
     public Integer getEventSize() {
@@ -183,6 +208,14 @@ public class Event {
         this.status = status;
     }
 
+    public String getLifecycleStatus() {
+        return lifecycleStatus;
+    }
+
+    public void setLifecycleStatus(String lifecycleStatus) {
+        this.lifecycleStatus = lifecycleStatus != null ? lifecycleStatus : "UPCOMING";
+    }
+
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
@@ -209,7 +242,7 @@ public class Event {
 
     public void addParticipant(User user) {
         if (user != null && this.participants.add(user)) {
-            this.currentParticipants = (this.currentParticipants != null ? this.currentParticipants : 0) + 1;
+            this.currentParticipants = (this.currentParticipants != null ? this.currentParticipants : 1) + 1;
             if (this.eventSize != null && this.currentParticipants >= this.eventSize) {
                 this.status = "FULL";
             }
@@ -218,7 +251,7 @@ public class Event {
 
     public void removeParticipant(User user) {
         if (user != null && this.participants.remove(user)) {
-            this.currentParticipants = Math.max(0, (this.currentParticipants != null ? this.currentParticipants : 1) - 1);
+            this.currentParticipants = Math.max(1, (this.currentParticipants != null ? this.currentParticipants : 2) - 1);
             if ("FULL".equalsIgnoreCase(this.status) && (this.eventSize == null || this.currentParticipants < this.eventSize)) {
                 this.status = "OPEN";
             }
