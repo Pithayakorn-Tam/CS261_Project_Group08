@@ -3,11 +3,13 @@ package com.tumeet.backend.controller;
 import com.tumeet.backend.dto.ActionResponse;
 import com.tumeet.backend.dto.JoinEventRequest;
 import com.tumeet.backend.dto.LeaveEventRequest;
+import com.tumeet.backend.dto.SubmitEvaluationRequest;
 import com.tumeet.backend.model.EventParticipant;
 import com.tumeet.backend.service.EventParticipantService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 
 import java.util.List;
 
@@ -46,5 +48,20 @@ public class EventParticipantController {
     public ResponseEntity<List<EventParticipant>> getParticipants(@PathVariable Long eventId) {
         List<EventParticipant> participants = eventParticipantService.getParticipantsByEventId(eventId);
         return ResponseEntity.ok(participants);
+    }
+
+    @PostMapping("/evaluate")
+    public ResponseEntity<ActionResponse> submitEvaluation(@RequestBody SubmitEvaluationRequest request) {
+        ActionResponse response = eventParticipantService.submitEvaluation(
+                request.getStudentId(),
+                request.getEventId(),
+                request.getReviewText()
+        );
+
+        if (response.isStatus()) {
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.badRequest().body(response);
+        }
     }
 }

@@ -147,4 +147,36 @@ public class EventParticipantService {
     public List<EventParticipant> getParticipantsByEventId(Long eventId) {
         return eventParticipantRepository.findByEventId(eventId);
     }
+
+    // เพิ่มเมธอดสำหรับส่งแบบประเมินและอัปเดตแต้ม Badge
+
+    public ActionResponse submitEvaluation(String studentId, Long eventId, String reviewText) {
+        if (studentId == null || studentId.isBlank() || eventId == null) {
+            return new ActionResponse(false, "ข้อมูลไม่ครบถ้วน กรุณาระบุรหัสนักศึกษาและรหัสกิจกรรม");
+        }
+
+        studentId = studentId.trim();
+
+        // ตรวจสอบข้อมูลผู้ใช้งาน
+        Optional<User> userOptional = userRepository.findByStudentId(studentId);
+        if (userOptional.isEmpty()) {
+            return new ActionResponse(false, "ไม่พบข้อมูลผู้ใช้งานรหัสนักศึกษา: " + studentId);
+        }
+        User user = userOptional.get();
+
+        // ตรวจสอบว่ากิจกรรมมีอยู่จริงและจบแล้ว (ทางเลือก: ปรับเงื่อนไขตามลอจิกของคุณ)
+        Optional<Event> eventOptional = eventRepository.findById(eventId);
+        if (eventOptional.isEmpty()) {
+            return new ActionResponse(false, "ไม่พบข้อมูลกิจกรรม ID: " + eventId);
+        }
+
+        // อัปเดตแต้ม Badge (evaluatedCount)
+        int previousPoints = user.getEvaluatedCount();
+        int newPoints = previousPoints + 1;
+        
+        user.setEvaluatedCount(newPoints);
+        userRepository.save(user);
+
+        return new ActionResponse(true, "ส่งแบบประเมินสำเร็จ ได้รับแต้มสะสมเพิ่ม 1 แต้ม!", user);
+    }
 }

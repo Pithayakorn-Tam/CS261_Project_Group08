@@ -215,17 +215,25 @@ public class User {
     public void setCompletedJoinedCount(Integer completedJoinedCount) {
         this.completedJoinedCount = completedJoinedCount != null ? completedJoinedCount : 0;
     }
+    
+    private Integer evaluatedCount;
 
-    // --- [US-9] เมธอดคำนวณยศใน Java (ไม่มีคอลัมน์ badge ใน DB แต่ Jackson จะ serialize ออกไปใน JSON ชื่อ "badge" อัตโนมัติ) ---
+    public Integer getEvaluatedCount() {
+        return evaluatedCount != null ? evaluatedCount : 0;
+    }
+
+    public void setEvaluatedCount(Integer evaluatedCount) {
+        this.evaluatedCount = evaluatedCount != null ? evaluatedCount : 0;
+    }
+
     public String getBadge() {
-        int created = this.completedCreatedCount != null ? this.completedCreatedCount : 0;
-        int joined = this.completedJoinedCount != null ? this.completedJoinedCount : 0;
-        int total = created + joined;
+        // ใช้ "แต้มจากการประเมิน" (evaluatedCount) เป็นตัวตัดสินยศ แทนการนับรอบเข้าร่วม!
+        int points = getEvaluatedCount();
 
-        if (total >= 20) return "Super Bouquet";
-        if (total >= 10) return "Happy Blossom";
-        if (total >= 5)  return "Baby Bloom";
-        if (total >= 1)  return "Newly Bee";
+        if (points >= 20) return "Super Bouquet";
+        if (points >= 10) return "Happy Blossom";
+        if (points >= 5)  return "Baby Bloom";
+        if (points >= 1)  return "Newly Bee";
         return "No Badge";
     }
 }
