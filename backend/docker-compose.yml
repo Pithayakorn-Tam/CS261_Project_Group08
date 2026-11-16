@@ -1,0 +1,52 @@
+services:
+  tumeet-db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: tumeet-db
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "TuMeet_StrongPass123!"
+      MSSQL_PID: "Developer"
+    ports:
+      - "1433:1433"
+    volumes:
+      - mssql-data:/var/opt/mssql
+    command: >
+      /bin/bash -c "
+      /opt/mssql/bin/sqlservr &
+      for i in {1..30}; do
+        if /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P 'TuMeet_StrongPass123!' -C -Q \"IF NOT EXISTS (SELECT name FROM sys.databases WHERE name = N'tumeetdb') CREATE DATABASE [tumeetdb];\" > /dev/null 2>&1 ||
+           /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P 'TuMeet_StrongPass123!' -Q \"IF NOT EXISTS (SELECT name FROM sys.databases WHERE name = N'tumeetdb') CREATE DATABASE [tumeetdb];\" > /dev/null 2>&1; then
+          echo 'Database tumeetdb is ready!';
+          break;
+        fi;
+        sleep 1;
+      done;
+      wait
+      "
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P 'TuMeet_StrongPass123!' -C -d tumeetdb -Q 'SELECT 1' || /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P 'TuMeet_StrongPass123!' -d tumeetdb -Q 'SELECT 1'"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+  tumeet-backend:
+    profiles: ["app"]
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: tumeet-backend
+    ports:
+      - "8080:8080"
+    environment:
+      DB_HOST: "tumeet-db"
+      DB_NAME: "tumeetdb"
+      DB_USERNAME: "sa"
+      DB_PASSWORD: "TuMeet_StrongPass123!"
+    depends_on:
+      tumeet-db:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  mssql-data:

@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 120" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bg1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2e3bcf" />
+      <stop offset="100%" stop-color="#4f63e7" />
+    </linearGradient>
+  </defs>
+  <rect width="400" height="120" fill="url(#bg1)" rx="8" />
+  <circle cx="360" cy="20" r="40" fill="#ffffff" opacity="0.1" />
+  <circle cx="30" cy="100" r="30" fill="#ffffff" opacity="0.1" />
+  <text x="24" y="48" fill="#ffffff" font-family="'Mitr', sans-serif" font-weight="600" font-size="20">WELCOME TO TUMEET</text>
+  <text x="24" y="74" fill="#f2bc57" font-family="'Mitr', sans-serif" font-weight="500" font-size="14">หาเพื่อนอ่านหนังสือ ติวสอบ ร่วมกิจกรรม มธ.</text>
+  <text x="24" y="96" fill="#e0e7ff" font-family="'Mitr', sans-serif" font-size="11">Find your study buddies &amp; campus peers</text>
+</svg>

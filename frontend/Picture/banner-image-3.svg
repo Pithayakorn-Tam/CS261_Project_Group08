@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 120" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bg3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#d9534f" />
+      <stop offset="100%" stop-color="#f0ad4e" />
+    </linearGradient>
+  </defs>
+  <rect width="400" height="120" fill="url(#bg3)" rx="8" />
+  <circle cx="360" cy="30" r="45" fill="#ffffff" opacity="0.12" />
+  <circle cx="40" cy="80" r="30" fill="#ffffff" opacity="0.12" />
+  <text x="24" y="48" fill="#ffffff" font-family="'Mitr', sans-serif" font-weight="600" font-size="20">FOOD &amp; BOARDGAMES</text>
+  <text x="24" y="74" fill="#fff3cd" font-family="'Mitr', sans-serif" font-weight="500" font-size="14">ไปกินตี๋น้อย เล่นบอร์ดเกม คาเฟ่รอบมอ</text>
+  <text x="24" y="96" fill="#fdfdfe" font-family="'Mitr', sans-serif" font-size="11">Discover dining &amp; fun hangouts near campus</text>
+</svg>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profile</title>
+  <link rel="stylesheet" href="../css/Profile.css?v=2">
+</head>
+<body>
+
+  <div class="app-container">
+
+    <!-- Header -->
+    <header class="header">
+      <div class="logo-TUmeet">
+        <a href="./Homepage.html" aria-label="กลับไปหน้า Home">
+          <img src="../Picture/LogoTUmeet.svg" alt="Logo TUmeet" class="icon-logo">
+        </a>
+      </div>
+      <div class="header-action">
+        <button type="button" class="icon-btn" aria-label="Notification">
+          <img src="../Picture/Vector.svg" alt="Notification" class="vector-img">
+        </button>
+        <button type="button" class="icon-btn" aria-label="Profile">
+          <a href="Profile.html" aria-label="ไปหน้า Profile">
+            <img src="../Picture/profile.svg" alt="Profile" class="profile-img">
+          </a>  
+        </button>
+      </div>
+    </header>
+
+    <!-- พื้นที่เนื้อหาหลัก -->
+    <main class="main-content">
+
+      <!-- Profile Section -->
+      <div class="profile-section">
+        <div class="avatar-container">
+          <div class="avatar-wrapper" id="avatarWrapper">
+            <img src="../Picture/profile-img.svg" alt="Profile Picture" class="avatar-img" id="avatarImg">
+            <input type="file" id="avatarInput" accept="image/*" style="display: none;">
+            <label for="avatarInput" class="edit-badge">แก้ไข</label>
+          </div>
+        </div>
+
+        <form class="info-container" id="profileForm" onsubmit="return false;">
+          <div class="input-group">
+            <label class="input-label">Username</label>
+            <div class="input-box username-display-box" id="usernameDisplayBox">
+              <span class="bold-text username-text" id="usernameDisplay">มะหมาสี่ขา</span>
+              <span class="edit-text-btn" id="editUsernameBtn">แก้ไข</span>
+            </div>
+            <div class="input-box-wrapper edit-mode" id="usernameEditWrapper" style="display: none;">
+              <input type="text" id="usernameInput" class="input-field bold-text" placeholder="ระบุชื่อผู้ใช้">
+              <button type="button" id="saveUsernameBtn" class="save-icon-btn" title="บันทึกชื่อ">✓</button>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label class="input-label">Student ID</label>
+            <div class="input-box bold-text" id="studentIdDisplay">6800000000</div>
+          </div>
+
+          <div class="input-group">
+            <label class="input-label">Student E-mail</label>
+            <div class="input-box bold-text email-box" id="emailDisplay">abcd@dome.tu.ac.th</div>
+          </div>
+        </form>
+      </div>
+
+      <!-- ส่วนกิจกรรม: ที่คุณสร้าง/เข้าร่วม -->
+      <div class="activity-section">
+        <h3 class="section-title">ที่คุณสร้าง/เข้าร่วม</h3>
+        <div class="event-list" id="activeEventsList">
+          <!-- การ์ดกิจกรรมปัจจุบันจะถูกสร้างด้วย JS มาใส่ตรงนี้ -->
+        </div>
+      </div>
+
+      <!-- ส่วนกิจกรรม: ที่เคยสร้าง/เข้าร่วม -->
+      <div class="activity-section">
+        <h3 class="section-title">ที่เคยสร้าง/เข้าร่วม</h3>
+        <div class="event-list" id="pastEventsList">
+          <!-- การ์ดกิจกรรมในอดีตจะถูกสร้างด้วย JS มาใส่ตรงนี้ -->
+        </div>
+      </div>
+
+    </main>
+
+  </div>
+
+  <!-- Modal ยืนยันการยกเลิกการเข้าร่วมกิจกรรม -->
+  <div class="modal-overlay" id="cancelModal" style="display: none;">
+    <div class="modal-box">
+      <h3 class="modal-title">ยกเลิกการเข้าร่วมกิจกรรม</h3>
+      <p class="modal-desc">ท่านยืนยันที่จะยกเลิกการเข้าร่วมกิจกรรมหรือไม่</p>
+      <div class="modal-actions">
+        <button type="button" class="modal-btn confirm-btn" id="confirmCancelBtn">ยืนยัน</button>
+        <button type="button" class="modal-btn dismiss-btn" id="dismissCancelBtn">ยกเลิก</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/Profile.js?v=3"></script>
+</body>
+</html>

@@ -1,0 +1,104 @@
+
+/* พื้นหลังด้านหลัง Popup */
+.join-popup {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 16px;
+    background: rgba(0, 0, 0, 0.75);
+}
+
+/* ซ่อน Popup ตอนเริ่มต้น */
+.join-popup.hidden {
+    display: none;
+}
+
+/* กล่อง Popup */
+.join-popup-card {
+    width: 100%;
+    max-width: 520px;
+    min-height: 400px;
+    padding: 40px 28px;
+    background: #fff;
+    border-radius: 12px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    text-align: center;
+    font-family: 'Mitr', sans-serif;
+    box-sizing: border-box;
+}
+
+.join-popup-card h2 {
+    margin: 0 0 12px;
+    font-size: clamp(21px, 4vw, 30px);
+    font-weight: 600;
+}
+
+.join-popup-card p {
+    margin: 0 0 20px;
+    font-size: 15px;
+    line-height: 1.7;
+    overflow-wrap: anywhere;
+}
+
+/* วงกลมแสดงสถานะ */
+.join-popup-icon {
+    width: 100px;
+    height: 100px;
+    flex-shrink: 0;
+    margin: 12px 0 28px;
+    border-radius: 50%;
+}
+
+.join-popup-icon.success {
+    background: #0cbd28;
+}
+
+.join-popup-icon.error {
+    background: #ad1010;
+}
+
+/* ปุ่มปิด Popup */
+.join-popup-close {
+    min-width: 120px;
+    padding: 10px 24px;
+
+    border: none;
+    border-radius: 8px;
+
+    background: #ad1010;
+    color: #fff;
+
+    font-family: inherit;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.join-popup-close:hover {
+    filter: brightness(0.9);
+}
+
+.join-popup-close:focus-visible {
+    outline: 3px solid #555;
+    outline-offset: 3px;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    .join-popup-card {
+        min-height: 320px;
+        padding: 30px 20px;
+    }
+
+    .join-popup-icon {
+        width: 80px;
+        height: 80px;
+    }
+}

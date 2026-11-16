@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TU MEET - Login</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lilitta+One&family=Mitr:wght@300;400;500&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="../css/Login.css">
+</head>
+
+<body>
+
+    <div class="login-container">
+
+        <!-- ส่วนแสดงรูปภาพโลโก้ -->
+        <div class="logo-wrapper">
+            <img src="../Picture/LogoTUmeet.svg" alt="TU MEET Logo" class="logo-img">
+        </div>
+
+        <!-- ฟอร์มเข้าสู่ระบบ -->
+        <form id="loginForm">
+
+            <!-- ช่องกรอกเลขนักศึกษา -->
+            <div class="input-group">
+                <input type="text" id="studentId" required placeholder="Student ID 6XXXXXXXXX">
+            </div>
+
+            <!-- ช่องกรอกเลขบัตรประชาชน -->
+            <div class="input-group">
+                <input type="password" id="IdNum" required placeholder="ID Number 1XXXXXXXXXXXX">
+            </div>
+            <!-- ปุ่ม LOGIN -->
+            <button type="submit" id="submitBtn" class="login-btn">
+                LOGIN
+            </button>
+            <!-- กล่องแจ้งเตือน Error -->
+            <div id="errorBox" class="error-box hidden"></div>
+
+
+        </form>
+
+    </div>
+
+    <!-- เชื่อมโยงไฟล์ JavaScript ภายนอก -->
+    <script src="../js/Login.js"></script>
+</body>
+
+</html>
