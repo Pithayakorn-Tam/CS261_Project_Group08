@@ -41,6 +41,7 @@ loginForm.addEventListener('submit', async function(event) {
 
         // กรณีสำเร็จ: บันทึกข้อมูลผู้ใช้จาก Backend ลง localStorage เพื่อให้หน้า Profile และ CreateEvent นำไปใช้ต่อได้ทันที
         const resolvedStudentId = data.studentId || studentId;
+        localStorage.removeItem('tumeet_logged_out');
         localStorage.setItem('loginData', JSON.stringify({
             studentId: resolvedStudentId,
             email: data.email || `${resolvedStudentId}@dome.tu.ac.th`,
