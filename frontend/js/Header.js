@@ -1,5 +1,36 @@
 
+function hasActiveLoginSession() {
+    try {
+        if (localStorage.getItem("tumeet_logged_out") === "true") {
+            return false;
+        }
+        const stored = JSON.parse(localStorage.getItem("loginData") || "{}");
+        if (stored && stored.studentId) return true;
+        const fallbackId = localStorage.getItem("studentId");
+        if (fallbackId && String(fallbackId).trim()) return true;
+    } catch (_) {}
+    return false;
+}
+
+function enforceAuthenticatedAccess() {
+    const path = (window.location.pathname || "").toLowerCase();
+    if (path.endsWith("login.html") || path.endsWith("eventdetail.html")) {
+        return true;
+    }
+    if (!hasActiveLoginSession()) {
+        window.location.replace("./Login.html");
+        return false;
+    }
+    return true;
+}
+
+enforceAuthenticatedAccess();
+window.addEventListener("pageshow", () => {
+    enforceAuthenticatedAccess();
+});
+
 document.addEventListener("DOMContentLoaded", () => {
+    if (!enforceAuthenticatedAccess()) return;
 
     const API_BASE_URL = (window.location.protocol === "file:" || window.location.port === "5500" || window.location.port === "5501")
         ? "http://localhost:8080/api"
@@ -215,7 +246,7 @@ document.addEventListener("DOMContentLoaded", () => {
             notificationPopup.hidden = true;
             notificationPopup.innerHTML = `
                 <div class="notification-popup-header">
-                    <span class="notification-popup-title">Notifacation</span>
+                    <span class="notification-popup-title">Notification</span>
                 </div>
                 <div class="notification-list" id="notificationList"></div>
             `;
@@ -334,7 +365,14 @@ document.addEventListener("DOMContentLoaded", () => {
     if (logoutBtn) {
         logoutBtn.addEventListener("click", () => {
             if (confirm("ต้องการออกจากระบบหรือไม่?")) {
-                window.location.href = "./Login.html";
+                try {
+                    localStorage.removeItem("loginData");
+                    localStorage.removeItem("studentId");
+                    localStorage.setItem("tumeet_logged_out", "true");
+                    sessionStorage.removeItem("loginData");
+                    sessionStorage.removeItem("studentId");
+                } catch (_) {}
+                window.location.replace("./Login.html");
             }
         });
     }

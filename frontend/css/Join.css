@@ -50,43 +50,86 @@
 
 /* วงกลมแสดงสถานะ */
 .join-popup-icon {
-    width: 100px;
-    height: 100px;
+    position: relative;
+    width: 96px;
+    height: 96px;
     flex-shrink: 0;
     margin: 12px 0 28px;
     border-radius: 50%;
 }
 
 .join-popup-icon.success {
-    background: #0cbd28;
+    background: #09c326;
+}
+
+.join-popup-icon.success::after {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 30px;
+    height: 52px;
+    border-right: 10px solid #fff;
+    border-bottom: 10px solid #fff;
+    content: "";
+    transform: translate(-50%, -56%) rotate(45deg);
+    transform-origin: center;
+    box-sizing: border-box;
 }
 
 .join-popup-icon.error {
     background: #ad1010;
 }
 
+.join-popup-icon.error::before,
+.join-popup-icon.error::after {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 48px;
+    height: 10px;
+    background: #fff;
+    border-radius: 4px;
+    content: "";
+}
+
+.join-popup-icon.error::before {
+    transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.join-popup-icon.error::after {
+    transform: translate(-50%, -50%) rotate(-45deg);
+}
+
 /* ปุ่มปิด Popup */
 .join-popup-close {
-    min-width: 120px;
-    padding: 10px 24px;
+    min-width: 128px;
+    padding: 10px 28px;
 
     border: none;
     border-radius: 8px;
 
-    background: #ad1010;
+    background: #16a34a;
     color: #fff;
 
     font-family: inherit;
-    font-size: 15px;
+    font-size: 16px;
+    font-weight: 500;
     cursor: pointer;
+    box-shadow: 0 2px 6px rgba(22, 163, 74, 0.28);
+    transition: background-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
 }
 
 .join-popup-close:hover {
-    filter: brightness(0.9);
+    background: #15803d;
+    box-shadow: 0 4px 10px rgba(21, 128, 61, 0.35);
+}
+
+.join-popup-close:active {
+    transform: scale(0.98);
 }
 
 .join-popup-close:focus-visible {
-    outline: 3px solid #555;
+    outline: 3px solid rgba(22, 163, 74, 0.45);
     outline-offset: 3px;
 }
 
@@ -98,7 +141,13 @@
     }
 
     .join-popup-icon {
-        width: 80px;
-        height: 80px;
+        width: 88px;
+        height: 88px;
+    }
+
+    .join-popup-icon.success::after {
+        width: 27px;
+        height: 47px;
+        transform: translate(-50%, -56%) rotate(45deg);
     }
 }

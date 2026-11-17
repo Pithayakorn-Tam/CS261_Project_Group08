@@ -143,6 +143,12 @@ function initJoinPopup() {
                     showPopup(false, 'ไม่สามารถเข้าร่วมกิจกรรมได้', resData.message || 'เกิดข้อผิดพลาดในการเข้าร่วมกิจกรรม');
                     return;
                 }
+                if (typeof allFetchedEvents !== 'undefined' && Array.isArray(allFetchedEvents) && resData && resData.data) {
+                    const idx = allFetchedEvents.findIndex(ev => ev && String(ev.id) === String(eventId));
+                    if (idx !== -1) {
+                        allFetchedEvents[idx] = resData.data;
+                    }
+                }
             } catch (err) {
                 console.warn('Join API error, falling back to local state:', err);
             }
